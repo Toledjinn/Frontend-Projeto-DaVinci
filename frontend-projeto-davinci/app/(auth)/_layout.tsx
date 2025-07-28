@@ -1,26 +1,62 @@
 import { Stack } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, useWindowDimensions } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withDelay,
+} from 'react-native-reanimated';
+import { useEffect } from 'react';
 import LogoCentral from '../../src/assets/images/logo-central.svg';
 import LogoInferior from '../../src/assets/images/logo-inferior.svg';
 
+const AnimatedLogoInferiorView = Animated.createAnimatedComponent(View);
+const AnimatedLogoCentralView = Animated.createAnimatedComponent(View);
+
 export default function AuthLayout() {
+  const { height } = useWindowDimensions();
+
+  const logoCentralPosition = useSharedValue(height); 
+  const logoInferiorOpacity = useSharedValue(0); 
+
+  useEffect(() => {
+    logoCentralPosition.value = withTiming(0, { duration: 2000 });
+    logoInferiorOpacity.value = withDelay(2500, withTiming(1, { duration: 500 }));
+  }, []);
+
+  const animatedLogoCentralStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: logoCentralPosition.value }],
+    };
+  });
+
+  const animatedLogoInferiorStyle = useAnimatedStyle(() => {
+    return {
+      opacity: logoInferiorOpacity.value,
+    };
+  });
+
   return (
     <View style={styles.container}>
       <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-        <View style={styles.logoCentralWrapper}>
+        <AnimatedLogoCentralView
+          style={[styles.logoCentralWrapper, animatedLogoCentralStyle]}
+        >
           <LogoCentral
             width="100%"
             height="100%"
             preserveAspectRatio="xMidYMid meet"
           />
-        </View>
-        <View style={styles.logoInferiorWrapper}>
+        </AnimatedLogoCentralView>
+        <AnimatedLogoInferiorView
+          style={[styles.logoInferiorWrapper, animatedLogoInferiorStyle]}
+        >
           <LogoInferior
             width="100%"
             height="100%"
             preserveAspectRatio="xMidYMid meet"
           />
-        </View>
+        </AnimatedLogoInferiorView>
       </View>
       <Stack
         screenOptions={{

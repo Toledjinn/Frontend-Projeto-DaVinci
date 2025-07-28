@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,12 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withDelay,
+} from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { styles } from './LoginScreen.styles';
 import StyledInput from '@/components/common/StyledInput';
@@ -17,12 +23,28 @@ import StyledButton from '@/components/common/StyledButton';
 import { maskCPF, validateCPF } from '@/utils/cpfUtils';
 import { validatePassword } from '@/utils/passwordUtils';
 
+const AnimatedFormView = Animated.createAnimatedComponent(View);
+
 export default function LoginScreen() {
   const router = useRouter();
   const [cpf, setCpf] = useState('');
   const [cpfError, setCpfError] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  
+  const formOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    formOpacity.value = withDelay(2500, withTiming(1, { duration: 500 }));
+  }, []);
+
+  
+  const animatedFormStyle = useAnimatedStyle(() => {
+    return {
+      opacity: formOpacity.value,
+    };
+  });
+
 
   const handleCpfChange = (value: string) => {
     const maskedValue = maskCPF(value);
@@ -68,7 +90,7 @@ export default function LoginScreen() {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
-            <View style={styles.form}>
+            <AnimatedFormView style={[styles.form, animatedFormStyle]}>
               <StyledInput
                 label="CPF"
                 iconName="user"
@@ -100,8 +122,8 @@ export default function LoginScreen() {
                 </Text>
               </TouchableOpacity>
 
-              <StyledButton title="Entrar" onPress={() => router.push('/(app)/home')} />
-            </View>
+              <StyledButton title="Entrar" onPress={handleLogin} />
+            </AnimatedFormView>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
