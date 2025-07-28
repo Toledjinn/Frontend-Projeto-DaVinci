@@ -29,29 +29,10 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
+ return (
     <Stack>
-      <Stack.Screen
-        name="(app)"
-        options={{
-          headerShown: false,
-          contentStyle: { backgroundColor: '#F3F4F6' },
-        }}
-      />
-      <Stack.Screen
-        name="(auth)"
-        options={{
-          headerShown: false,
-          contentStyle: { backgroundColor: '#F3F4F6' },
-        }}
-      />
-       <Stack.Screen
-        name="index"
-        options={{
-          headerShown: false,
-          contentStyle: { backgroundColor: '#F3F4F6' },
-        }}
-      />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen name="(app)" options={{ headerShown: false }} />
     </Stack>
   );
 }
