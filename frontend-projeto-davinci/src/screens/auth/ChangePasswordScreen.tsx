@@ -55,11 +55,7 @@ export default function ChangePasswordScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StyledButton
-              title="Voltar"
-              onPress={() => router.back()}
-              style={styles.backButton}
-            />
+      <Header showBackButton={true} />
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{ flex: 1 }}

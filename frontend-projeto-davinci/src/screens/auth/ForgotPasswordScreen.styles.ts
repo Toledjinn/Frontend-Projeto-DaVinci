@@ -11,15 +11,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     paddingHorizontal: '19.3%',
-    paddingBottom: '62%',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
-    width: width * 0.25, 
-    height: height * 0.05, 
-    zIndex: 10,
+    paddingBottom: '61%',
   },
   form: {
     width: '100%',

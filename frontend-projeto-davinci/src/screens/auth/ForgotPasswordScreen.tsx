@@ -20,6 +20,7 @@ import StyledInput from '@/components/common/StyledInput';
 import StyledButton from '@/components/common/StyledButton';
 import { maskCPF, validateCPF } from '@/utils/cpfUtils';
 import { COLORS } from '@/constants/theme';
+import Header from '@/components/common/Header';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -80,11 +81,7 @@ export default function ForgotPasswordScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StyledButton
-        title="Voltar"
-        onPress={() => router.back()}
-        style={styles.backButton}
-      />
+      <Header showBackButton={true} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}

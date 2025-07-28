@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     paddingHorizontal: '19.3%',
-    paddingBottom: '62%',
+    paddingBottom: '61%',
   },
   form: {
     width: '100%',
