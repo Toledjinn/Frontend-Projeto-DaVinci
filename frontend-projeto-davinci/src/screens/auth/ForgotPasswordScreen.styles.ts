@@ -1,5 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
+
+const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   safeArea: {
@@ -10,6 +12,14 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingHorizontal: '19.3%',
     paddingBottom: '62%',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    width: width * 0.25, 
+    height: height * 0.05, 
+    zIndex: 10,
   },
   form: {
     width: '100%',

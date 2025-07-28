@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    top: 12 
+    top: 24 
   },
   text: {
     ...FONTS.body2,

@@ -48,7 +48,7 @@ export default function ForgotPasswordScreen() {
     event: DateTimePickerEvent,
     selectedDate?: Date
   ) => {
-    setShowPicker(Platform.OS === 'ios'); 
+    setShowPicker(Platform.OS === 'ios');
     if (selectedDate) {
       setDate(selectedDate);
       const formattedDate = selectedDate.toLocaleDateString('pt-BR');
@@ -80,6 +80,11 @@ export default function ForgotPasswordScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <StyledButton
+        title="Voltar"
+        onPress={() => router.back()}
+        style={styles.backButton}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
@@ -125,7 +130,10 @@ export default function ForgotPasswordScreen() {
                 )}
               </View>
 
-              <StyledButton title="Recuperar Senha" onPress={handleRecoverPassword} />
+              <StyledButton
+                title="Recuperar Senha"
+                onPress={handleRecoverPassword}
+              />
             </View>
           </View>
         </TouchableWithoutFeedback>

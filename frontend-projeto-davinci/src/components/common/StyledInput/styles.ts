@@ -4,7 +4,7 @@ import { COLORS, FONTS } from '@/constants/theme';
 export const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   label: {
     ...FONTS.body3,

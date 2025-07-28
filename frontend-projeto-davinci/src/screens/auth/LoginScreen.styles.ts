@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     paddingHorizontal: '19.3%',
-    paddingBottom: '50%',
+    paddingBottom: '48%',
   },
   form: {
     width: '100%',
@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 20,
     top: 8,
-    bottom: 8
+    bottom: 16
   },
   forgotPasswordText: {
     ...FONTS.body1,

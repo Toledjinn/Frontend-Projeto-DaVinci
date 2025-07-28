@@ -1,5 +1,7 @@
-import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme'; 
+import { StyleSheet, Dimensions } from 'react-native';
+import { COLORS, FONTS } from '@/constants/theme';
+
+const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   safeArea: {
@@ -13,6 +15,14 @@ export const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    width: width * 0.25, 
+    height: height * 0.05,
+    zIndex: 10,
   },
   changeButton: {
     marginVertical: 20,

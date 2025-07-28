@@ -100,7 +100,7 @@ export default function LoginScreen() {
                 </Text>
               </TouchableOpacity>
 
-              <StyledButton title="Entrar" onPress={handleLogin} />
+              <StyledButton title="Entrar" onPress={() => router.push('/(app)/home')} />
             </View>
           </View>
         </TouchableWithoutFeedback>
