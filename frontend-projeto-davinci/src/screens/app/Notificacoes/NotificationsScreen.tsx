@@ -8,7 +8,7 @@ import Header from '@/components/common/Header';
 export default function NotificationsScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Header showBackButton={true} screenName="Notificações" />
+      <Header showBackButton={true} screenName="Notificações"/>
       
     </SafeAreaView>
   );

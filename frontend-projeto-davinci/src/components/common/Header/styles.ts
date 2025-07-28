@@ -5,31 +5,33 @@ export const styles = StyleSheet.create({
   headerContainer: {
     top: 12,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 24,
     paddingBottom: 10,
     width: '100%',
   },
   leftSection: {
     flex: 1,
+    height: 80, 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   centerSection: {
     flex: 2,
+    height: 80, 
+    justifyContent: 'center', 
     alignItems: 'center',
-    top: 2
+    top: 2,
   },
   rightSection: {
     flex: 1,
+    height: 80, 
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center', 
     justifyContent: 'flex-end',
   },
-  
   profileImageContainer: {
     width: 80,
     height: 80,
@@ -42,8 +44,9 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
   },
   userName: {
-    ...FONTS.h2,
+    ...FONTS.h1,
     color: COLORS.secondary,
+    textAlign: 'center',
   },
   backButton: {
     padding: 5,
@@ -67,6 +70,6 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: COLORS.red,
     borderWidth: 2,
-    borderColor: COLORS.gray_500
+    borderColor: COLORS.gray_500,
   },
 });

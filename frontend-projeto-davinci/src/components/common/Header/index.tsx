@@ -44,16 +44,23 @@ export default function Header({
       <View style={styles.centerSection}>
         {isHomeScreen ? (
           <View style={styles.welcomeTextContainer}>
-            <Text style={styles.userName}>Olá, {userName}</Text>
+            <Text style={styles.userName}>
+              Olá, {userName}
+            </Text>
           </View>
         ) : (
-          <Text style={styles.userName}>{screenName}</Text>
+          <Text style={styles.userName}>
+            {screenName}
+          </Text>
         )}
       </View>
 
       <View style={styles.rightSection}>
         {showNotifications && (
-          <TouchableOpacity style={styles.notificationContainer} onPress={() => router.push('/(app)/notifications') }>
+          <TouchableOpacity
+            style={styles.notificationContainer}
+            onPress={() => router.push('/(app)/notifications')}
+          >
             <NotificacaoIcon width={50} height={35} />
             {hasNewNotification && <View style={styles.notificationDot} />}
           </TouchableOpacity>
