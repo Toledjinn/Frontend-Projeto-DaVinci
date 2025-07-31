@@ -27,6 +27,7 @@ export default function ChangePasswordScreen() {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(
     null
   );
+  const paddingTop = Math.min(height * 0.48, 380);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -78,7 +79,7 @@ export default function ChangePasswordScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={[styles.container, { paddingTop: height * 0.48 }]}>
+          <View style={[styles.container, { paddingTop }]}>
             <View style={styles.form}>
               <View style={styles.inputWrapper}>
                 <StyledInput

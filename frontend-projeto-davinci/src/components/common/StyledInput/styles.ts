@@ -40,7 +40,7 @@ export const getStyledInputStyles = (height: number, width: number) => {
       marginLeft: 2,
     },
     errorPlaceholder: {
-      height: height * 0.021,
+      height: 20,
     },
   });
 };

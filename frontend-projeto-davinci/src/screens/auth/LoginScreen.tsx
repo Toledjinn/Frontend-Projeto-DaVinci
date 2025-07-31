@@ -37,6 +37,7 @@ export default function LoginScreen() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const formOpacity = useSharedValue(params.skipAnimation ? 1 : 0);
+  const paddingTop = Math.min(height * 0.48, 380);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -102,7 +103,7 @@ export default function LoginScreen() {
         bounces={false}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={[styles.container, { paddingTop: height * 0.48 }]}>
+          <View style={[styles.container, { paddingTop }]}>
             <AnimatedFormView style={[styles.form, animatedFormStyle]}>
               <View style={styles.inputWrapper}>
                 <StyledInput
