@@ -6,11 +6,17 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  outerContainer: {
+    flex: 1,
+  },
+  contentWrapper: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
   scrollView: {
     flex: 1,
   },
-  contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+  scrollContentContainer: {
+    paddingBottom: 20,
   },
 });

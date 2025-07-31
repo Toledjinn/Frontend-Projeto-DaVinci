@@ -61,9 +61,12 @@ export default function HomeScreen() {
     }, [])
   );
 
-  const handleButtonPress = (sectionId: string, buttonId: string) => {
-    console.log(`Botão pressionado: ${sectionId} - ${buttonId}`);
-    // Adicionar lógica de navegação aqui, ex: router.push('/(app)/pacientes');
+const handleButtonPress = (sectionId: string, buttonId: string) => {
+    if (buttonId === 'dentistas') {
+      router.push('/(app)/dentists');
+    } else {
+      console.log(`Botão pressionado: ${sectionId} - ${buttonId}`);
+    }
   };
 
   return (

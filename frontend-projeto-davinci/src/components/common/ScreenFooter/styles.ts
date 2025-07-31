@@ -7,29 +7,43 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 24,
     paddingBottom: 45,
-    paddingTop: 12,
+    paddingTop: 20,
+    backgroundColor: COLORS.background,
+  },
+  footerContainerSingle: {
+    justifyContent: 'center',
   },
   button: {
-    flex: 1,
     height: 48,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  primaryButton: {
-    backgroundColor: COLORS.primary,
-    marginLeft: 8, 
+
+  buttonFlex: {
+    flex: 1,
   },
-  secondaryButton: {
+  buttonSingle: {
+    width: '80%',
+  },
+  primaryButton: {
     backgroundColor: COLORS.secondary,
-    marginRight: 8,
   },
   primaryButtonText: {
     ...FONTS.body2,
-    color: COLORS.secondary,
+    color: COLORS.primary,
+  },
+  secondaryButton: {
+    backgroundColor: COLORS.primary,
   },
   secondaryButtonText: {
     ...FONTS.body2,
-    color: COLORS.primary,
+    color: COLORS.secondary,
+  },
+  primaryMargin: {
+    marginLeft: 8,
+  },
+  secondaryMargin: {
+    marginRight: 8,
   },
 });
