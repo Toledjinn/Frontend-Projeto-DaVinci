@@ -1,33 +1,16 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
+import { COLORS } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: COLORS.white,
   },
-  listContentContainer: {
-    flexGrow: 1, 
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    justifyContent: 'space-between',
+  scrollView: {
+    flex: 1,
   },
-  buttonContainer: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  itemContainer: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray_200,
-  },
-
-  itemLabel: {
-    ...FONTS.body3,
-    color: COLORS.gray_500,
-  },
-  itemValue: {
-    ...FONTS.body3,
-    color: COLORS.gray_500,
+  contentContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
   },
 });

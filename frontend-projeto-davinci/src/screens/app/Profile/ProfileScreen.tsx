@@ -1,15 +1,11 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  useWindowDimensions,
-} from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { SafeAreaView, ScrollView, useWindowDimensions } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './ProfileScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import FotoPerfil from '@/assets/images/FotoPerfil.svg'; 
+import ProfileDataList from '@/components/features/ProfileDataList';
+import ScreenFooter from '@/components/common/ScreenFooter'; 
 
 const MOCK_PROFILE_DATA = [
   { id: '1', label: 'Gênero', value: 'Masculino' },
@@ -31,39 +27,44 @@ export default function ProfileScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.27;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    router.replace('/(auth)/login');
+  };
+
+  const handleEditData = () => {
+    console.log('Botão "Editar Dados" pressionado');
+  };
 
   useFocusEffect(
     React.useCallback(() => {
       setHeaderConfig({
         layout: 'profile',
         showBackground: true,
-        showNotificationIcon: true,
+        showNotificationIcon: false,
         userName: 'José Maria Gratone', 
         UserImageSvg: FotoPerfil,   
       });
     }, [])
   );
 
-  const renderItem = ({ item }: { item: typeof MOCK_PROFILE_DATA[0] }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemLabel}>{item.label}</Text>
-      <Text style={styles.itemValue}>{item.value}</Text>
-    </View>
-  );
-
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={MOCK_PROFILE_DATA}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={[
-          styles.listContentContainer,
-          { paddingTop: headerHeight + 9 },
-        ]}
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
         showsVerticalScrollIndicator={false}
+      >
+        <ProfileDataList data={MOCK_PROFILE_DATA} />
+      </ScrollView>
+
+      <ScreenFooter 
+        secondaryButtonTitle="Editar Dados"
+        onSecondaryButtonPress={handleEditData}
+        primaryButtonTitle="Sair"
+        onPrimaryButtonPress={handleLogout}
       />
-    </View>
+    </SafeAreaView>
   );
 }
-

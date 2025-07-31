@@ -35,7 +35,6 @@ export const getHeaderStyles = (height: number) => {
       height: 80,
       justifyContent: 'center',
       alignItems: 'center',
-      top: 2,
     },
     rightSection: {
       flex: 1,
