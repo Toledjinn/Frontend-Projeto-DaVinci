@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TextInputProps } from 'react-native';
+import { View, Text, TextInput, TextInputProps, useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { styles } from './styles';
+import { getStyledInputStyles } from './styles';
 import { COLORS } from '@/constants/theme';
 
 interface StyledInputProps extends TextInputProps {
@@ -18,6 +18,8 @@ export default function StyledInput({
   reserveErrorSpace, 
   ...rest
 }: StyledInputProps) {
+  const { height, width } = useWindowDimensions();
+  const styles = getStyledInputStyles(height, width);
   const borderColor = error ? COLORS.red : COLORS.gray_200;
 
   return (

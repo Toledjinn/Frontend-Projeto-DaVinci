@@ -4,11 +4,11 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView, 
+  useWindowDimensions
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -16,102 +16,120 @@ import Animated, {
   withTiming,
   withDelay,
 } from 'react-native-reanimated';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { styles } from './LoginScreen.styles';
 import StyledInput from '@/components/common/StyledInput';
 import StyledButton from '@/components/common/StyledButton';
 import { maskCPF, validateCPF } from '@/utils/cpfUtils';
 import { validatePassword } from '@/utils/passwordUtils';
+import { useUIStore } from '@/state/uiStore';
 
 const AnimatedFormView = Animated.createAnimatedComponent(View);
 
 export default function LoginScreen() {
   const router = useRouter();
+  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const params = useLocalSearchParams();
+  const { height } = useWindowDimensions();
   const [cpf, setCpf] = useState('');
   const [cpfError, setCpfError] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  
-  const formOpacity = useSharedValue(0);
+
+  const formOpacity = useSharedValue(params.skipAnimation ? 1 : 0);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setHeaderConfig({
+        visible: false,
+      });
+    }, [])
+  );
 
   useEffect(() => {
-    formOpacity.value = withDelay(2500, withTiming(1, { duration: 500 }));
+     if (!params.skipAnimation) {
+      formOpacity.value = withDelay(2500, withTiming(1, { duration: 500 }));
+    }
   }, []);
 
-  
   const animatedFormStyle = useAnimatedStyle(() => {
     return {
       opacity: formOpacity.value,
     };
   });
 
-
   const handleCpfChange = (value: string) => {
     const maskedValue = maskCPF(value);
     setCpf(maskedValue);
-    if (maskedValue.length === 14) {
-      if (!validateCPF(maskedValue)) {
-        setCpfError('CPF inválido');
-      } else {
-        setCpfError(null);
-      }
-    } else {
-      setCpfError(null);
-    }
+    if (cpfError) setCpfError(null);
   };
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    setPasswordError(null);
+    if (passwordError) setPasswordError(null);
   };
 
   const handleLogin = () => {
+    setCpfError(null);
+    setPasswordError(null);
+
     const isCpfValid = validateCPF(cpf);
     const isPasswordValid = validatePassword(password);
+    router.replace('/(app)/home'); 
 
+    let hasError = false;
     if (!isCpfValid) {
       setCpfError('Por favor, insira um CPF válido.');
+      hasError = true;
     }
 
     if (!isPasswordValid) {
       setPasswordError('A senha deve ter no mínimo 8 caracteres.');
+      hasError = true;
     }
 
-    if (isCpfValid && isPasswordValid) {
+    if (!hasError) {
       Alert.alert('Sucesso', 'Login efetuado!');
+      // router.replace('/(app)/home'); 
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        bounces={false}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
+          <View style={[styles.container, { paddingTop: height * 0.48 }]}>
             <AnimatedFormView style={[styles.form, animatedFormStyle]}>
-              <StyledInput
-                label="CPF"
-                iconName="user"
-                placeholder="Digite seu CPF"
-                keyboardType="numeric"
-                value={cpf}
-                onChangeText={handleCpfChange}
-                maxLength={14}
-                error={cpfError}
-                reserveErrorSpace={true}
-              />
+              <View style={styles.inputWrapper}>
+                <StyledInput
+                  label="CPF"
+                  iconName="user"
+                  placeholder="Digite seu CPF"
+                  keyboardType="numeric"
+                  value={cpf}
+                  onChangeText={handleCpfChange}
+                  maxLength={14}
+                  error={cpfError}
+                  reserveErrorSpace={true}
+                />
+              </View>
 
-              <StyledInput
-                label="Senha"
-                iconName="lock"
-                placeholder="Digite sua senha"
-                secureTextEntry
-                value={password}
-                onChangeText={handlePasswordChange}
-                error={passwordError}
-              />
+              <View style={styles.inputWrapper}>
+                <StyledInput
+                  label="Senha"
+                  iconName="lock"
+                  placeholder="Digite sua senha"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={handlePasswordChange}
+                  error={passwordError}
+                  reserveErrorSpace={true}
+                />
+              </View>
 
               <TouchableOpacity
                 style={styles.forgotPasswordButton}
@@ -122,11 +140,15 @@ export default function LoginScreen() {
                 </Text>
               </TouchableOpacity>
 
-              <StyledButton title="Entrar" onPress={handleLogin} />
+              <StyledButton
+                title="Entrar"
+                style={styles.loginButton}
+                onPress={handleLogin}
+              />
             </AnimatedFormView>
           </View>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 }

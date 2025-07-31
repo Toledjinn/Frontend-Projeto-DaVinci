@@ -4,148 +4,118 @@ import {
   SafeAreaView,
   Alert,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   Keyboard,
-  TouchableOpacity,
-  Text,
   Platform,
+  KeyboardAvoidingView,
+  useWindowDimensions
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
-import Icon from 'react-native-vector-icons/Feather';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { styles } from './ForgotPasswordScreen.styles';
 import StyledInput from '@/components/common/StyledInput';
 import StyledButton from '@/components/common/StyledButton';
 import { maskCPF, validateCPF } from '@/utils/cpfUtils';
-import { COLORS } from '@/constants/theme';
-import Header from '@/components/common/Header';
+import { useUIStore } from '@/state/uiStore';
+import StyledDatePicker from '@/components/common/StyledDatePicker';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
+  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const { height } = useWindowDimensions();
   const [cpf, setCpf] = useState('');
   const [cpfError, setCpfError] = useState<string | null>(null);
-  const [date, setDate] = useState(new Date());
-  const [birthDateText, setBirthDateText] = useState('');
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
-  const [showPicker, setShowPicker] = useState(false);
+
+   useFocusEffect(
+    React.useCallback(() => {
+      setHeaderConfig({
+        visible: true,
+        layout: 'page',
+        showBackground: false,
+        showPageHeaderElements: false,
+        showNotificationIcon: false,
+      });
+    }, [])
+  );
 
   const handleCpfChange = (value: string) => {
     const maskedValue = maskCPF(value);
     setCpf(maskedValue);
-    if (maskedValue.length === 14) {
-      if (!validateCPF(maskedValue)) {
-        setCpfError('CPF inválido');
-      } else {
-        setCpfError(null);
-      }
-    } else {
-      setCpfError(null);
-    }
-  };
-
-  const onDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate?: Date
-  ) => {
-    setShowPicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setDate(selectedDate);
-      const formattedDate = selectedDate.toLocaleDateString('pt-BR');
-      setBirthDateText(formattedDate);
-      setBirthDateError(null);
-    }
+    if (cpfError) setCpfError(null);
   };
 
   const handleRecoverPassword = () => {
     const isCpfValid = validateCPF(cpf);
-    const isBirthDateValid = birthDateText !== '';
+    const isBirthDateValid = birthDate !== null; 
 
+    setCpfError(null);
+    setBirthDateError(null);
+    router.push('/change-password');
+
+    let hasError = false;
     if (!isCpfValid) {
       setCpfError('Por favor, insira um CPF válido.');
+      hasError = true;
     }
 
     if (!isBirthDateValid) {
       setBirthDateError('Por favor, selecione a data de nascimento.');
+      hasError = true;
     }
 
-    if (isCpfValid && isBirthDateValid) {
+    if (!hasError) {
       Alert.alert(
         'Validação concluída!',
         'Por segurança, é necessário alterar sua senha. Ela deve conter no mínimo 8 caracteres.'
       );
-      router.push('/change-password');
+      // router.push('/change-password');
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Header showBackButton={true} />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
+          <View style={[styles.container, { paddingTop: height * 0.48 }]}>
             <View style={styles.form}>
-              <StyledInput
-                label="CPF"
-                iconName="user"
-                placeholder="Digite seu CPF"
-                keyboardType="numeric"
-                value={cpf}
-                onChangeText={handleCpfChange}
-                maxLength={14}
-                error={cpfError}
-                reserveErrorSpace={true}
-              />
+              <View style={styles.inputWrapper}>
+                <StyledInput
+                  label="CPF"
+                  iconName="user"
+                  placeholder="Digite seu CPF"
+                  keyboardType="numeric"
+                  value={cpf}
+                  onChangeText={handleCpfChange}
+                  maxLength={14}
+                  error={cpfError}
+                  reserveErrorSpace={true}
+                />
+              </View>
 
               <View style={styles.inputWrapper}>
-                <Text style={styles.label}>Data de Nascimento</Text>
-                <TouchableOpacity
-                  onPress={() => setShowPicker(true)}
-                  style={[
-                    styles.dateInputContainer,
-                    { borderColor: birthDateError ? COLORS.red : COLORS.gray_200 },
-                  ]}
-                >
-                  <Icon
-                    name="calendar"
-                    size={24}
-                    color={COLORS.gray_400}
-                    style={styles.icon}
-                  />
-                  <Text style={birthDateText ? styles.dateText : styles.placeholder}>
-                    {birthDateText || '--/--/----'}
-                  </Text>
-                </TouchableOpacity>
-                {birthDateError ? (
-                  <Text style={styles.errorText}>{birthDateError}</Text>
-                ) : (
-                  <View style={styles.errorPlaceholder} />
-                )}
+                <StyledDatePicker
+                  label="Data de Nascimento"
+                  value={birthDate}
+                  onChange={(date) => {
+                    setBirthDate(date);
+                    if (birthDateError) setBirthDateError(null);
+                  }}
+                  error={birthDateError}
+                  reserveErrorSpace={true}
+                />
               </View>
 
               <StyledButton
                 title="Recuperar Senha"
                 onPress={handleRecoverPassword}
+                style={styles.recoverButton}
               />
             </View>
           </View>
         </TouchableWithoutFeedback>
-
-        {showPicker && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode="date"
-            is24Hour={true}
-            display="default"
-            onChange={onDateChange}
-            maximumDate={new Date()}
-          />
-        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

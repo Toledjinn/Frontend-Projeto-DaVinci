@@ -1,18 +1,19 @@
-import { StyleSheet } from 'react-native';
-import { FONTS, COLORS } from '@/constants/theme';
+import { StyleSheet, Dimensions } from 'react-native';
+import { COLORS } from '@/constants/theme';
+
 
 export const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    padding: 24,
+    backgroundColor: COLORS.white,
   },
-  title: {
-    ...FONTS.h1,
-    color: COLORS.secondary,
-    textAlign: 'center',
-    marginTop: '30%', 
+  listContentContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  itemContainer: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray_200,
   },
 });

@@ -1,20 +1,26 @@
 import React from 'react';
 import { View, Text, SafeAreaView } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { styles } from './HomeScreen.styles';
-import Header from '@/components/common/Header'; 
+import { useUIStore } from '@/state/uiStore';
 
 export default function HomeScreen() {
-  const userName = 'Gratone';
+  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setHeaderConfig({
+        layout: 'home',
+        showNotificationIcon: true,
+        showPageHeaderElements: false, 
+        pageTitle: '',
+        CharacterSvg: null,
+      });
+    }, [])
+  );
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: 'transparent' }]}>
-      <Header
-        isHomeScreen={true}
-        userName={userName}
-        showNotifications={true}
-        hasNewNotification={true}
-      />
-
       <View style={styles.container}>
         <Text style={styles.title}>Conteúdo da Home</Text>
       </View>

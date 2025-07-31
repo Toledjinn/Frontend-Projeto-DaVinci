@@ -1,19 +1,18 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
-export const getStyledInputStyles = (height: number, width: number) => {
+export const getStyledDatePickerStyles = (height: number, width: number) => {
   return StyleSheet.create({
     wrapper: {
       width: '100%',
-      marginBottom: 0,
     },
     label: {
       ...FONTS.body3,
       color: COLORS.secondary,
       marginBottom: 8,
     },
-    container: {
-      height: height * 0.055, 
+    inputContainer: {
+      height: height * 0.0502, 
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: COLORS.white,
@@ -23,24 +22,23 @@ export const getStyledInputStyles = (height: number, width: number) => {
       paddingHorizontal: width * 0.04, 
     },
     icon: {
-      marginRight: width * 0.05,
+      marginRight: width * 0.05, 
     },
-    input: {
+    dateText: {
       ...FONTS.body9,
       color: COLORS.secondary,
-      flex: 1,
-      paddingVertical: 0,
-      paddingTop: Platform.OS === 'android' ? 2 : 0,
-      textAlign: 'left',
+    },
+    placeholder: {
+      ...FONTS.body9,
+      color: COLORS.gray_400,
     },
     errorText: {
       color: COLORS.red,
       fontSize: height * 0.014, 
       marginTop: height * 0.005, 
-      marginLeft: 2,
     },
     errorPlaceholder: {
-      height: height * 0.021,
+      height: height * 0.021, 
     },
   });
 };

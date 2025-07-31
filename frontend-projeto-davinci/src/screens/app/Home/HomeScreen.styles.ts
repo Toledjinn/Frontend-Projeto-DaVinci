@@ -8,11 +8,12 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     ...FONTS.h1,
     color: COLORS.secondary,
     textAlign: 'center',
-    marginTop: '30%', 
   },
 });

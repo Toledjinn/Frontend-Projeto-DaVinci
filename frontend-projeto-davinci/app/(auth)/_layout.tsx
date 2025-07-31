@@ -39,18 +39,14 @@ export default function AuthLayout() {
   return (
     <View style={styles.container}>
       <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-        <AnimatedLogoCentralView
-          style={[styles.logoCentralWrapper, animatedLogoCentralStyle]}
-        >
+        <AnimatedLogoCentralView style={[styles.logoCentralWrapper, animatedLogoCentralStyle]}>
           <LogoCentral
             width="100%"
             height="100%"
             preserveAspectRatio="xMidYMid meet"
           />
         </AnimatedLogoCentralView>
-        <AnimatedLogoInferiorView
-          style={[styles.logoInferiorWrapper, animatedLogoInferiorStyle]}
-        >
+        <AnimatedLogoInferiorView style={[styles.logoInferiorWrapper, animatedLogoInferiorStyle]}>
           <LogoInferior
             width="100%"
             height="100%"
@@ -58,15 +54,11 @@ export default function AuthLayout() {
           />
         </AnimatedLogoInferiorView>
       </View>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      >
-        <Stack.Screen name="login" options={{ animation: 'fade' }} />
-        <Stack.Screen name="forgot-password" options={{ animation: 'fade' }} />
-        <Stack.Screen name="change-password" options={{ animation: 'fade' }} />
+
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' }, animation: 'fade' }}>
+        <Stack.Screen name="login" />
+        <Stack.Screen name="forgot-password" />
+        <Stack.Screen name="change-password" />
       </Stack>
     </View>
   );
