@@ -25,7 +25,7 @@ const MOCK_PROFILE_DATA = [
 
 export default function ProfileScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.27;
+  const headerHeight = height * 0.275;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
 

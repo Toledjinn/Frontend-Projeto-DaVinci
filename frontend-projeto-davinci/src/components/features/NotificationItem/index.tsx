@@ -9,7 +9,7 @@ type NotificationItemProps = {
     id: string;
     date: string;
     time: string;
-    text: React.ReactNode; // Permite texto com negrito
+    text: React.ReactNode;
   };
   onPress: () => void;
 };
@@ -24,9 +24,7 @@ const NotificationItem = React.memo(({ item, onPress }: NotificationItemProps) =
       <View style={styles.textContainer}>
         <Text style={styles.notificationText}>{item.text}</Text>
       </View>
-      <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
-        <Feather name="eye" size={24} color={COLORS.secondary} />
-      </TouchableOpacity>
+
     </View>
   );
 });

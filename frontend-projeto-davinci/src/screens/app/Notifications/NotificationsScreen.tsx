@@ -17,11 +17,18 @@ const MOCK_NOTIFICATIONS = [
     { id: '7', date: '18/05/2025', time: '09:03', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>cancelamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Bruce Wayne</Text></> },
     { id: '8', date: '18/05/2025', time: '09:01', text: 'Novo pedido na loja!' },
     { id: '9', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '10', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '11', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '12', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '13', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '14', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '15', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '16', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
 ];
 
 export default function NotificationsScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.27;
+  const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   useFocusEffect(

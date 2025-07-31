@@ -1,0 +1,16 @@
+// import { StyleSheet } from 'react-native';
+// import {COLORS, FONTS} from '@/constants/theme';
+
+// export const styles = StyleSheet.create({
+//   container: {
+//     padding: 16,
+//     backgroundColor: COLORS.gray_100,
+//     borderRadius: 8,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   text: {
+//     ...FONTS.body6,
+//     color: COLORS.secondary,
+//   },
+// });

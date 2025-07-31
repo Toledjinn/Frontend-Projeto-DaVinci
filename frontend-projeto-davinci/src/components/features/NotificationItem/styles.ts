@@ -7,13 +7,14 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.white,
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 12, 
+    paddingHorizontal: 12,
     marginBottom: 12,
   },
   dateTimeContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingRight: 16,
+    paddingRight: 12,
     borderRightWidth: 1,
     borderRightColor: COLORS.gray_200,
   },
@@ -27,14 +28,14 @@ export const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
   notificationText: {
-    ...FONTS.body10,
+    ...FONTS.body11,
     color: COLORS.secondary,
-    textAlign: 'center'
+    textAlign: 'left'
   },
   iconContainer: {
-    padding: 8,
+    padding: 0,
   },
 });
