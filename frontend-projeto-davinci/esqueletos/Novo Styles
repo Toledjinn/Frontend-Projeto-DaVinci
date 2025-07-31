@@ -1,0 +1,23 @@
+// import { StyleSheet } from 'react-native';
+// import { FONTS, COLORS } from '@/constants/theme';
+
+// export const styles = StyleSheet.create({
+//   safeArea: {
+//     flex: 1,
+//     backgroundColor: COLORS.white,
+//   },
+//   scrollView: {
+//     flex: 1,
+//   },
+//   contentContainer: {
+//     alignItems: 'center',
+//     paddingHorizontal: 24,
+//     paddingBottom: 20,
+//   },
+//   title: {
+//     ...FONTS.h1,
+//     color: COLORS.secondary,
+//     marginTop: 20,
+//     marginBottom: 16,
+//   },
+// });

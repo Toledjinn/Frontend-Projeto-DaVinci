@@ -1,28 +1,22 @@
 import React from 'react';
-import { View, Text, FlatList, useWindowDimensions } from 'react-native';
+import { SafeAreaView, ScrollView, Text, useWindowDimensions } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { styles } from './NotificationsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
+import NotificationList from '@/components/features/NotificationList';
+import { FONTS } from '@/constants/theme';
 
 const MOCK_NOTIFICATIONS = [
-  { id: '1', text: 'LISTA DE NOTIFICAÇÕES' },
-  { id: '2', text: 'Item 2' },
-  { id: '3', text: 'Item 3' },
-  { id: '4', text: 'Item 4' },
-  { id: '5', text: 'Item 5' },
-  { id: '6', text: 'Item 6' },  
-  { id: '7', text: 'Item 7' },
-  { id: '8', text: 'Item 8' },
-  { id: '10', text: 'Item 10' },
-  { id: '11', text: 'Item 11' },
-  { id: '12', text: 'Item 12' },
-  { id: '13', text: 'Item 13' },
-  { id: '14', text: 'Item 14' },
-  { id: '15', text: 'Item 15' },
-  { id: '16', text: 'Item 16' },
-  { id: '17', text: 'Item 17' },
-  { id: '18', text: 'Item 18' },
+    { id: '1', date: '21/05/2025', time: '11:07', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>reagendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '2', date: '21/05/2025', time: '09:01', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>cancelamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Luiz Toledo</Text></> },
+    { id: '3', date: '20/05/2025', time: '08:30', text: 'Novo pedido na loja!' },
+    { id: '4', date: '20/05/2025', time: '18:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
+    { id: '5', date: '19/05/2025', time: '17:00', text: 'Novo pedido na loja!' },
+    { id: '6', date: '19/05/2025', time: '13:00', text: 'Novo pedido na loja!' },
+    { id: '7', date: '18/05/2025', time: '09:03', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>cancelamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Bruce Wayne</Text></> },
+    { id: '8', date: '18/05/2025', time: '09:01', text: 'Novo pedido na loja!' },
+    { id: '9', date: '17/05/2025', time: '19:00', text: <>Solicitação de <Text style={{fontFamily: FONTS.body4.fontFamily}}>agendamento</Text> de consulta de <Text style={{fontFamily: FONTS.body4.fontFamily}}>Rafael Ferreira</Text></> },
 ];
 
 export default function NotificationsScreen() {
@@ -43,20 +37,13 @@ export default function NotificationsScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={MOCK_NOTIFICATIONS}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <Text>{item.text}</Text>
-          </View>
-        )}
-        contentContainerStyle={[
-          styles.listContentContainer,
-          { paddingTop: headerHeight + 9 },
-        ]}
-      />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
+      >
+        <NotificationList data={MOCK_NOTIFICATIONS} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }

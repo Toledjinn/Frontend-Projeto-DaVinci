@@ -32,6 +32,7 @@ export const getPageHeaderStyles = (screenWidth: number, screenHeight: number) =
       textAlign: 'center',
       top: screenHeight * 0.21,
       ...FONTS.h2,
+      color:  COLORS.secondary
     },
   });
 };
