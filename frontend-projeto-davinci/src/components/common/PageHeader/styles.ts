@@ -6,7 +6,6 @@ export const getPageHeaderStyles = (screenWidth: number, screenHeight: number) =
     container: {
       ...StyleSheet.absoluteFillObject,
       zIndex: 2,
-      top: 4,
       justifyContent: 'center'
     },
     backgroundCircle: {
@@ -18,7 +17,7 @@ export const getPageHeaderStyles = (screenWidth: number, screenHeight: number) =
       borderRadius: (screenWidth * 0.2273) / 2,
       backgroundColor: COLORS.primary,
       borderWidth: 3,
-      borderColor: COLORS.gray_500,
+      borderColor: COLORS.secondary,
       justifyContent: 'center',
       alignItems: 'center',
     },

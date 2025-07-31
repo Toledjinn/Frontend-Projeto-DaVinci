@@ -9,7 +9,6 @@ export const COLORS = {
   gray_100: '#F3F4F6',
   gray_200: '#D1D5DB',
   gray_400: '#4B5563',
-  gray_500: '#374151',
 };
 
 export const SIZES = {

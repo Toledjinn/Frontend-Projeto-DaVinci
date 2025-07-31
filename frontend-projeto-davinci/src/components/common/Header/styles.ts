@@ -51,7 +51,7 @@ export const getHeaderStyles = (height: number) => {
       justifyContent: 'center',
       alignItems: 'center',
       borderWidth: 3,
-      borderColor: COLORS.gray_500,
+      borderColor: COLORS.secondary,
     },
     welcomeTextContainer: {
       marginLeft: 10,
@@ -70,7 +70,7 @@ export const getHeaderStyles = (height: number) => {
       borderRadius: (height * 0.07) / 2,
       backgroundColor: COLORS.primary,
       borderWidth: 3,
-      borderColor: COLORS.gray_500,
+      borderColor: COLORS.secondary,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -83,7 +83,7 @@ export const getHeaderStyles = (height: number) => {
       borderRadius: 10,
       backgroundColor: COLORS.red,
       borderWidth: 2,
-      borderColor: COLORS.gray_500,
+      borderColor: COLORS.secondary,
     },
   });
 };
