@@ -11,14 +11,14 @@ interface StyledInputProps extends TextInputProps {
   reserveErrorSpace?: boolean;
 }
 
-export default function StyledInput({
+const StyledInput = React.forwardRef<TextInput, StyledInputProps>(({
   label,
   iconName,
   error,
   reserveErrorSpace,
   style,
   ...rest
-}: StyledInputProps) {
+}, ref) => { 
   const { height, width } = useWindowDimensions();
   const styles = getStyledInputStyles(height, width);
   const borderColor = error ? COLORS.red : COLORS.gray_200;
@@ -35,6 +35,7 @@ export default function StyledInput({
           style={styles.icon}
         />
         <TextInput
+          ref={ref}
           style={[styles.input, style]}
           placeholderTextColor={COLORS.gray_400}
           {...rest}
@@ -47,4 +48,6 @@ export default function StyledInput({
       ) : null}
     </View>
   );
-}
+});
+
+export default StyledInput;
