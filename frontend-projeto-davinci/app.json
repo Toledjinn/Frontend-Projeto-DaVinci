@@ -14,13 +14,22 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Este aplicativo precisa de acesso à sua câmera para permitir que você tire fotos de perfil.",
+        "NSPhotoLibraryUsageDescription": "Este aplicativo precisa de acesso à sua galeria para permitir que você selecione uma foto de perfil."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [ 
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
       "primaryColor": "#FFC045",
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.frontendprojetodavinci"
