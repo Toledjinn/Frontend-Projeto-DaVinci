@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { SafeAreaView, ScrollView, useWindowDimensions, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './AdminsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Administrador from '@/assets/characters/chefinho.svg';
@@ -23,6 +23,7 @@ const availableRoles = Array.from(
 ).sort();
 
 export default function AdminsScreen() {
+  const router = useRouter();
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -48,6 +49,12 @@ export default function AdminsScreen() {
     setFilterModalVisible(false);
   };
 
+  const handleRegisterPress = () => {
+    router.push({
+      pathname: '/register',
+      params: { userType: 'admin' },
+    });
+  };
   const filteredAdmins = useMemo(() => {
     return MOCK_ADMINS.filter((admin) => {
       const nameMatch = admin.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -79,7 +86,7 @@ export default function AdminsScreen() {
         </View>
         <ScreenFooter
           primaryButtonTitle="Cadastrar Administrador"
-          onPrimaryButtonPress={() => console.log('Cadastrar Administrador')}
+          onPrimaryButtonPress={handleRegisterPress}
         />
       </View>
       <FilterModal

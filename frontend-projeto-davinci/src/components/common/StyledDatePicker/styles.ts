@@ -15,7 +15,7 @@ export const getStyledDatePickerStyles = (height: number, width: number) => {
       height: height * 0.0502, 
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: COLORS.background,
+      backgroundColor: COLORS.white,
       borderRadius: 8,
       borderWidth: 1,
       borderColor: COLORS.gray_200,

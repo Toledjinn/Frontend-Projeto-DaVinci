@@ -15,17 +15,19 @@ export default function StyledInput({
   label,
   iconName,
   error,
-  reserveErrorSpace, 
+  reserveErrorSpace,
+  style,
   ...rest
 }: StyledInputProps) {
   const { height, width } = useWindowDimensions();
   const styles = getStyledInputStyles(height, width);
   const borderColor = error ? COLORS.red : COLORS.gray_200;
+  const isEditable = rest.editable !== false;
 
   return (
     <View style={styles.wrapper}>
       <Text style={styles.label}>{label}</Text>
-      <View style={[styles.container, { borderColor }]}>
+      <View style={[styles.container, { borderColor }, !isEditable && styles.disabledContainer]}>
         <Icon
           name={iconName}
           size={24}
@@ -33,7 +35,7 @@ export default function StyledInput({
           style={styles.icon}
         />
         <TextInput
-          style={styles.input}
+          style={[styles.input, style]}
           placeholderTextColor={COLORS.gray_400}
           {...rest}
         />

@@ -22,6 +22,9 @@ export const getStyledInputStyles = (height: number, width: number) => {
       borderColor: COLORS.gray_200,
       paddingHorizontal: width * 0.04, 
     },
+    disabledContainer: {
+      backgroundColor: COLORS.gray_100,
+    },
     icon: {
       marginRight: width * 0.05,
     },
@@ -29,8 +32,9 @@ export const getStyledInputStyles = (height: number, width: number) => {
       ...FONTS.body9,
       color: COLORS.secondary,
       flex: 1,
+      height: '100%', 
+      textAlignVertical: 'center',
       paddingVertical: 0,
-      paddingTop: Platform.OS === 'android' ? 2 : 0,
       textAlign: 'left',
     },
     errorText: {

@@ -20,7 +20,8 @@ import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { styles } from './LoginScreen.styles';
 import StyledInput from '@/components/common/StyledInput';
 import StyledButton from '@/components/common/StyledButton';
-import { maskCPF, validateCPF } from '@/utils/cpfUtils';
+import { validateCPF } from '@/utils/cpfUtils';
+import { maskCPF } from '@/utils/maskUtils';
 import { validatePassword } from '@/utils/passwordUtils';
 import { useUIStore } from '@/state/uiStore';
 

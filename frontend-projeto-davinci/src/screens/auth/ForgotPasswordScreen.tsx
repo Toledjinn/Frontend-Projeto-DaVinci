@@ -13,7 +13,8 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { styles } from './ForgotPasswordScreen.styles';
 import StyledInput from '@/components/common/StyledInput';
 import StyledButton from '@/components/common/StyledButton';
-import { maskCPF, validateCPF } from '@/utils/cpfUtils';
+import { validateCPF } from '@/utils/cpfUtils';
+import { maskCPF } from '@/utils/maskUtils';
 import { useUIStore } from '@/state/uiStore';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
 

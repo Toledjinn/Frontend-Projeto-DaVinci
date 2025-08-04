@@ -7,8 +7,8 @@ import NotificacaoIcon from '@/assets/icons/notificacao.svg';
 import FotoPerfil from '@/assets/images/FotoPerfil.svg';
 import HeaderBackground from '@/assets/images/header.svg';
 import HeaderHomeBackground from '@/assets/images/header2.svg';
-import PageHeader from '@/components/common/PageHeader';
-import ProfileHeader from '@/components/common/ProfileHeader'; 
+import PageHeader from '@/components/common/PageTitle';
+import ProfileHeader from '@/components/common/ProfileImage'; 
 import { COLORS } from '@/constants/theme';
 import { useUIStore } from '@/state/uiStore';
 

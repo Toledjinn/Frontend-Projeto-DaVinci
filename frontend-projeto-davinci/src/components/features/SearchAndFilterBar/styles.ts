@@ -45,7 +45,7 @@ export const getSearchAndFilterBarStyles = (screenHeight: number) => {
     },
     inputWrapper: {
       flex: 1,
-      justifyContent: 'center', // Centraliza o TextInput verticalmente
+      justifyContent: 'center',
     },
   });
 };

@@ -24,7 +24,6 @@ export default function SearchAndFilterBar({
         <Feather name="list" size={24} color={COLORS.gray_400} />
       </TouchableOpacity>
       <View style={styles.searchContainer}>
-        {/* Envolve o TextInput em uma View para usar Flexbox para centralizar */}
         <View style={styles.inputWrapper}>
           <TextInput
             placeholder={searchPlaceholder}
