@@ -16,7 +16,6 @@ const UserListItem = React.memo(({ item, onPress }: UserListItemProps) => {
   const { height } = useWindowDimensions();
   const styles = getUserListItemStyles(height);
   const ImageComponent = item.image || UserPlaceholder;
-  const specialtiesText = item.specialties.join(' | ');
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
@@ -25,7 +24,7 @@ const UserListItem = React.memo(({ item, onPress }: UserListItemProps) => {
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.nameText} numberOfLines={1}>{item.name}</Text>
-        <Text style={styles.detailText} numberOfLines={1}>{specialtiesText}</Text>
+        <Text style={styles.detailText} numberOfLines={1}>{item.detailLine1}</Text>
       </View>
       <View style={styles.iconContainer}>
         <Feather name="eye" size={28} color={COLORS.gray_400} />

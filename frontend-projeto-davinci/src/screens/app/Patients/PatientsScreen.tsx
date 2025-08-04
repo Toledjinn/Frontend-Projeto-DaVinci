@@ -1,30 +1,28 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { SafeAreaView, ScrollView, useWindowDimensions, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import { styles } from './DentistsScreen.styles';
+import { styles } from './PatientsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import Dentista from '@/assets/characters/chefinho.svg';
+import Paciente from '@/assets/characters/chefinho.svg'; 
 import UserList, { User } from '@/components/features/UserList';
-import FotoPerfil from '@/assets/images/FotoPerfil.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import FilterModal from '@/components/features/FilterModal';
+import FotoPerfil from '@/assets/images/FotoPerfil.svg'
 
-const MOCK_DENTISTS: User[] = [
-  { id: '1', name: 'José Maria Gratone', detailLine1: 'Periodontia | Prótese', specialties: ['Periodontia', 'Prótese'], image: FotoPerfil },
-  { id: '2', name: 'Ana Costa', detailLine1: 'Ortodontia', specialties: ['Ortodontia'], image: null },
-  { id: '3', name: 'Carlos Dias', detailLine1: 'Endodontia', specialties: ['Endodontia'], image: null },
-  { id: '4', name: 'Mariana Lima', detailLine1: 'Implantodontia', specialties: ['Implantodontia'], image: null },
-  { id: '5', name: 'Pedro Alves', detailLine1: 'Odontopediatria', specialties: ['Odontopediatria'], image: null },
-  { id: '6', name: 'Juliana Santos', detailLine1: 'Clínica Geral', specialties: ['Clínica Geral'], image: null },
-  { id: '7', name: 'Maurício Shiguedomi Mochida', detailLine1: 'Implantodontia | Harmonização Facial', specialties: ['Implantodontia', 'Harmonização Facial'], image: null },
+const MOCK_PATIENTS: User[] = [
+  { id: '1', name: 'Rafael Ferreira', detailLine1: 'Última consulta: 21/05/2025', image: null, specialties: ['Periodontia', 'Prótese'] },
+  { id: '2', name: 'Luiz Toledo', detailLine1: 'Última consulta: 15/04/2025', image: null, specialties: ['Ortodontia'] },
+  { id: '3', name: 'Bruce Wayne', detailLine1: 'Última consulta: 01/03/2025', image: null, specialties: ['Endodontia'] },
+  { id: '4', name: 'Clark Kent', detailLine1: 'Última consulta: 18/02/2025', image: null, specialties: ['Implantodontia'] },
+  { id: '5', name: 'Diana Prince', detailLine1: 'Última consulta: 10/01/2025', image: null, specialties: ['Odontopediatria', 'Clínica Geral'] },
 ];
 
 const availableSpecialties = Array.from(
-  new Set(MOCK_DENTISTS.flatMap((dentist) => dentist.specialties || []))
+  new Set(MOCK_PATIENTS.flatMap((patient) => patient.specialties || []))
 ).sort();
 
-export default function DentistsScreen() {
+export default function PatientsScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -38,8 +36,8 @@ export default function DentistsScreen() {
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'Dentistas',
-        CharacterSvg: Dentista,
+        pageTitle: 'Pacientes',
+        CharacterSvg: Paciente,
         showNotificationIcon: true,
       });
     }, [])
@@ -50,13 +48,13 @@ export default function DentistsScreen() {
     setFilterModalVisible(false);
   };
 
-  const filteredDentists = useMemo(() => {
-    return MOCK_DENTISTS.filter((dentist) => {
-      const nameMatch = dentist.name.toLowerCase().includes(searchQuery.toLowerCase());
-      
+  const filteredPatients = useMemo(() => {
+    return MOCK_PATIENTS.filter((patient) => {
+      const nameMatch = patient.name.toLowerCase().includes(searchQuery.toLowerCase());
+
       const specialtyMatch =
         selectedSpecialties.length === 0 ||
-        (dentist.specialties && selectedSpecialties.some((spec) => dentist.detailLine1.includes(spec)));
+        (patient.specialties && selectedSpecialties.some((spec) => patient.specialties!.includes(spec)));
 
       return nameMatch && specialtyMatch;
     });
@@ -67,7 +65,7 @@ export default function DentistsScreen() {
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
-            searchPlaceholder="Digite o nome do dentista"
+            searchPlaceholder="Digite o nome do paciente"
             onSearchChange={setSearchQuery}
             onFilterPress={() => setFilterModalVisible(true)}
           />
@@ -76,16 +74,16 @@ export default function DentistsScreen() {
             contentContainerStyle={styles.scrollContentContainer}
             keyboardShouldPersistTaps="handled"
           >
-            <UserList data={filteredDentists} />
+            <UserList data={filteredPatients} />
           </ScrollView>
         </View>
         <ScreenFooter
-          primaryButtonTitle="Cadastrar Dentista"
-          onPrimaryButtonPress={() => console.log('Cadastrar Dentista')}
+          primaryButtonTitle="Cadastrar Paciente"
+          onPrimaryButtonPress={() => console.log('Cadastrar Paciente')}
         />
       </View>
       <FilterModal
-        title="Filtrar por Especialidade"
+        title="Filtrar por Especialidade" 
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApply={handleApplyFilter}

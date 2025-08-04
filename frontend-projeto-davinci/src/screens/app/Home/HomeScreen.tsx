@@ -64,6 +64,10 @@ export default function HomeScreen() {
 const handleButtonPress = (sectionId: string, buttonId: string) => {
     if (buttonId === 'dentistas') {
       router.push('/(app)/dentists');
+    } else if (buttonId === 'pacientes') {
+      router.push('/(app)/patients');
+    } else if (buttonId === 'administradores') {
+      router.push('/(app)/admins');
     } else {
       console.log(`Botão pressionado: ${sectionId} - ${buttonId}`);
     }

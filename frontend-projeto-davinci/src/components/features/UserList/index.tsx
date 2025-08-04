@@ -6,9 +6,10 @@ import UserListItem from '../UserListItem';
 export type User = {
   id: string;
   name: string;
-  cro: string;
-  specialties: string[];
+  detailLine1: string;
   image: React.FC<SvgProps> | null;
+  specialties?: string[];
+  role?: string;
 };
 
 type UserListProps = {

@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   modalTitle: {
-    ...FONTS.h2,
+    ...FONTS.body1,
     color: COLORS.secondary,
     marginBottom: 20,
   },

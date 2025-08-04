@@ -6,6 +6,7 @@ import { COLORS } from '@/constants/theme';
 import StyledButton from '@/components/common/StyledButton';
 
 type FilterModalProps = {
+  title: string; 
   visible: boolean;
   onClose: () => void;
   onApply: (selected: string[]) => void;
@@ -14,6 +15,7 @@ type FilterModalProps = {
 };
 
 export default function FilterModal({
+  title,
   visible,
   onClose,
   onApply,
@@ -54,7 +56,7 @@ export default function FilterModal({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>Filtrar por Especialidade</Text>
+          <Text style={styles.modalTitle}>{title}</Text>
           <ScrollView style={styles.optionsContainer}>
             {options.map((option) => (
               <TouchableOpacity
