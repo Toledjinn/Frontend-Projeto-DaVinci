@@ -8,16 +8,17 @@ import FotoPerfil from '@/assets/images/FotoPerfil.svg';
 import HeaderBackground from '@/assets/images/header.svg';
 import HeaderHomeBackground from '@/assets/images/header2.svg';
 import PageHeader from '@/components/common/PageTitle';
-import ProfileHeader from '@/components/common/ProfileImage'; 
+import ProfileHeader from '@/components/common/ProfileImage';
+import ImagePickerHeader from '@/components/common/ImagePickerHeader';
 import { COLORS } from '@/constants/theme';
-import { useUIStore } from '@/state/uiStore';
+import { useUIStore as useUIStoreHeader } from '@/state/uiStore';
 
 export default function Header() {
   const router = useRouter();
   const { height } = useWindowDimensions();
   const styles = getHeaderStyles(height);
 
-  const { headerConfig } = useUIStore();
+  const { headerConfig } = useUIStoreHeader();
   const {
     visible,
     layout,
@@ -63,6 +64,9 @@ export default function Header() {
       {layout === 'profile' && UserImageSvg && userName && (
         <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} />
       )}
+      {layout === 'register' && (
+        <ImagePickerHeader title={pageTitle} />
+      )}
 
       <View style={styles.headerContainer}>
         <View style={styles.leftSection}>
@@ -73,7 +77,7 @@ export default function Header() {
               </View>
             </TouchableOpacity>
           )}
-          {(layout === 'page' || layout === 'profile') && (
+          {(layout === 'page' || layout === 'profile' || layout === 'register') && (
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton} activeOpacity={1}>
               <Feather name="chevron-left" size={40} color={COLORS.secondary} />
             </TouchableOpacity>

@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
-import { View, Text, SafeAreaView, ScrollView, useWindowDimensions } from 'react-native';
+import { View, SafeAreaView, ScrollView, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { styles } from './RegisterUserScreen.styles';
-import { useUIStore } from '@/state/uiStore';
+import { useUIStore as useUIStoreRegister } from '@/state/uiStore'; 
 import ScreenFooter from '@/components/common/ScreenFooter';
-import Administrador from '@/assets/characters/chefinho.svg';
 import RegisterForm from '@/components/features/RegisterForm';
 
 const getTitle = (userType?: string) => {
@@ -21,7 +20,7 @@ const getTitle = (userType?: string) => {
 };
 
 export default function RegisterUserScreen() {
-  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const setHeaderConfig = useUIStoreRegister((state) => state.setHeaderConfig);
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const router = useRouter();
@@ -30,10 +29,8 @@ export default function RegisterUserScreen() {
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        layout: 'page',
-        showPageHeaderElements: true,
+        layout: 'register', 
         pageTitle: getTitle(userType),
-        CharacterSvg: Administrador, 
         showNotificationIcon: false,
         showBackground: true,
       });
@@ -46,7 +43,7 @@ export default function RegisterUserScreen() {
 
   const handleRegister = () => {
     console.log('Registrando usuário...');
-    router.back(); 
+    router.back();
   };
 
   return (

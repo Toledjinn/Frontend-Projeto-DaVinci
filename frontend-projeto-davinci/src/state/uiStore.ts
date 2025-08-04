@@ -4,14 +4,14 @@ import React from 'react';
 
 type HeaderConfig = {
   visible: boolean;
-  layout: 'home' | 'page' | 'profile'; 
+  layout: 'home' | 'page' | 'profile' | 'register'; 
   showPageHeaderElements: boolean;
   pageTitle: string;
   CharacterSvg: React.FC<SvgProps> | null;
   showNotificationIcon: boolean;
   showBackground: boolean;
-  userName?: string; 
-  UserImageSvg?: React.FC<SvgProps> | null; 
+  userName?: string;
+  UserImageSvg?: React.FC<SvgProps> | null;
 };
 
 type UIState = {
