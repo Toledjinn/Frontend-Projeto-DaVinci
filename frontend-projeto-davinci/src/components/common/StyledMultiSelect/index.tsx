@@ -21,8 +21,7 @@ export interface MultiSelectItem {
 
 interface StyledMultiSelectProps {
   label: string;
-  iconName: string;
-  items: MultiSelectItem[];
+  iconName: React.ComponentProps<typeof Feather>['name'];  items: MultiSelectItem[];
   selectedItems: string[];
   onSelectionChange: (selected: string[]) => void;
   placeholder?: string;
