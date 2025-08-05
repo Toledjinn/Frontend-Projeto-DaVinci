@@ -1,12 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import { styles } from './styles';
 import StyledInput from '@/components/common/StyledInput';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
 import StyledPicker, { PickerItem } from '@/components/common/StyledPicker';
+import StyledSwitch from '@/components/common/StyledSwitch';
+import StyledMultiSelect, { MultiSelectItem } from '@/components/common/StyledMultiSelect'; // <-- Importado
 import { maskCPF, maskPhone, maskCep } from '@/utils/maskUtils';
 import { validateCPF } from '@/utils/cpfUtils';
+import { COLORS } from '@/constants/theme';
 
 const genderItems: PickerItem[] = [
   { label: 'Feminino', value: 'female' },
@@ -21,10 +25,46 @@ const maritalStatusItems: PickerItem[] = [
   { label: 'Viúvo(a)', value: 'widowed' },
 ];
 
+const roleItems: PickerItem[] = [
+  { label: 'Administrador', value: 'administrator' },
+  { label: 'Secretária', value: 'secretary' },
+  { label: 'Auxiliar de Consultório', value: 'assistant' },
+];
+
+// <-- Dados para o formulário de dentista
+const ufItems: PickerItem[] = [
+    { label: 'Acre', value: 'AC' }, { label: 'Alagoas', value: 'AL' },
+    { label: 'Amapá', value: 'AP' }, { label: 'Amazonas', value: 'AM' },
+    { label: 'Bahia', value: 'BA' }, { label: 'Ceará', value: 'CE' },
+    { label: 'Distrito Federal', value: 'DF' }, { label: 'Espírito Santo', value: 'ES' },
+    { label: 'Goiás', value: 'GO' }, { label: 'Maranhão', value: 'MA' },
+    { label: 'Mato Grosso', value: 'MT' }, { label: 'Mato Grosso do Sul', value: 'MS' },
+    { label: 'Minas Gerais', value: 'MG' }, { label: 'Pará', value: 'PA' },
+    { label: 'Paraíba', value: 'PB' }, { label: 'Paraná', value: 'PR' },
+    { label: 'Pernambuco', value: 'PE' }, { label: 'Piauí', value: 'PI' },
+    { label: 'Rio de Janeiro', value: 'RJ' }, { label: 'Rio Grande do Norte', value: 'RN' },
+    { label: 'Rio Grande do Sul', value: 'RS' }, { label: 'Rondônia', value: 'RO' },
+    { label: 'Roraima', value: 'RR' }, { label: 'Santa Catarina', value: 'SC' },
+    { label: 'São Paulo', value: 'SP' }, { label: 'Sergipe', value: 'SE' },
+    { label: 'Tocantins', value: 'TO' }
+];
+
+const specialtyItems: MultiSelectItem[] = [
+    { label: 'Ortodontia', value: 'orthodontics' },
+    { label: 'Periodontia', value: 'periodontics' },
+    { label: 'Implantodontia', value: 'implantodontics' },
+    { label: 'Prótese', value: 'prosthesis' },
+    { label: 'Odontopediatria', value: 'pediatric_dentistry' },
+    { label: 'Clínica Geral', value: 'general_clinic' },
+    { label: 'Harmonização Facial', value: 'facial_harmonization' },
+    { label: 'Endodontia', value: 'endodontics' },
+];
+
 export default function RegisterForm() {
   const { userType } = useLocalSearchParams<{ userType: 'admin' | 'dentist' | 'patient' }>();
   const numberInputRef = useRef<TextInput>(null);
 
+  // Estados do formulário
   const [name, setName] = useState('');
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState<Date | null>(null);
@@ -44,20 +84,39 @@ export default function RegisterForm() {
   const [cpfError, setCpfError] = useState<string | null>(null);
   const [isCepLoading, setIsCepLoading] = useState(false);
   const [isAddressFetched, setIsAddressFetched] = useState(false);
-
+  const [role, setRole] = useState<string | null>(null);
+  
+  // Estados de Dentista
   const [cro, setCro] = useState('');
+  const [croUf, setCroUf] = useState<string | null>(null);
+  const [specialties, setSpecialties] = useState<string[]>([]);
+
+  // Estados para alergias
+  const [hasAllergies, setHasAllergies] = useState(false);
+  const [allergies, setAllergies] = useState([{ id: 1, value: '' }]);
+
+  const handleAllergyChange = (text: string, id: number) => {
+    const newAllergies = allergies.map(allergy =>
+      allergy.id === id ? { ...allergy, value: text } : allergy
+    );
+    setAllergies(newAllergies);
+  };
+
+  const addAllergyInput = () => {
+    setAllergies([...allergies, { id: Date.now(), value: '' }]);
+  };
+
+  const removeAllergyInput = (id: number) => {
+    setAllergies(allergies.filter(allergy => allergy.id !== id));
+  };
 
   const handleCpfChange = (value: string) => {
-    if (cpfError) {
-        setCpfError(null);
-    }
+    if (cpfError) setCpfError(null);
     setCpf(maskCPF(value));
   };
 
   const handleCpfBlur = () => {
-    if (cpf && !validateCPF(cpf)) {
-        setCpfError('CPF inválido');
-    }
+    if (cpf && !validateCPF(cpf)) setCpfError('CPF inválido');
   };
 
   const handlePhoneChange = (value: string) => setPhone(maskPhone(value));
@@ -65,9 +124,7 @@ export default function RegisterForm() {
   const handleCepChange = async (value: string) => {
     const maskedValue = maskCep(value);
     setCep(maskedValue);
-
     const numericValue = maskedValue.replace(/\D/g, '');
-
     if (isAddressFetched && numericValue.length < 8) {
       setIsAddressFetched(false);
       setAddress('');
@@ -75,7 +132,6 @@ export default function RegisterForm() {
       setCity('');
       setState(null);
     }
-
     if (numericValue.length === 8) {
       setIsCepLoading(true);
       try {
@@ -89,7 +145,6 @@ export default function RegisterForm() {
           setIsAddressFetched(true);
           numberInputRef.current?.focus();
         } else {
-          console.log('CEP não encontrado.');
           setAddress('');
           setNeighborhood('');
           setCity('');
@@ -103,7 +158,7 @@ export default function RegisterForm() {
     }
   };
 
-  const renderAdminForm = () => (
+  const renderCommonFields = () => (
     <>
       <View style={styles.inputWrapper}>
         <StyledInput label="Nome Completo" iconName="user" value={name} onChangeText={setName} placeholder="Digite o nome completo" reserveErrorSpace />
@@ -131,22 +186,22 @@ export default function RegisterForm() {
         {isCepLoading && <ActivityIndicator size="small" style={styles.cepLoading} />}
       </View>
       <View style={styles.inputWrapper}>
-        <StyledInput label="Endereço" iconName="map" value={address} onChangeText={setAddress} editable={isAddressFetched} reserveErrorSpace />
+        <StyledInput label="Endereço" iconName="map" value={address} onChangeText={setAddress} editable={!isAddressFetched} reserveErrorSpace />
       </View>
       <View style={styles.inputWrapper}>
-        <StyledInput label="Bairro" iconName="map" value={neighborhood} onChangeText={setNeighborhood} editable={isAddressFetched} reserveErrorSpace />
+        <StyledInput label="Bairro" iconName="map" value={neighborhood} onChangeText={setNeighborhood} editable={!isAddressFetched} reserveErrorSpace />
       </View>
       <View style={styles.inputWrapper}>
-        <StyledInput ref={numberInputRef} label="Número" iconName="hash" value={number} onChangeText={setNumber} keyboardType="numeric" editable={isAddressFetched} reserveErrorSpace />
+        <StyledInput ref={numberInputRef} label="Número" iconName="hash" value={number} onChangeText={setNumber} keyboardType="numeric" reserveErrorSpace />
       </View>
       <View style={styles.inputWrapper}>
-        <StyledInput label="Complemento" iconName="plus" value={complement} onChangeText={setComplement} editable={isAddressFetched} reserveErrorSpace />
+        <StyledInput label="Complemento" iconName="plus" value={complement} onChangeText={setComplement} reserveErrorSpace />
       </View>
       <View style={styles.inputWrapper}>
-        <StyledInput label="Cidade" iconName="map" value={city} onChangeText={setCity} editable={isAddressFetched} reserveErrorSpace />
+        <StyledInput label="Cidade" iconName="map" value={city} onChangeText={setCity} editable={!isAddressFetched} reserveErrorSpace />
       </View>
-       <View style={styles.inputWrapper}>
-        <StyledInput label="Estado" iconName="map" value={state || ''} onChangeText={(val) => setState(val)} editable={isAddressFetched} reserveErrorSpace />
+      <View style={styles.inputWrapper}>
+        <StyledInput label="Estado" iconName="map" value={state || ''} onChangeText={(val) => setState(val)} editable={!isAddressFetched} reserveErrorSpace />
       </View>
       <View style={styles.inputWrapper}>
         <StyledInput label="Nacionalidade" iconName="globe" value={nationality} onChangeText={setNationality} reserveErrorSpace />
@@ -156,11 +211,84 @@ export default function RegisterForm() {
       </View>
     </>
   );
+  
+  const renderAdminForm = () => (
+    <>
+      {renderCommonFields()}
+      <View style={styles.inputWrapper}>
+        <StyledPicker
+          label="Cargo"
+          iconName="briefcase"
+          selectedValue={role}
+          onValueChange={setRole}
+          items={roleItems}
+          reserveErrorSpace
+        />
+      </View>
+    </>
+  );
 
+  const renderPatientForm = () => (
+    <>
+      {renderCommonFields()}
+      <StyledSwitch
+        label="Possui alergias?"
+        value={hasAllergies}
+        onValueChange={setHasAllergies}
+      />
+      {hasAllergies && (
+        <>
+          {allergies.map((allergy, index) => (
+            <View key={allergy.id} style={styles.allergyInputRow}>
+              <View style={{ flex: 1 }}>
+                <StyledInput
+                  label={index === 0 ? 'Alergia' : ''}
+                  iconName="alert-triangle"
+                  value={allergy.value}
+                  onChangeText={(text) => handleAllergyChange(text, allergy.id)}
+                  placeholder="Ex: Poeira, Lactose"
+                />
+              </View>
+              {allergies.length > 1 && (
+                <TouchableOpacity onPress={() => removeAllergyInput(allergy.id)} style={styles.removeButton}>
+                  <Feather name="x-circle" size={24} color={COLORS.red} />
+                </TouchableOpacity>
+              )}
+            </View>
+          ))}
+          <TouchableOpacity onPress={addAllergyInput} style={styles.addButton}>
+            <Feather name="plus" size={20} color={COLORS.white} />
+            <Text style={styles.addButtonText}>Adicionar mais alergias</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </>
+  );
+  
+  // <-- Nova função para o formulário de dentista
   const renderDentistForm = () => (
-     <View style={styles.inputWrapper}>
-        <StyledInput label="CRO" iconName="award" placeholder="0000 - DF" value={cro} onChangeText={setCro} reserveErrorSpace />
-     </View>
+    <>
+        {renderCommonFields()}
+        <View style={styles.row}>
+            <View style={styles.croInput}>
+                <StyledInput label="CRO" iconName="award" value={cro} onChangeText={setCro} keyboardType="numeric" reserveErrorSpace />
+            </View>
+            <View style={styles.ufPicker}>
+                <StyledPicker label="UF" iconName="map-pin" selectedValue={croUf} onValueChange={setCroUf} items={ufItems} reserveErrorSpace />
+            </View>
+        </View>
+        <View style={styles.inputWrapper}>
+            <StyledMultiSelect
+                label="Especialidades"
+                iconName="star"
+                items={specialtyItems}
+                selectedItems={specialties}
+                onSelectionChange={setSpecialties}
+                placeholder="Selecione as especialidades"
+                reserveErrorSpace
+            />
+        </View>
+    </>
   );
 
   const renderForm = () => {
@@ -168,7 +296,9 @@ export default function RegisterForm() {
       case 'admin':
         return renderAdminForm();
       case 'dentist':
-        return renderDentistForm();
+        return renderDentistForm(); // <-- Atualizado para chamar a nova função
+      case 'patient':
+        return renderPatientForm();
       default:
         return <Text>Tipo de usuário inválido.</Text>;
     }

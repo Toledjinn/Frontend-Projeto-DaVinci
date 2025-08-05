@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { SafeAreaView, ScrollView, useWindowDimensions, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './DentistsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Dentista from '@/assets/characters/chefinho.svg';
@@ -25,6 +25,7 @@ const availableSpecialties = Array.from(
 ).sort();
 
 export default function DentistsScreen() {
+  const router = useRouter();
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -50,6 +51,12 @@ export default function DentistsScreen() {
     setFilterModalVisible(false);
   };
 
+  const handleRegisterPress = () => {
+    router.push({
+      pathname: '/register',
+      params: { userType: 'dentist' },
+    });
+  };
   const filteredDentists = useMemo(() => {
     return MOCK_DENTISTS.filter((dentist) => {
       const nameMatch = dentist.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -81,7 +88,7 @@ export default function DentistsScreen() {
         </View>
         <ScreenFooter
           primaryButtonTitle="Cadastrar Dentista"
-          onPrimaryButtonPress={() => console.log('Cadastrar Dentista')}
+          onPrimaryButtonPress={handleRegisterPress}
         />
       </View>
       <FilterModal

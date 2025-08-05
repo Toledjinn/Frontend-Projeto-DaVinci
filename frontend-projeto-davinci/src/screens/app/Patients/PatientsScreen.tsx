@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { SafeAreaView, ScrollView, useWindowDimensions, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './PatientsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Paciente from '@/assets/characters/chefinho.svg'; 
@@ -23,6 +23,7 @@ const availableSpecialties = Array.from(
 ).sort();
 
 export default function PatientsScreen() {
+  const router = useRouter();
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -46,6 +47,13 @@ export default function PatientsScreen() {
   const handleApplyFilter = (specialties: string[]) => {
     setSelectedSpecialties(specialties);
     setFilterModalVisible(false);
+  };
+
+  const handleRegisterPress = () => {
+    router.push({
+      pathname: '/register',
+      params: { userType: 'patient' },
+    });
   };
 
   const filteredPatients = useMemo(() => {
@@ -79,7 +87,7 @@ export default function PatientsScreen() {
         </View>
         <ScreenFooter
           primaryButtonTitle="Cadastrar Paciente"
-          onPrimaryButtonPress={() => console.log('Cadastrar Paciente')}
+          onPrimaryButtonPress={handleRegisterPress}
         />
       </View>
       <FilterModal
