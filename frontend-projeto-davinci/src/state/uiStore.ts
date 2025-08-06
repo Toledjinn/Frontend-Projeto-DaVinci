@@ -12,6 +12,7 @@ type HeaderConfig = {
   showBackground: boolean;
   userName?: string;
   UserImageSvg?: React.FC<SvgProps> | null;
+  riskLevel?: 'baixo' | 'moderado' | 'alto';
 };
 
 type UIState = {

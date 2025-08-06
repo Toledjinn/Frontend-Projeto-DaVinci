@@ -29,6 +29,7 @@ export default function Header() {
     showBackground,
     userName,
     UserImageSvg,
+    riskLevel,
   } = headerConfig;
 
   const headerHeight = layout === 'home' ? height * 0.226 : height * 0.29;
@@ -62,7 +63,7 @@ export default function Header() {
         <PageHeader CharacterSvg={CharacterSvg} title={pageTitle} />
       )}
       {layout === 'profile' && UserImageSvg && userName && (
-        <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} />
+        <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} riskLevel={riskLevel} />
       )}
       {layout === 'register' && (
         <ImagePickerHeader title={pageTitle} />

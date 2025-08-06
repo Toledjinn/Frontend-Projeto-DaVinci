@@ -33,7 +33,8 @@ export default function UserDetailScreen() {
           showBackground: true,
           showNotificationIcon: false,
           userName: user.name, 
-          UserImageSvg: user.image || UserPlaceholder,   
+          UserImageSvg: user.image || UserPlaceholder,  
+          riskLevel: user.riskLevel, 
         });
       }
     }, [user])

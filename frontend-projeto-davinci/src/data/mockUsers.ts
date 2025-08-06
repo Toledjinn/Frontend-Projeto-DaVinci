@@ -10,6 +10,7 @@ export type UserProfile = {
   role?: string;
   specialties?: string[];
   allergies?: string[];
+  riskLevel?: 'baixo' | 'moderado' | 'alto';
 };
 
 const ALL_USERS: UserProfile[] = [
@@ -144,6 +145,7 @@ const ALL_USERS: UserProfile[] = [
     image: null,
     type: 'patient',
     allergies: ['Poeira'],
+    riskLevel: 'baixo',
     details: [
         { id: 'p1-1', label: 'Gênero', value: 'Masculino' },
         { id: 'p1-2', label: 'Data de Nascimento', value: '20/11/1985' },
@@ -165,6 +167,7 @@ const ALL_USERS: UserProfile[] = [
     image: null,
     type: 'patient',
     allergies: [],
+    riskLevel: 'moderado',
     details: [
         { id: 'p2-1', label: 'Gênero', value: 'Masculino' },
         { id: 'p2-2', label: 'Data de Nascimento', value: '05/02/2000' },
@@ -186,6 +189,7 @@ const ALL_USERS: UserProfile[] = [
     image: null,
     type: 'patient',
     allergies: ['Penicilina', 'Látex'],
+    riskLevel: 'alto',
     details: [
         { id: 'p3-1', label: 'Gênero', value: 'Masculino' },
         { id: 'p3-2', label: 'Data de Nascimento', value: '19/02/1972' },

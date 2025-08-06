@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { FONTS, COLORS } from '@/constants/theme';
 
-export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number) => {
+export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number, hasRiskLevel: boolean) => {
   const singleLineHeight = FONTS.body1.lineHeight || 22;
+  const userNameTopPosition = screenHeight *  0.21; 
 
   return StyleSheet.create({
     container: {
@@ -31,11 +32,17 @@ export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number
       position: 'absolute',
       width: '75%',
       alignSelf: 'center',
-      top: screenHeight * 0.21,
+      top: userNameTopPosition,
       ...FONTS.body1,
       color: COLORS.secondary,
       textAlign: 'center',
       lineHeight: singleLineHeight,
     },
+    riskContainer: { 
+        position: 'absolute',
+        width: '100%',
+        alignItems: 'center',
+        top: userNameTopPosition + singleLineHeight * 1.3,
+    }
   });
 };
