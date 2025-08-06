@@ -8,14 +8,24 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    top: -20
   },
   contentContainer: {
-    paddingHorizontal: 24,
     paddingBottom: 40,
   },
   centered: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+  },
+  mainContent: {
+    paddingHorizontal: 24,
+    top: -32
+  },
+  inlineFooter: {
+    paddingTop: 0, 
+    paddingBottom: 16, 
+    paddingHorizontal: 0,
+    backgroundColor: 'transparent',
   }
 });

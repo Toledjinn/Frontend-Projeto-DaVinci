@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, useWindowDimensions, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -8,14 +7,14 @@ import ProfileDataList from '@/components/features/ProfileDataList';
 import ScreenFooter from '@/components/common/ScreenFooter'; 
 import { findUserById, UserProfile } from '@/data/mockUsers';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
-import AllergyWarning from '@/components/features/AllergyWarning'; 
+import AllergyWarning from '@/components/features/AllergyWarning';
 
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
-  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { id } = useLocalSearchParams<{ id: string }>();
-
+  
+  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [user, setUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
@@ -25,6 +24,9 @@ export default function UserDetailScreen() {
     }
   }, [id]);
 
+  const isPatient = user?.type === 'patient';
+  const hasAllergies = isPatient && user.allergies && user.allergies.length > 0;
+
   useFocusEffect(
     React.useCallback(() => {
       if (user) {
@@ -33,8 +35,8 @@ export default function UserDetailScreen() {
           showBackground: true,
           showNotificationIcon: false,
           userName: user.name, 
-          UserImageSvg: user.image || UserPlaceholder,  
-          riskLevel: user.riskLevel, 
+          UserImageSvg: user.image || UserPlaceholder,
+          riskLevel: user.riskLevel,
         });
       }
     }, [user])
@@ -50,8 +52,6 @@ export default function UserDetailScreen() {
     );
   }
 
-  const hasAllergies = user.type === 'patient' && user.allergies && user.allergies.length > 0;
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView 
@@ -59,14 +59,26 @@ export default function UserDetailScreen() {
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
         showsVerticalScrollIndicator={false}
       >
-        {hasAllergies && <AllergyWarning allergies={user.allergies!} />}
-
-        <ProfileDataList data={user.details} />
+        {isPatient && (
+            <ScreenFooter
+                primaryButtonTitle="Histórico"
+                onPrimaryButtonPress={() => console.log('Histórico Pressionado')}
+                secondaryButtonTitle="Saúde Sistêmica"
+                onSecondaryButtonPress={() => console.log('Saúde Sistêmica Pressionado')}
+            />
+        )}
+        
+        <View style={styles.mainContent}>
+            {hasAllergies && <AllergyWarning allergies={user.allergies!} />}
+            <ProfileDataList data={user.details} />
+        </View>
       </ScrollView>
 
       <ScreenFooter 
-        primaryButtonTitle="Ver Agendamentos"
-        onPrimaryButtonPress={() => console.log(`Ver agendamentos de ${user.name}`)}
+        primaryButtonTitle={isPatient ? "Prontuário" : "Ver Agendamentos"}
+        onPrimaryButtonPress={() => console.log('Prontuário pressionado')}
+        secondaryButtonTitle={isPatient ? "Editar Dados" : undefined}
+        onSecondaryButtonPress={isPatient ? () => console.log('Editar Dados Pressionado') : undefined}
       />
     </SafeAreaView>
   );
