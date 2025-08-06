@@ -9,20 +9,15 @@ import FotoPerfil from '@/assets/images/FotoPerfil.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import FilterModal from '@/components/features/FilterModal';
+import { getUsers as getAdmins } from '@/data/mockUsers';
 
-
-const MOCK_ADMINS: User[] = [
-  { id: '1', name: 'Fernanda Lima', detailLine1: 'Secretária', image: null, role: 'Secretaria' },
-  { id: '2', name: 'Ricardo Souza', detailLine1: 'Auxiliar de consultório', image: null, role: 'Auxiliar de consultório' },
-  { id: '3', name: 'Amanda Borges', detailLine1: 'Administrador', image: null, role: 'Administrador' },
-  { id: '4', name: 'Lucas Martins', detailLine1: 'Secretária', image: null, role: 'Secretaria' },
-];
+const MOCK_ADMINS = getAdmins('admin');
 
 const availableRoles = Array.from(
   new Set(MOCK_ADMINS.flatMap((admin) => admin.role || []))
 ).sort();
 
-export default function AdminsScreen() {
+export default function AdminsScreen() { 
   const router = useRouter();
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
@@ -38,7 +33,7 @@ export default function AdminsScreen() {
         layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'Administradores',
-        CharacterSvg: Administrador,
+        CharacterSvg: require('@/assets/characters/chefinho.svg').default,
         showNotificationIcon: true,
       });
     }, [])
@@ -55,8 +50,14 @@ export default function AdminsScreen() {
       params: { userType: 'admin' },
     });
   };
+
   const filteredAdmins = useMemo(() => {
-    return MOCK_ADMINS.filter((admin) => {
+    const admins = MOCK_ADMINS.map(user => ({
+        ...user,
+        detailLine1: user.role || 'N/A'
+    }));
+    
+    return admins.filter((admin) => {
       const nameMatch = admin.name.toLowerCase().includes(searchQuery.toLowerCase());
 
       const roleMatch =
@@ -69,7 +70,7 @@ export default function AdminsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.outerContainer}>
+      <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
             searchPlaceholder="Digite o nome do administrador"

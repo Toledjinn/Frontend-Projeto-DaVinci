@@ -1,7 +1,6 @@
-import React from 'react';
-import { FlatList, View } from 'react-native';
-import { SvgProps } from 'react-native-svg';
+import { FlatList } from 'react-native';
 import UserListItem from '../UserListItem';
+import { SvgProps } from 'react-native-svg';
 
 export type User = {
   id: string;
@@ -17,12 +16,8 @@ type UserListProps = {
 };
 
 export default function UserList({ data }: UserListProps) {
-  const handleItemPress = (id: string) => {
-    console.log('User pressed:', id);
-  };
-
   const renderItem = ({ item }: { item: User }) => (
-    <UserListItem item={item} onPress={() => handleItemPress(item.id)} />
+    <UserListItem item={item} />
   );
 
   return (

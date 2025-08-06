@@ -5,20 +5,12 @@ import { styles } from './DentistsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Dentista from '@/assets/characters/chefinho.svg';
 import UserList, { User } from '@/components/features/UserList';
-import FotoPerfil from '@/assets/images/FotoPerfil.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import FilterModal from '@/components/features/FilterModal';
+import { getUsers } from '@/data/mockUsers'; 
 
-const MOCK_DENTISTS: User[] = [
-  { id: '1', name: 'José Maria Gratone', detailLine1: 'Periodontia | Prótese', specialties: ['Periodontia', 'Prótese'], image: FotoPerfil },
-  { id: '2', name: 'Ana Costa', detailLine1: 'Ortodontia', specialties: ['Ortodontia'], image: null },
-  { id: '3', name: 'Carlos Dias', detailLine1: 'Endodontia', specialties: ['Endodontia'], image: null },
-  { id: '4', name: 'Mariana Lima', detailLine1: 'Implantodontia', specialties: ['Implantodontia'], image: null },
-  { id: '5', name: 'Pedro Alves', detailLine1: 'Odontopediatria', specialties: ['Odontopediatria'], image: null },
-  { id: '6', name: 'Juliana Santos', detailLine1: 'Clínica Geral', specialties: ['Clínica Geral'], image: null },
-  { id: '7', name: 'Maurício Shiguedomi Mochida', detailLine1: 'Implantodontia | Harmonização Facial', specialties: ['Implantodontia', 'Harmonização Facial'], image: null },
-];
+const MOCK_DENTISTS = getUsers('dentist');
 
 const availableSpecialties = Array.from(
   new Set(MOCK_DENTISTS.flatMap((dentist) => dentist.specialties || []))
@@ -50,20 +42,26 @@ export default function DentistsScreen() {
     setSelectedSpecialties(specialties);
     setFilterModalVisible(false);
   };
-
+  
   const handleRegisterPress = () => {
     router.push({
       pathname: '/register',
       params: { userType: 'dentist' },
     });
   };
+
   const filteredDentists = useMemo(() => {
-    return MOCK_DENTISTS.filter((dentist) => {
+    const dentists = MOCK_DENTISTS.map(user => ({
+        ...user,
+        detailLine1: user.specialties?.join(' | ') || 'Clínica Geral'
+    }));
+
+    return dentists.filter((dentist) => {
       const nameMatch = dentist.name.toLowerCase().includes(searchQuery.toLowerCase());
       
       const specialtyMatch =
         selectedSpecialties.length === 0 ||
-        (dentist.specialties && selectedSpecialties.some((spec) => dentist.detailLine1.includes(spec)));
+        (dentist.specialties && selectedSpecialties.some((spec) => dentist.specialties!.includes(spec)));
 
       return nameMatch && specialtyMatch;
     });
@@ -71,7 +69,7 @@ export default function DentistsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.outerContainer}>
+      <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
             searchPlaceholder="Digite o nome do dentista"

@@ -9,18 +9,9 @@ import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import FilterModal from '@/components/features/FilterModal';
 import FotoPerfil from '@/assets/images/FotoPerfil.svg'
+import { getUsers as getPatients } from '@/data/mockUsers';
 
-const MOCK_PATIENTS: User[] = [
-  { id: '1', name: 'Rafael Ferreira', detailLine1: 'Última consulta: 21/05/2025', image: null, specialties: ['Periodontia', 'Prótese'] },
-  { id: '2', name: 'Luiz Toledo', detailLine1: 'Última consulta: 15/04/2025', image: null, specialties: ['Ortodontia'] },
-  { id: '3', name: 'Bruce Wayne', detailLine1: 'Última consulta: 01/03/2025', image: null, specialties: ['Endodontia'] },
-  { id: '4', name: 'Clark Kent', detailLine1: 'Última consulta: 18/02/2025', image: null, specialties: ['Implantodontia'] },
-  { id: '5', name: 'Diana Prince', detailLine1: 'Última consulta: 10/01/2025', image: null, specialties: ['Odontopediatria', 'Clínica Geral'] },
-];
-
-const availableSpecialties = Array.from(
-  new Set(MOCK_PATIENTS.flatMap((patient) => patient.specialties || []))
-).sort();
+const MOCK_PATIENTS = getPatients('patient');
 
 export default function PatientsScreen() {
   const router = useRouter();
@@ -29,8 +20,6 @@ export default function PatientsScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
-  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -38,17 +27,12 @@ export default function PatientsScreen() {
         layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'Pacientes',
-        CharacterSvg: Paciente,
+        CharacterSvg: require('@/assets/characters/chefinho.svg').default,
         showNotificationIcon: true,
       });
     }, [])
   );
-
-  const handleApplyFilter = (specialties: string[]) => {
-    setSelectedSpecialties(specialties);
-    setFilterModalVisible(false);
-  };
-
+  
   const handleRegisterPress = () => {
     router.push({
       pathname: '/register',
@@ -57,25 +41,24 @@ export default function PatientsScreen() {
   };
 
   const filteredPatients = useMemo(() => {
-    return MOCK_PATIENTS.filter((patient) => {
-      const nameMatch = patient.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const patients = MOCK_PATIENTS.map(user => ({
+        ...user,
+        detailLine1: user.details.find(d => d.label === 'Última consulta')?.value || 'Nenhuma consulta'
+    }));
 
-      const specialtyMatch =
-        selectedSpecialties.length === 0 ||
-        (patient.specialties && selectedSpecialties.some((spec) => patient.specialties!.includes(spec)));
-
-      return nameMatch && specialtyMatch;
+    return patients.filter((patient) => {
+      return patient.name.toLowerCase().includes(searchQuery.toLowerCase());
     });
-  }, [searchQuery, selectedSpecialties]);
+  }, [searchQuery]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.outerContainer}>
+      <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
             searchPlaceholder="Digite o nome do paciente"
             onSearchChange={setSearchQuery}
-            onFilterPress={() => setFilterModalVisible(true)}
+            onFilterPress={() => { /* Lógica de filtro */ }}
           />
           <ScrollView
             style={styles.scrollView}
@@ -90,14 +73,6 @@ export default function PatientsScreen() {
           onPrimaryButtonPress={handleRegisterPress}
         />
       </View>
-      <FilterModal
-        title="Filtrar por Especialidade" 
-        visible={isFilterModalVisible}
-        onClose={() => setFilterModalVisible(false)}
-        onApply={handleApplyFilter}
-        options={availableSpecialties}
-        initialSelectedOptions={selectedSpecialties}
-      />
     </SafeAreaView>
   );
 }
