@@ -68,7 +68,10 @@ const handleButtonPress = (sectionId: string, buttonId: string) => {
       router.push('/(app)/patients');
     } else if (buttonId === 'administradores') {
       router.push('/(app)/admins');
+    }else if (buttonId === 'educacional') { 
+        router.push('/(app)/educational');  
     } else {
+      
       console.log(`Botão pressionado: ${sectionId} - ${buttonId}`);
     }
   };

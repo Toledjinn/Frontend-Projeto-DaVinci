@@ -10,6 +10,8 @@ import HeaderHomeBackground from '@/assets/images/header2.svg';
 import PageHeader from '@/components/common/PageTitle';
 import ProfileHeader from '@/components/common/ProfileImage';
 import ImagePickerHeader from '@/components/common/ImagePickerHeader';
+import LargePageHeader from '@/components/common/LargePageHeader'; // Importamos o novo componente
+
 import { COLORS } from '@/constants/theme';
 import { useUIStore as useUIStoreHeader } from '@/state/uiStore';
 
@@ -62,6 +64,9 @@ export default function Header() {
       {layout === 'page' && showPageHeaderElements && CharacterSvg && (
         <PageHeader CharacterSvg={CharacterSvg} title={pageTitle} />
       )}
+      {layout === 'page-large' && showPageHeaderElements && CharacterSvg && (
+        <LargePageHeader CharacterSvg={CharacterSvg} title={pageTitle} />
+      )}
       {layout === 'profile' && UserImageSvg && userName && (
         <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} riskLevel={riskLevel} />
       )}
@@ -78,7 +83,7 @@ export default function Header() {
               </View>
             </TouchableOpacity>
           )}
-          {(layout === 'page' || layout === 'profile' || layout === 'register') && (
+          {(layout === 'page' || layout === 'profile' || layout === 'page-large' || layout === 'register') && (
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton} activeOpacity={1}>
               <Feather name="chevron-left" size={40} color={COLORS.secondary} />
             </TouchableOpacity>
