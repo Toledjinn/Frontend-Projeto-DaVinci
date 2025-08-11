@@ -23,9 +23,9 @@ const educationalItems = [
   { id: '1', title: 'Chefinho', SvgComponent: Chefinho, route: '/(app)/chefinho' },
   { id: '2', title: 'Escova', SvgComponent: Escova, route: '/(app)/escova' },
   { id: '3', title: 'Pasta', SvgComponent: Pasta, route: '/(app)/pasta' },
-  { id: '4', title: 'Fio Dental', SvgComponent: FioDental },
-  { id: '5', title: 'Flúor', SvgComponent: Fluor },
-  { id: '6', title: 'Revelador de Placa', SvgComponent: Revelador },
+  { id: '4', title: 'Fio Dental', SvgComponent: FioDental, route: '/(app)/fio-dental'  },
+  { id: '5', title: 'Flúor', SvgComponent: Fluor, route: '/(app)/fluor'  },
+  { id: '6', title: 'Revelador de Placa', SvgComponent: Revelador, route: '/(app)/revelador-de-placa'   },
 ];
 
 export default function EducationalScreen() {
