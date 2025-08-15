@@ -25,15 +25,15 @@
         "foregroundImage": "src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [ 
+      "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "primaryColor": "#FFC045",
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.frontendprojetodavinci"
+      "package": "com.toled1nn.frontendprojetodavinci"
     },
+    "primaryColor": "#FFC045",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -44,6 +44,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "098c1dac-d657-4698-906a-47b09c4b5572"
+      }
     }
   }
 }

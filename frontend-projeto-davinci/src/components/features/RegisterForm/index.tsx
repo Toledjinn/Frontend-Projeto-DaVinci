@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import StyledMultiSelect, { MultiSelectItem } from '@/components/common/StyledMu
 import { maskCPF, maskPhone, maskCep } from '@/utils/maskUtils';
 import { validateCPF } from '@/utils/cpfUtils';
 import { COLORS } from '@/constants/theme';
+import { findUserById, UserProfile } from '@/data/mockUsers';
 
 const genderItems: PickerItem[] = [
   { label: 'Feminino', value: 'female' },
@@ -31,7 +32,6 @@ const roleItems: PickerItem[] = [
   { label: 'Auxiliar de Consultório', value: 'assistant' },
 ];
 
-// <-- Dados para o formulário de dentista
 const ufItems: PickerItem[] = [
     { label: 'Acre', value: 'AC' }, { label: 'Alagoas', value: 'AL' },
     { label: 'Amapá', value: 'AP' }, { label: 'Amazonas', value: 'AM' },
@@ -61,10 +61,9 @@ const specialtyItems: MultiSelectItem[] = [
 ];
 
 export default function RegisterForm() {
-  const { userType } = useLocalSearchParams<{ userType: 'admin' | 'dentist' | 'patient' }>();
+  const { userType, userId } = useLocalSearchParams<{ userType: string, userId?: string }>();
   const numberInputRef = useRef<TextInput>(null);
 
-  // Estados do formulário
   const [name, setName] = useState('');
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState<Date | null>(null);
@@ -86,14 +85,84 @@ export default function RegisterForm() {
   const [isAddressFetched, setIsAddressFetched] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   
-  // Estados de Dentista
   const [cro, setCro] = useState('');
   const [croUf, setCroUf] = useState<string | null>(null);
   const [specialties, setSpecialties] = useState<string[]>([]);
 
-  // Estados para alergias
   const [hasAllergies, setHasAllergies] = useState(false);
   const [allergies, setAllergies] = useState([{ id: 1, value: '' }]);
+
+    useEffect(() => {
+    if (userId) {
+      const userData = findUserById(userId);
+      if (userData) {
+        const getDetail = (label: string) => userData.details.find(d => d.label.toLowerCase() === label.toLowerCase())?.value || '';
+        
+        setName(userData.name);
+        
+        // Dados Pessoais
+        const genderValue = getDetail('gênero').toLowerCase();
+        const genderItem = genderItems.find(item => item.label.toLowerCase() === genderValue);
+        setGender(genderItem ? genderItem.value : null);
+
+        const dobString = getDetail('data de nascimento');
+        if (dobString) {
+            const parts = dobString.split('/');
+            setBirthDate(new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])));
+        }
+        
+        const maritalStatusValue = getDetail('estado civil');
+        const maritalStatusItem = maritalStatusItems.find(item => item.label.startsWith(maritalStatusValue));
+        setMaritalStatus(maritalStatusItem ? maritalStatusItem.value : null);
+        
+        setCpf(getDetail('cpf'));
+        setPhone(getDetail('telefone'));
+        setEmail(getDetail('e-mail'));
+        setNationality(getDetail('nacionalidade'));
+        setNaturalness(getDetail('naturalidade'));
+
+        // Endereço
+        setAddress(getDetail('endereço'));
+        setCep(getDetail('cep'));
+        setNeighborhood(getDetail('bairro'));
+        setNumber(getDetail('número'));
+        setComplement(getDetail('complemento'));
+        const cityStateString = getDetail('cidade / estado');
+        if (cityStateString.includes(' / ')) {
+            const [cityVal, stateVal] = cityStateString.split(' / ');
+            setCity(cityVal);
+            setState(stateVal);
+        }
+
+        // Campos específicos de tipo de usuário
+        if (userData.type === 'admin') {
+            const roleValue = getDetail('cargo');
+            const roleItem = roleItems.find(item => item.label === roleValue);
+            setRole(roleItem ? roleItem.value : null);
+        }
+
+        if (userData.type === 'dentist') {
+            const croValue = getDetail('cro');
+            if (croValue.includes(' - ')) {
+                const [croNum, croUfVal] = croValue.split(' - ');
+                setCro(croNum);
+                setCroUf(croUfVal);
+            }
+            const specialtyValueMap: { [key: string]: string } = {
+                'Ortodontia': 'orthodontics', 'Periodontia': 'periodontics', 'Implantodontia': 'implantodontics',
+                'Prótese': 'prosthesis', 'Odontopediatria': 'pediatric_dentistry', 'Clínica Geral': 'general_clinic',
+                'Harmonização Facial': 'facial_harmonization', 'Endodontia': 'endodontics',
+            };
+            setSpecialties(userData.specialties?.map(s => specialtyValueMap[s]).filter(Boolean) as string[] || []);
+        }
+        
+        if (userData.type === 'patient' && userData.allergies && userData.allergies.length > 0) {
+            setHasAllergies(true);
+            setAllergies(userData.allergies.map((a, i) => ({ id: Date.now() + i, value: a })));
+        }
+      }
+    }
+  }, [userId]);
 
   const handleAllergyChange = (text: string, id: number) => {
     const newAllergies = allergies.map(allergy =>
