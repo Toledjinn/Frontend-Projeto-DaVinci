@@ -135,7 +135,6 @@ export default function PastaScreen() {
                   </>
                 )}
 
-                   {/* Layout 3: Lista de Tópicos */}
                    {item.listTitle && (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>

@@ -19,8 +19,6 @@ export default function MedicalRecordScreen() {
 
   const [patientName, setPatientName] = useState('');
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
-  
-  // Estados dos filtros
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
