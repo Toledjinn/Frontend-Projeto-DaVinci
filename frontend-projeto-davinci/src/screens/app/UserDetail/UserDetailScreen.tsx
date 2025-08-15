@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, useWindowDimensions, Text, View } from 'react-native';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './UserDetailScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import ProfileDataList from '@/components/features/ProfileDataList';
@@ -13,7 +13,7 @@ export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const { id } = useLocalSearchParams<{ id: string }>();
-  
+  const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [user, setUser] = useState<UserProfile | null>(null);
 
@@ -41,6 +41,27 @@ export default function UserDetailScreen() {
       }
     }, [user])
   );
+
+  const handleViewRecord = () => {
+    if (user) {
+      router.push({
+        pathname: "/record/[patientId]",
+        params: { patientId: user.id },
+      });
+    }
+  };
+
+  const handleEditData = () => {
+    if (user) {
+      router.push({
+        pathname: '/register',
+        params: { 
+            userType: user.type, 
+            userId: user.id 
+        },
+      });
+    }
+  };
 
   if (!user) {
     return (
@@ -76,9 +97,9 @@ export default function UserDetailScreen() {
 
       <ScreenFooter 
         primaryButtonTitle={isPatient ? "Prontuário" : "Ver Agendamentos"}
-        onPrimaryButtonPress={() => console.log('Prontuário pressionado')}
+        onPrimaryButtonPress={isPatient ? handleViewRecord : () => {}}
         secondaryButtonTitle={isPatient ? "Editar Dados" : undefined}
-        onSecondaryButtonPress={isPatient ? () => console.log('Editar Dados Pressionado') : undefined}
+        onSecondaryButtonPress={isPatient ? handleEditData : undefined}
       />
     </SafeAreaView>
   );
