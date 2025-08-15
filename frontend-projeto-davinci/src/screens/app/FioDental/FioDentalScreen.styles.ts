@@ -1,4 +1,4 @@
-// src/screens/app/FioDental/FioDentalScreen.styles.ts
+
 
 import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';

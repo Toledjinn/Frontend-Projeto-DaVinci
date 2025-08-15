@@ -1,4 +1,3 @@
-// src/screens/app/Chefinho/ChefinhoScreen.tsx
 
 import React, { useCallback, useState, useRef } from 'react';
 import {
@@ -22,9 +21,9 @@ import Fluor from '@/assets/characters/fluor.svg';
 import Revelador from '@/assets/characters/revelador.svg';
 
 
-// --- ALTERAÇÃO: O CONTEÚDO DO SLIDE 3 FOI DIVIDIDO EM DOIS (3 e 4) ---
+
 const carouselItems = [
-  // Slide 1
+
   {
     id: '1',
     image: require('@/assets/images/peter-dawson.jpg'),
@@ -32,14 +31,14 @@ const carouselItems = [
       '“Qualquer condição que impeça uma limpeza detalhada de qualquer superfície dentária ou de qualquer porção do sulco gengival deve ser considerado um fator causador que pode levar a perda dentária.“',
     author: '- Peter Dawson',
   },
-  // Slide 2
+
   {
     id: '2',
     image: require('@/assets/images/kit-box.png'), 
     text1: 'Nós somos promotores da saúde, na verdade manejadores de conhecimentos, recursos e estratégias que visam a promoção da saúde, o controle das doenças, o tratamento adequado a manutenção de longo prazo e admiradores da estética do sorriso.',
     text2: 'Criamos o kit (missão cumprida) que funcionará como um link entre nós e vocês como lembranças entre as revisões.',
   },
-  // Slide 3 (Parte 1 da lista)
+
   {
     id: '3',
     listTitle: 'Autocuidado, manutenção e produtos de higiene oral.',
@@ -49,7 +48,7 @@ const carouselItems = [
       
     ],
   },
-  // Slide 4 (Parte 2 da lista)
+
   {
     id: '4',
     listTitle: 'Autocuidado, manutenção e produtos de higiene oral.',

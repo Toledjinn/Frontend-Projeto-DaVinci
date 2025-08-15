@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 250, // Aumentado para descer mais o conteúdo
+    paddingTop: 250, 
   },
   carousel: {
     flexGrow: 0,
@@ -24,8 +24,8 @@ export const styles = StyleSheet.create({
   slide: {
     paddingHorizontal: 24,
     alignItems: 'center',
-    justifyContent: 'flex-start', // Alterado para alinhar os cards no topo
-    minHeight: 450, // Adicionado para dar uma altura consistente ao slide
+    justifyContent: 'flex-start', 
+    minHeight: 450, 
   },
   card: {
     backgroundColor: COLORS.white,
@@ -106,12 +106,12 @@ export const styles = StyleSheet.create({
     ...FONTS.body10,
     color: COLORS.secondary,
     marginRight: 8,
-    lineHeight: 20, // Alinha a bolinha com o texto
+    lineHeight: 20, 
   },
   bulletText: {
     ...FONTS.body10,
     color: COLORS.secondary,
-    flex: 1, // Permite que o texto quebre a linha corretamente
+    flex: 1, 
     lineHeight: 20,
   },
   // --- FIM DOS ESTILOS ---

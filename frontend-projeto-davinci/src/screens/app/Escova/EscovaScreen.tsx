@@ -1,4 +1,4 @@
-// src/screens/app/Escova/EscovaScreen.tsx
+
 
 import React, { useCallback, useState, useRef } from 'react';
 import {
@@ -130,9 +130,7 @@ export default function EscovaScreen() {
          {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {/* --- LÓGICA DE RENDERIZAÇÃO CORRIGIDA --- */}
-
-                {/* Layout para o slide com imagens Antes/Depois (3 e 4) */}
+                
                 {item.beforeAfterImages && (
                   <>
                     {item.text.map((paragraph, index) => (
@@ -152,7 +150,7 @@ export default function EscovaScreen() {
                   </>
                 )}
 
-                {/* Layout para slides com imagem única (1, 2 e 5) */}
+                
                 {item.image && !item.beforeAfterImages && (
                   <>
                     {/* Renderiza o título apenas se ele existir */}
@@ -164,7 +162,7 @@ export default function EscovaScreen() {
                   </>
                 )}
 
-                {/* Layout para o slide de lista de tópicos */}
+                
                 {item.listTitle && (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>

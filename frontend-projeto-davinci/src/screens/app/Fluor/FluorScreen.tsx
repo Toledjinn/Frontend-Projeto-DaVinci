@@ -15,9 +15,9 @@ import { styles } from './FluorScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Fluor from '@/assets/characters/fluor.svg';
 
-// --- ALTERAÇÃO 1: ATUALIZAÇÃO DOS DADOS ---
+
 const carouselItems = [
-  // Slide 1
+  
   {
     id: '1',
     text: [
@@ -100,7 +100,7 @@ export default function FluorScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {/* --- ALTERAÇÃO 2: LÓGICA DE RENDERIZAÇÃO --- */}
+                
 
                 {/* Layout 1: Apenas parágrafos */}
                 {item.text && (

@@ -16,7 +16,7 @@ import { styles } from './FioDentalScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import FioDental from '@/assets/characters/fio.svg';
 
-// Dados para o carrossel da tela Fio Dental
+
 const carouselItems = [
   {
     id: '1',

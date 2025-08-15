@@ -12,8 +12,8 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
     paddingTop: 250,
+    alignItems: 'center',
   },
   carousel: {
     flexGrow: 0,
@@ -24,8 +24,7 @@ export const styles = StyleSheet.create({
   slide: {
     paddingHorizontal: 24,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    minHeight: 450,
+    justifyContent: 'center',
   },
   card: {
     backgroundColor: COLORS.white,
@@ -41,6 +40,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+    minHeight: 450,
+    justifyContent: 'center',
   },
   title: {
     ...FONTS.body5,
@@ -52,44 +53,17 @@ export const styles = StyleSheet.create({
     ...FONTS.body10,
     color: COLORS.secondary,
     textAlign: 'center',
-    marginBottom: 16,
+    marginTop: 20,
   },
   image: {
     width: '100%',
-    height: 180,
+    height: 200,
     borderRadius: 8,
-    marginTop: 10,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
-  
-  listTitle: {
-    ...FONTS.body7,
-    color: COLORS.secondary,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  bulletPointContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    width: '100%',
-    marginBottom: 12,
-  },
-  bullet: {
-    ...FONTS.body10,
-    color: COLORS.secondary,
-    marginRight: 8,
-    lineHeight: 20,
-  },
-  bulletText: {
-    ...FONTS.body10,
-    color: COLORS.secondary,
-    flex: 1,
-    lineHeight: 20,
-  },
- 
   paginationContainer: {
     flexDirection: 'row',
-    marginTop: 25,
+    marginTop: 50,
   },
   paginationDot: {
     width: 12,

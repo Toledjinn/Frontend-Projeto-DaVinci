@@ -1,4 +1,4 @@
-// src/screens/app/Pasta/PastaScreen.styles.ts
+
 
 import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
@@ -88,7 +88,7 @@ export const styles = StyleSheet.create({
   collageContainer: {
     flexDirection: 'row',
     width: '80%',
-    height: 150, // Altura total da colagem
+    height: 150, 
     marginBottom: 20,
   },
   collageMainImage: {
@@ -113,13 +113,12 @@ export const styles = StyleSheet.create({
   collageSideImageTop: {
     width: '100%',
     height: '50%',
-    borderTopRightRadius: 8, // Arredonda o canto superior direito
-    resizeMode: 'cover',
+    borderTopRightRadius: 8, 
   },
   collageSideImageBottom: {
     width: '100%',
     height: '50%',
-    borderBottomRightRadius: 8, // Arredonda o canto inferior direito
+    borderBottomRightRadius: 8, 
     resizeMode: 'cover',
   },
   listTitle: {

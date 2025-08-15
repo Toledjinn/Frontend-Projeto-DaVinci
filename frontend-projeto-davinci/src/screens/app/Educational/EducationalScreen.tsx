@@ -10,7 +10,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './EducationalScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 
-// Importando os SVGs dos personagens
+
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova from '@/assets/characters/escova1.svg';
 import Pasta from '@/assets/characters/pasta.svg';
@@ -18,7 +18,7 @@ import FioDental from '@/assets/characters/fio.svg';
 import Fluor from '@/assets/characters/fluor.svg';
 import Revelador from '@/assets/characters/revelador.svg';
 
-// Lista de itens educacionais para o grid
+
 const educationalItems = [
   { id: '1', title: 'Chefinho', SvgComponent: Chefinho, route: '/(app)/chefinho' },
   { id: '2', title: 'Escova', SvgComponent: Escova, route: '/(app)/escova' },
@@ -49,7 +49,7 @@ export default function EducationalScreen() {
   );
 
   const handleItemPress = (item: (typeof educationalItems)[0]) => {
-    // Se o item tiver uma rota definida (não nula e não vazia), navega para ela
+
     if (item.route) {
       router.push(item.route as any);
     } else {
@@ -69,7 +69,7 @@ export default function EducationalScreen() {
           prazo e admiradores da estética do sorriso.
         </Text>
 
-        {/* Grid de Itens */}
+        
         <View style={styles.gridContainer}>
           {educationalItems.map((item) => (
             <TouchableOpacity

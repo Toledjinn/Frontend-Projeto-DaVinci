@@ -1,4 +1,4 @@
-// src/screens/app/Pasta/PastaScreen.tsx
+
 
 import React, { useCallback, useState, useRef } from 'react';
 import {
@@ -16,13 +16,13 @@ import { styles } from './PastaScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Pasta from '@/assets/characters/pasta.svg';
 
-// Dados para o carrossel da tela Pasta
+
 const carouselItems = [
   {
     id: '1',
     title: 'Sou a Pasta de Dente!',
     text: 'E, levada e esfregada pela escova, tenho a função de facilitar a remoção do excesso de placa dental e remover os pigmentos da superfície do dente. Também, e principalmente, ao incorporar o parceiro flúor em minha composição, ajudo na proteção dos dentes contra a desmineralização.',
-    // Adicione as 3 novas imagens na sua pasta de assets
+    
     images: [
       require('@/assets/images/dentes-pigmentados.png'),
       require('@/assets/images/mm2-placa.png'),
@@ -34,7 +34,7 @@ const carouselItems = [
     id: '2',
     textTop: 'Além de colaborar na saúde bucal, promovo uma sensação de boca limpa agradável e ajudo a combater o mau hálito. De acordo com necessidades especiais de cada um, posso ter minha formulação alterada para combater outros problemas específicos (excesso de tártaro, hipersensibilidade dentinária,...)',
     textBottom: 'Não esqueça de conversar sobre qual a minha composição ideal para o seu caso com o seu dentista.',
-    // Adicione as 3 novas imagens na sua pasta de assets
+  
     collageImages: [
       require('@/assets/images/juliana-paes.png'),
       require('@/assets/images/sorriso-1.png'),
@@ -61,7 +61,7 @@ const carouselItems = [
       'Pastas com 5000 PPM de flúor são recomendadas para pacientes com alto índice de cárie ou pacientes com xerostomia e alto índice carie radicular.',
     ]
   },
-  // Adicione mais slides aqui no futuro, se necessário
+ 
 ];
 
 export default function PastaScreen() {
@@ -70,7 +70,7 @@ export default function PastaScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Configura o cabeçalho padrão sempre que a tela entra em foco
+  
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
@@ -107,9 +107,7 @@ export default function PastaScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                 {/* --- ALTERAÇÃO 2: LÓGICA DE RENDERIZAÇÃO --- */}
-
-                {/* Layout 1: Grelha de imagens */}
+           
                 {item.images && (
                   <>
                     <Text style={styles.title}>{item.title}</Text>
@@ -122,7 +120,7 @@ export default function PastaScreen() {
                   </>
                 )}
 
-                {/* Layout 2: Colagem de imagens */}
+           
                 {item.collageImages && (
                   <>
                     <Text style={styles.paragraph}>{item.textTop}</Text>

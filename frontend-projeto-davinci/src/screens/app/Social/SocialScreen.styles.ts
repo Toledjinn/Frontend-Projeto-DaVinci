@@ -1,42 +1,56 @@
 
-
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS, SIZES } from '@/constants/theme';
+import { COLORS, FONTS } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  container: {
+  scrollView: {
     flex: 1,
-    paddingHorizontal: 24,
   },
-  description: {
+  contentContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  paragraph: {
     ...FONTS.body10,
-    color: COLORS.gray_400,
+    color: COLORS.secondary,
     textAlign: 'center',
     lineHeight: 22,
-    marginTop: 40,
+    marginTop: 20,
+  },
+  quote: {
+    ...FONTS.body7,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  salutation: {
+    ...FONTS.body10,
+    fontStyle: 'italic',
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginTop: 10,
     marginBottom: 40,
   },
-  gridContainer: {
+  buttonsContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    width: '100%',
   },
-  gridItem: {
-    width: '30%', 
+  buttonItem: {
     alignItems: 'center',
-    marginBottom: 25,
+    width: '40%',
   },
   itemCircle: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: COLORS.primary,
     borderWidth: 3,
-    borderColor: COLORS.gray_400,
+    borderColor: COLORS.secondary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,

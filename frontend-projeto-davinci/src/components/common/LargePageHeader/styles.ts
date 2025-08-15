@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { FONTS, COLORS } from '@/constants/theme';
 
-// Note que o nome da função foi alterado para getLargePageHeaderStyles
+
 export const getLargePageHeaderStyles = (screenWidth: number, screenHeight: number) => {
   return StyleSheet.create({
     container: {

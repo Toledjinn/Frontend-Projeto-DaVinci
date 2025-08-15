@@ -1,5 +1,3 @@
-// src/screens/app/Fluor/FluorScreen.styles.ts
-
 import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
@@ -48,7 +46,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
   },
-  // --- NOVOS ESTILOS PARA O LAYOUT DE LISTA ---
   listTitle: {
     ...FONTS.body7,
     color: COLORS.secondary,
@@ -73,7 +70,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     lineHeight: 20,
   },
-  // --- FIM DOS NOVOS ESTILOS ---
   paginationContainer: {
     flexDirection: 'row',
     marginTop: 25,

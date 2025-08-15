@@ -1,4 +1,3 @@
-// src/screens/app/Revelador/ReveladorScreen.tsx
 
 import React, { useCallback, useState, useRef } from 'react';
 import {
@@ -16,7 +15,6 @@ import { styles } from './ReveladorScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Revelador from '@/assets/characters/revelador.svg';
 
-// --- ALTERAÇÃO 1: ATUALIZAÇÃO DOS DADOS ---
 const carouselItems = [
   // Slide 1
   {
@@ -99,9 +97,7 @@ export default function ReveladorScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {/* --- ALTERAÇÃO 2: LÓGICA DE RENDERIZAÇÃO --- */}
-
-                {/* Layout 1: Título, texto e imagem */}
+              
                 {item.title && (
                   <>
                     <Text style={styles.title}>{item.title}</Text>
