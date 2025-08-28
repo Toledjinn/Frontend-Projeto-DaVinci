@@ -9,7 +9,7 @@ import {
   Image,
   Alert,
   useWindowDimensions,
-  TextInput, // Importar o TextInput
+  TextInput,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';

@@ -1,5 +1,3 @@
-// src/screens/app/Fluor/FluorScreen.tsx
-
 import React, { useCallback, useState, useRef } from 'react';
 import {
   View,
@@ -102,7 +100,6 @@ export default function FluorScreen() {
               <View style={styles.card}>
                 
 
-                {/* Layout 1: Apenas parágrafos */}
                 {item.text && (
                   <>
                     {item.text.map((paragraph, index) => (
@@ -111,7 +108,6 @@ export default function FluorScreen() {
                   </>
                 )}
 
-                {/* Layout 2: Lista de Tópicos */}
                 {item.listTitle && (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>

@@ -45,7 +45,6 @@ export const getStyledMultiSelectStyles = (height: number, width: number) => {
     errorPlaceholder: {
       height: 20,
     },
-    // Estilos do Modal
     modalOverlay: {
       flex: 1,
       justifyContent: 'flex-end',

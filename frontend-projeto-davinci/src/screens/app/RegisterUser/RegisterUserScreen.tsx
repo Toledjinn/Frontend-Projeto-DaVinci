@@ -28,7 +28,7 @@ export default function RegisterUserScreen() {
   const router = useRouter();
   const { userType, userId } = useLocalSearchParams<{ userType: string, userId?: string }>();
   
-  const isEditing = !!userId; // Se temos um userId, estamos editando
+  const isEditing = !!userId; 
 
   useFocusEffect(
     useCallback(() => {

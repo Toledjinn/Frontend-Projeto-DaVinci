@@ -1,5 +1,3 @@
-// src/screens/app/ComoParticipar/ComoParticiparScreen.styles.ts
-
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 

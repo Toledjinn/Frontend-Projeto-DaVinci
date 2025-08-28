@@ -1,10 +1,6 @@
-// src/state/newsStore.ts
-
 import { create } from 'zustand';
-// --- ALTERAÇÃO 1: Importar o tipo diretamente do seu ficheiro de origem ---
 import { NewsItemProps } from '@/components/features/NewsListItem';
 
-// Adicionamos a propriedade 'content' aos nossos dados mockados
 const MOCK_NEWS: NewsItemProps[] = [
   {
     id: '1',

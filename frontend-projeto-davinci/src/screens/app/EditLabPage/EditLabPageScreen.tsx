@@ -111,7 +111,6 @@ export default function EditLabPageScreen() {
             </View>
             
             <Text style={styles.fieldLabel}>Texto</Text>
-            {/* --- ALTERAÇÃO: Removido o estilo de altura daqui --- */}
             <View style={styles.manualInputContainer}>
               <Feather name="file-text" size={24} color={COLORS.gray_400} style={{ marginTop: 2 }}/>
               <TextInput

@@ -10,7 +10,7 @@ import HeaderHomeBackground from '@/assets/images/header2.svg';
 import PageHeader from '@/components/common/PageTitle';
 import ProfileHeader from '@/components/common/ProfileImage';
 import ImagePickerHeader from '@/components/common/ImagePickerHeader';
-import LargePageHeader from '@/components/common/LargePageHeader'; // Importamos o novo componente
+import LargePageHeader from '@/components/common/LargePageHeader';
 
 import { COLORS } from '@/constants/theme';
 import { useUIStore as useUIStoreHeader } from '@/state/uiStore';

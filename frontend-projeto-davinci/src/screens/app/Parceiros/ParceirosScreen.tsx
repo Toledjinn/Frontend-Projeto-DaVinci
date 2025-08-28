@@ -10,7 +10,6 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
-// --- CORREÇÃO: O caminho do ficheiro de estilos foi corrigido ---
 import { styles } from './ParceirosScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useLaboratorioStore } from '@/state/laboratorioStore';

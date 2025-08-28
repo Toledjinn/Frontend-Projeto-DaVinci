@@ -14,7 +14,6 @@ export type UserProfile = {
 };
 
 const ALL_USERS: UserProfile[] = [
-  // Dentistas
   { 
     id: 'dentist-1', 
     name: 'José Maria Gratone', 
@@ -192,7 +191,6 @@ const ALL_USERS: UserProfile[] = [
   },
 
 
-  // Administradores
   { 
     id: 'admin-1', 
     name: 'Fernanda Lima', 
@@ -266,7 +264,6 @@ const ALL_USERS: UserProfile[] = [
     ]
   },
 
-  // Pacientes
   { 
     id: 'patient-1', 
     name: 'Rafael Ferreira', 

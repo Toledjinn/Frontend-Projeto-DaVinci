@@ -10,7 +10,6 @@ export type Appointment = {
 };
 
 const ALL_APPOINTMENTS: Appointment[] = [
-  // --- Consultas do Rafael Ferreira (patient-1) ---
   {
     id: 'appt-1', patientId: 'patient-1', date: '21/05/2025', time: '14:00', status: 'realizada',
     dentist: 'Dr. José Maria Gratone', procedures: ['Limpeza', 'Aplicação de Flúor'], specialty: 'Periodontia',
@@ -28,7 +27,6 @@ const ALL_APPOINTMENTS: Appointment[] = [
     dentist: 'Dr. José Maria Gratone', procedures: ['Raspagem Periodontal'], specialty: 'Periodontia',
   },
 
-  // --- Consultas do Luiz Toledo (patient-2) ---
   {
     id: 'appt-3', patientId: 'patient-2', date: '15/04/2025', time: '09:00', status: 'realizada',
     dentist: 'Dra. Ana Costa', procedures: ['Manutenção de Aparelho Ortodôntico'], specialty: 'Ortodontia',
@@ -50,7 +48,6 @@ const ALL_APPOINTMENTS: Appointment[] = [
     dentist: 'Dra. Ana Costa', procedures: ['Instalação do Aparelho'], specialty: 'Ortodontia',
   },
 
-  // --- Consultas do Bruce Wayne (patient-3) ---
   {
     id: 'appt-6', patientId: 'patient-3', date: '01/03/2025', time: '16:00', status: 'realizada',
     dentist: 'Dr. Carlos Dias', procedures: ['Tratamento de Canal'], specialty: 'Endodontia',
@@ -68,7 +65,6 @@ const ALL_APPOINTMENTS: Appointment[] = [
     dentist: 'Dra. Juliana Santos', procedures: ['Extração de Siso'], specialty: 'Clínica Geral',
   },
 
-  // --- Consultas do Clark Kent (patient-4) ---
   {
     id: 'appt-11', patientId: 'patient-4', date: '18/02/2025', time: '13:00', status: 'realizada',
     dentist: 'Dr. Maurício Shiguedomi Mochida', procedures: ['Aplicação de Botox', 'Preenchimento Labial'], specialty: 'Harmonização Facial',
@@ -82,7 +78,6 @@ const ALL_APPOINTMENTS: Appointment[] = [
     dentist: 'Dra. Juliana Santos', procedures: ['Clareamento Dental'], specialty: 'Clínica Geral',
   },
 
-  // --- Consultas da Diana Prince (patient-5) ---
   {
     id: 'appt-13', patientId: 'patient-5', date: '10/01/2025', time: '10:00', status: 'realizada',
     dentist: 'Dr. Pedro Alves', procedures: ['Consulta Odontopediátrica'], specialty: 'Odontopediatria',

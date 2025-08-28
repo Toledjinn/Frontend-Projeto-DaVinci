@@ -1,5 +1,3 @@
-
-
 import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
