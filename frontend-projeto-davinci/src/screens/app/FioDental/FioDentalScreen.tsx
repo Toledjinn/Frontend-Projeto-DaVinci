@@ -1,5 +1,3 @@
-// src/screens/app/FioDental/FioDentalScreen.tsx
-
 import React, { useCallback, useState, useRef } from 'react';
 import {
   View,
@@ -24,7 +22,6 @@ const carouselItems = [
     text: [
       'E meu papel é remover restos alimentares e desorganizar a placa bacteriana da região interproximal (entre os dentes), área que as cerdas da escova não alcançam.',
     ],
-    // Adicione a nova imagem na sua pasta de assets
     image: require('@/assets/images/espaco-biologico.png'),
   },
 
@@ -35,13 +32,11 @@ const carouselItems = [
       'Como minha ação é mecânica, devo, após ser inserido entre dois dentes, ser arrastado contra a face lateral de um dente e, depois, contra a face lateral do dente vizinho. Importante me levar até dentro do sulco gengival.',
       'A recomendação é que eu seja utilizado uma vez ao dia.',
     ],
-    // Adicione a nova imagem na sua pasta de assets
     image: require('@/assets/images/espaco-biologico.png'),
   },
 
   {
     id: '3',
-    // Adicione as 7 novas imagens na sua pasta de assets
     imageGrid: [
       require('@/assets/images/fio-dental-img-1.png'),
       require('@/assets/images/fio-dental-img-2.png'),
@@ -52,7 +47,6 @@ const carouselItems = [
       require('@/assets/images/fio-dental-img-7.png'),
     ]
   }
-  // Adicione mais slides aqui no futuro, se necessário
 ];
 
 export default function FioDentalScreen() {
@@ -61,7 +55,6 @@ export default function FioDentalScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Configura o cabeçalho padrão sempre que a tela entra em foco
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
@@ -98,9 +91,6 @@ export default function FioDentalScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {/* --- ALTERAÇÃO 2: LÓGICA DE RENDERIZAÇÃO --- */}
-                
-                {/* Layout 1: Texto e imagem única */}
                 {item.title && (
                   <>
                     <Text style={styles.title}>{item.title}</Text>
@@ -110,8 +100,6 @@ export default function FioDentalScreen() {
                     <Image source={item.image} style={styles.image} />
                   </>
                 )}
-
-                {/* Layout 2: Grelha de imagens */}
                 {item.imageGrid && (
                   <View style={styles.imageGridContainer}>
                     <View style={styles.imageRow}>

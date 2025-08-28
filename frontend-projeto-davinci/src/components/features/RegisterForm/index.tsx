@@ -7,7 +7,7 @@ import StyledInput from '@/components/common/StyledInput';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
 import StyledPicker, { PickerItem } from '@/components/common/StyledPicker';
 import StyledSwitch from '@/components/common/StyledSwitch';
-import StyledMultiSelect, { MultiSelectItem } from '@/components/common/StyledMultiSelect'; // <-- Importado
+import StyledMultiSelect, { MultiSelectItem } from '@/components/common/StyledMultiSelect'; 
 import { maskCPF, maskPhone, maskCep } from '@/utils/maskUtils';
 import { validateCPF } from '@/utils/cpfUtils';
 import { COLORS } from '@/constants/theme';
@@ -100,7 +100,6 @@ export default function RegisterForm() {
         
         setName(userData.name);
         
-        // Dados Pessoais
         const genderValue = getDetail('gênero').toLowerCase();
         const genderItem = genderItems.find(item => item.label.toLowerCase() === genderValue);
         setGender(genderItem ? genderItem.value : null);
@@ -121,7 +120,7 @@ export default function RegisterForm() {
         setNationality(getDetail('nacionalidade'));
         setNaturalness(getDetail('naturalidade'));
 
-        // Endereço
+
         setAddress(getDetail('endereço'));
         setCep(getDetail('cep'));
         setNeighborhood(getDetail('bairro'));
@@ -134,7 +133,7 @@ export default function RegisterForm() {
             setState(stateVal);
         }
 
-        // Campos específicos de tipo de usuário
+
         if (userData.type === 'admin') {
             const roleValue = getDetail('cargo');
             const roleItem = roleItems.find(item => item.label === roleValue);
@@ -334,7 +333,6 @@ export default function RegisterForm() {
     </>
   );
   
-  // <-- Nova função para o formulário de dentista
   const renderDentistForm = () => (
     <>
         {renderCommonFields()}
@@ -365,7 +363,7 @@ export default function RegisterForm() {
       case 'admin':
         return renderAdminForm();
       case 'dentist':
-        return renderDentistForm(); // <-- Atualizado para chamar a nova função
+        return renderDentistForm(); 
       case 'patient':
         return renderPatientForm();
       default:

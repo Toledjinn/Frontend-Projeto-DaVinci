@@ -7,7 +7,7 @@ import Prontuario from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import AppointmentListItem from '@/components/features/AppointmentListItem';
-import RecordFilterModal from '@/components/features/RecordFilterModal'; // <-- Importado
+import RecordFilterModal from '@/components/features/RecordFilterModal'; 
 import { findUserById } from '@/data/mockUsers';
 import { getAppointmentsByPatientId, Appointment } from '@/data/mockAppointments';
 
@@ -20,7 +20,6 @@ export default function MedicalRecordScreen() {
   const [patientName, setPatientName] = useState('');
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   
-  // Estados dos filtros
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);

@@ -93,7 +93,6 @@ export default function EscovaScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Configura o cabeçalho padrão sempre que a tela entra em foco
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({

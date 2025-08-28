@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
   },
   collageSideImage: {
     width: '100%',
-    height: '50%', // Um pouco menos de 50% para ter um espaço no meio
+    height: '50%',
     borderRadius: 8,
     resizeMode: 'cover',
   },

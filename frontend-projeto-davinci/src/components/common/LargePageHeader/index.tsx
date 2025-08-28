@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, useWindowDimensions } from 'react-native'; 
 import { SvgProps } from 'react-native-svg';
-import { getLargePageHeaderStyles } from './styles'; // Importa os novos estilos
+import { getLargePageHeaderStyles } from './styles'; 
 
 type LargePageHeaderProps = {
   CharacterSvg: React.FC<SvgProps>;
@@ -10,8 +10,8 @@ type LargePageHeaderProps = {
 
 export default function LargePageHeader({ CharacterSvg, title }: LargePageHeaderProps) {
   const { width, height } = useWindowDimensions(); 
-  const styles = getLargePageHeaderStyles(width, height); // Usa a função de estilos do cabeçalho grande
-
+  const styles = getLargePageHeaderStyles(width, height); 
+  
   return (
     <View style={styles.container}>
       <View style={styles.backgroundCircle}>

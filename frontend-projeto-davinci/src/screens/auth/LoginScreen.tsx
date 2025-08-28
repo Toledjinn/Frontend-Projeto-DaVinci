@@ -91,8 +91,7 @@ export default function LoginScreen() {
     }
 
     if (!hasError) {
-      Alert.alert('Sucesso', 'Login efetuado!');
-      // router.replace('/(app)/home'); 
+      Alert.alert('Sucesso', 'Login efetuado!'); 
     }
   };
 

@@ -16,7 +16,6 @@ import { useUIStore } from '@/state/uiStore';
 import Revelador from '@/assets/characters/revelador.svg';
 
 const carouselItems = [
-  // Slide 1
   {
     id: '1',
     title: 'Sou o Revelador de Placa!',

@@ -1,5 +1,3 @@
-// src/screens/app/OQueE/OQueEScreen.tsx
-
 import React, { useCallback } from 'react';
 import {
   View,

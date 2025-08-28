@@ -1,5 +1,3 @@
-// src/screens/app/Chefinho/ChefinhoScreen.styles.ts
-
 import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
@@ -42,7 +40,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
   },
-  // Layout 1
+
   image: {
     width: '100%',
     height: 200,
@@ -61,7 +59,6 @@ export const styles = StyleSheet.create({
     color: COLORS.gray_400,
     alignSelf: 'flex-end',
   },
-  // Layout 2
   text1: {
     ...FONTS.body10,
     color: COLORS.secondary,
@@ -79,7 +76,6 @@ export const styles = StyleSheet.create({
     height: 150,
     resizeMode: 'contain',
   },
-  // Layout 3
   iconRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -114,7 +110,6 @@ export const styles = StyleSheet.create({
     flex: 1, 
     lineHeight: 20,
   },
-  // --- FIM DOS ESTILOS ---
   paginationContainer: {
     flexDirection: 'row',
     marginTop: 25,

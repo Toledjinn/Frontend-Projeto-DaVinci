@@ -31,10 +31,9 @@ const educationalItems = [
 export default function EducationalScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29; // Altura padrão do cabeçalho para telas internas
+  const headerHeight = height * 0.29; 
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  // Ativa e configura o Header global para esta tela
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
@@ -42,7 +41,7 @@ export default function EducationalScreen() {
         layout: 'page-large',
         showPageHeaderElements: true,
         pageTitle: 'DAVINCI EDUCACIONAL',
-        CharacterSvg: Chefinho, // O personagem principal agora vai no header
+        CharacterSvg: Chefinho, 
         showNotificationIcon: true,
       });
     }, [])
@@ -53,7 +52,6 @@ export default function EducationalScreen() {
     if (item.route) {
       router.push(item.route as any);
     } else {
-      // Caso contrário, apenas registra no console
       console.log(`Item "${item.title}" clicado, mas não possui rota definida.`);
     }
   };
