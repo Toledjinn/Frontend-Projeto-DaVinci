@@ -8,59 +8,22 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './FluorScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+import { useEducationalContentStore } from '@/state/educationalContentStore';
 import Fluor from '@/assets/characters/fluor.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
 
-
-const carouselItems = [
-  
-  {
-    id: '1',
-    text: [
-      'Sou importante demais na prevenção da cárie e meu principal papel é fazer com que os dentes sejam mais resistentes aos ácidos produzidos pelas bactérias do biofilme. Se estou presente no meio bucal consigo reduzir a perda de mineral nos momentos em que o ambiente fica ácido (após a ingestão de alimentos, por exemplo) e acelerar o processo de remineralização entre as refeições/lanches.',
-    ],
-  },
-
-  {
-    id: '2',
-    text: [
-      'Assim, sou incorporado na água de abastecimento e nas pastas de dente para estar a toda hora disponível. Nas pastas, sempre devo ter uma concentração de ao menos 1000ppm de flúor. Para a maioria dos pacientes, minha baixa concentração e alta frequência de uso (na água e na pasta) garantem boa proteção frente à doença cárie.',
-    ],
-  },
-
-  {
-    id: '3',
-    text: [
-      'Em alguns casos, eu, flúor, também posso ser utilizado sob a forma de bochechos, géis ou vernizes aplicados sobre os dentes. Converse com seu dentista sobre a melhor forma como eu posso lhe ajudar a manter uma ótima saúde bucal!',
-    ],
-  },
-
-  {
-    id: '4',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'A cárie é profundamente influenciada pela exposição do fluoreto, que reduz a desmineralização e aumenta a remineralização.',
-      'O fluoreto reduz a progressão da cárie (desde os estágios iniciais até os estágios mais avançados), independente do fator da taxa de progressão ser lenta, moderada ou rápida.',
-    ],
-  },
-
-  {
-    id: '5',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'A cárie não é a única doença oral relacionada à desmineralização. A erosão dentária, causada pela ação direta de ácidos sobre as superfícies dentárias sem ação de bactérias, resultada em desgaste aumentado.',
-      'Mesmo com o uso de dentifrícios fluoretados pela maior parte das pessoas, a incidência de bio corrosão tem aumentado, devido à ação de ácidos, de origem endogena e exogena, no meio bucal.',
-    ],
-  },
-];
+const userType = 'admin';
 
 export default function FluorScreen() {
+  const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const carouselItems = useEducationalContentStore((state) => state.pages.fluor);
 
   useFocusEffect(
     useCallback(() => {
@@ -82,6 +45,10 @@ export default function FluorScreen() {
     }
   };
 
+  const handleEditPress = () => {
+    router.push({ pathname: '/(app)/editar-conteudo-educacional', params: { page: 'fluor' } });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -98,16 +65,7 @@ export default function FluorScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-
-                {item.text && (
-                  <>
-                    {item.text.map((paragraph, index) => (
-                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
-                    ))}
-                  </>
-                )}
-
-                {item.listTitle && (
+                {item.listTitle ? (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
@@ -115,6 +73,12 @@ export default function FluorScreen() {
                         <Text style={styles.bullet}>•</Text>
                         <Text style={styles.bulletText}>{point}</Text>
                       </View>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {item.text?.map((paragraph, index) => (
+                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
                     ))}
                   </>
                 )}
@@ -135,6 +99,13 @@ export default function FluorScreen() {
           ))}
         </View>
       </View>
+
+      {(userType === 'admin' || userType === 'dentista') && (
+        <ScreenFooter
+          primaryButtonTitle="Editar Conteúdo"
+          onPrimaryButtonPress={handleEditPress}
+        />
+      )}
     </SafeAreaView>
   );
 }

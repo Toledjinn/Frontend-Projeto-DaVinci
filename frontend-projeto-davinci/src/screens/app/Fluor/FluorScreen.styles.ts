@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 290,
+    paddingTop: 260,
   },
   carousel: {
     flexGrow: 0,
@@ -28,7 +28,8 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
     alignItems: 'center',
     width: '100%',
     shadowColor: '#000',

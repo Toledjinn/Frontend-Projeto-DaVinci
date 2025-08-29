@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 250, 
+    paddingTop: 250,
   },
   carousel: {
     flexGrow: 0,
@@ -22,8 +22,7 @@ export const styles = StyleSheet.create({
   slide: {
     paddingHorizontal: 24,
     alignItems: 'center',
-    justifyContent: 'flex-start', 
-    minHeight: 450, 
+    justifyContent: 'flex-start',
   },
   card: {
     backgroundColor: COLORS.white,
@@ -39,8 +38,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+    minHeight: 450,
   },
-
   image: {
     width: '100%',
     height: 200,
@@ -102,12 +101,12 @@ export const styles = StyleSheet.create({
     ...FONTS.body10,
     color: COLORS.secondary,
     marginRight: 8,
-    lineHeight: 20, 
+    lineHeight: 20,
   },
   bulletText: {
     ...FONTS.body10,
     color: COLORS.secondary,
-    flex: 1, 
+    flex: 1,
     lineHeight: 20,
   },
   paginationContainer: {

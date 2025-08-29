@@ -9,51 +9,22 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './FioDentalScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+import { useEducationalContentStore } from '@/state/educationalContentStore';
 import FioDental from '@/assets/characters/fio.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
 
-
-const carouselItems = [
-  {
-    id: '1',
-    title: 'Sou o Fio Dental!',
-    text: [
-      'E meu papel é remover restos alimentares e desorganizar a placa bacteriana da região interproximal (entre os dentes), área que as cerdas da escova não alcançam.',
-    ],
-    image: require('@/assets/images/espaco-biologico.png'),
-  },
-
-  {
-    id: '2',
-    title: 'Sou o Fio Dental!',
-    text: [
-      'Como minha ação é mecânica, devo, após ser inserido entre dois dentes, ser arrastado contra a face lateral de um dente e, depois, contra a face lateral do dente vizinho. Importante me levar até dentro do sulco gengival.',
-      'A recomendação é que eu seja utilizado uma vez ao dia.',
-    ],
-    image: require('@/assets/images/espaco-biologico.png'),
-  },
-
-  {
-    id: '3',
-    imageGrid: [
-      require('@/assets/images/fio-dental-img-1.png'),
-      require('@/assets/images/fio-dental-img-2.png'),
-      require('@/assets/images/fio-dental-img-3.png'),
-      require('@/assets/images/fio-dental-img-4.png'),
-      require('@/assets/images/fio-dental-img-5.png'),
-      require('@/assets/images/fio-dental-img-6.png'),
-      require('@/assets/images/fio-dental-img-7.png'),
-    ]
-  }
-];
+const userType = 'admin';
 
 export default function FioDentalScreen() {
+  const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const carouselItems = useEducationalContentStore((state) => state.pages.fioDental);
 
   useFocusEffect(
     useCallback(() => {
@@ -75,6 +46,10 @@ export default function FioDentalScreen() {
     }
   };
 
+  const handleEditPress = () => {
+    router.push({ pathname: '/(app)/editar-conteudo-educacional', params: { page: 'fioDental' } });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -94,12 +69,13 @@ export default function FioDentalScreen() {
                 {item.title && (
                   <>
                     <Text style={styles.title}>{item.title}</Text>
-                    {item.text.map((paragraph, index) => (
+                    {item.text?.map((paragraph, index) => (
                       <Text key={index} style={styles.paragraph}>{paragraph}</Text>
                     ))}
-                    <Image source={item.image} style={styles.image} />
+                    <Image source={item.image!} style={styles.image} />
                   </>
                 )}
+
                 {item.imageGrid && (
                   <View style={styles.imageGridContainer}>
                     <View style={styles.imageRow}>
@@ -136,7 +112,12 @@ export default function FioDentalScreen() {
           ))}
         </View>
       </View>
+      {(userType === 'admin' || userType === 'dentista') && (
+        <ScreenFooter
+          primaryButtonTitle="Editar Conteúdo"
+          onPrimaryButtonPress={handleEditPress}
+        />
+      )}
     </SafeAreaView>
   );
 }
-            

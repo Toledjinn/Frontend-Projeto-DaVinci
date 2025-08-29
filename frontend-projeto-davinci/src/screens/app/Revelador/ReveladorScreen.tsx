@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState, useRef } from 'react';
 import {
   View,
@@ -10,55 +9,22 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './ReveladorScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+import { useEducationalContentStore } from '@/state/educationalContentStore';
 import Revelador from '@/assets/characters/revelador.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
 
-const carouselItems = [
-  {
-    id: '1',
-    title: 'Sou o Revelador de Placa!',
-    text: [
-      'Ainda pouco conhecido, o revelador ou evidenciador de placa bacteriana, tem função essencial na identificação da placa ou biofilme dental. A placa ou biofilme é uma camada fina, transparente que recobri todos os dentes do paciente. Tudo se resume a ela, seu acúmulo é capaz de causar cárie, gengivite e tártaro.',
-    ],
-    image: require('@/assets/images/revelador-antes-depois.png'),
-  },
-
-  {
-    id: '2',
-    title: 'Sou o Revelador de Placa!',
-    text: [
-      'O biofilme é uma aglomeração de bactérias e resíduos alimentares que combinados são muito prejudiciais a saúde bucal, causando mau hálito, gengivite, periodontite, e seu controle, deverá ser feito diariamente com o uso de acessórios de higiene bucal corretamente, como a escova e o fio dental.',
-    ],
-    image: require('@/assets/images/revelador-antes-depois.png'),
-  },
-
-  {
-    id: '3',
-    title: 'Sou o Revelador de Placa!',
-    text: [
-      'O revelador que indicamos, evidencia o biofilme com dois indicadores cromáticos, a placa antiga com a cor azul e a placa nova vermelho.',
-    ],
-    image: require('@/assets/images/revelador-antes-depois.png'),
-  },
-  
-  {
-    id: '4',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'Se tiveres muitas restaurações usar inicialmente no dentista para ver o qual de manchamento.',
-      'À medida que for melhorando a desfrise da escovação e tendo um melhor controle, espaçar mais as utilizações.',
-      'Não deixe de frequentar as reconsultas para um acompanhamento profissional.',
-    ],
-  },
-];
+const userType = 'admin';
 
 export default function ReveladorScreen() {
+  const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const carouselItems = useEducationalContentStore((state) => state.pages.revelador);
 
   useFocusEffect(
     useCallback(() => {
@@ -80,6 +46,10 @@ export default function ReveladorScreen() {
     }
   };
 
+  const handleEditPress = () => {
+    router.push({ pathname: '/(app)/editar-conteudo-educacional', params: { page: 'revelador' } });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -96,19 +66,7 @@ export default function ReveladorScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-              
-                {item.title && (
-                  <>
-                    <Text style={styles.title}>{item.title}</Text>
-                    {item.text.map((paragraph, index) => (
-                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
-                    ))}
-                    <Image source={item.image} style={styles.image} />
-                  </>
-                )}
-
-                {/* Layout 2: Lista de Tópicos */}
-                {item.listTitle && (
+                {item.listTitle ? (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
@@ -117,6 +75,14 @@ export default function ReveladorScreen() {
                         <Text style={styles.bulletText}>{point}</Text>
                       </View>
                     ))}
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.title}>{item.title}</Text>
+                    {item.text?.map((paragraph, index) => (
+                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
+                    ))}
+                    <Image source={item.image!} style={styles.image} />
                   </>
                 )}
               </View>
@@ -136,6 +102,13 @@ export default function ReveladorScreen() {
           ))}
         </View>
       </View>
+
+      {(userType === 'admin' || userType === 'dentista') && (
+        <ScreenFooter
+          primaryButtonTitle="Editar Conteúdo"
+          onPrimaryButtonPress={handleEditPress}
+        />
+      )}
     </SafeAreaView>
   );
 }
