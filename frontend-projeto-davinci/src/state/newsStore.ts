@@ -13,7 +13,7 @@ export type NewsItem = {
 type NewsState = {
   news: NewsItem[];
   getNewsById: (id: string) => NewsItem | undefined;
-  addNews: (newItem: { title: string; content: string; image: ImageSourcePropType }) => NewsItem; // Corrigido para retornar NewsItem
+  addNews: (newItem: { title: string; content: string; image: ImageSourcePropType }) => NewsItem; 
 };
 
 const MOCK_NEWS: NewsItem[] = [

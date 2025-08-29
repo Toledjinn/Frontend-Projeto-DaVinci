@@ -14,7 +14,6 @@ type NotificationItemProps = {
 
 const NotificationItem = React.memo(({ item, onPress }: NotificationItemProps) => {
   return (
-    // ALTERAÇÃO: Adicionado TouchableOpacity para tornar o item clicável
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.dateTimeContainer}>
         <Text style={styles.dateText}>{item.date}</Text>

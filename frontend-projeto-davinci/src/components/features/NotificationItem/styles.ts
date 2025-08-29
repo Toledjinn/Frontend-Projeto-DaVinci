@@ -1,5 +1,3 @@
-// src/components/features/NotificationItem/styles.ts
-
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
@@ -12,7 +10,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray_200,
     paddingVertical: 12, 
-    paddingHorizontal: 16, // Aumentado para mais espaço
+    paddingHorizontal: 16, 
     marginBottom: 12,
     shadowColor: "#000",
     shadowOffset: {
@@ -26,26 +24,26 @@ export const styles = StyleSheet.create({
   dateTimeContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingRight: 16, // Aumentado para mais espaço
+    paddingRight: 16, 
     borderRightWidth: 1,
     borderRightColor: COLORS.gray_200,
   },
   dateText: {
     ...FONTS.body8,
-    color: COLORS.secondary, // Alterado para a cor secundária
+    color: COLORS.secondary, 
   },
   timeText: {
     ...FONTS.body11,
-    color: COLORS.gray_400, // Alterado para um cinza mais claro
+    color: COLORS.gray_400, 
   },
   textContainer: {
     flex: 1,
-    paddingLeft: 16, // Aumentado para mais espaço
+    paddingLeft: 16, 
   },
   notificationText: {
     ...FONTS.body11,
     color: COLORS.secondary,
     textAlign: 'left',
-    lineHeight: 18, // Adicionado para melhor legibilidade
+    lineHeight: 18, 
   },
 });

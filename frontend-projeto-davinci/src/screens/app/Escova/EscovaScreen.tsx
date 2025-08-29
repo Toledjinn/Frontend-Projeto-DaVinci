@@ -66,7 +66,6 @@ export default function EscovaScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {/* Lógica de renderização para os diferentes layouts da Escova */}
                 {item.beforeAfterImages ? (
                    <>
                     {item.text?.map((paragraph, index) => (

@@ -30,8 +30,8 @@ export default function CreateNewsScreen() {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const { height } = useWindowDimensions(); // ALTERAÇÃO 2: Obter a altura do ecrã
-  const headerHeight = height * 0.29; // Calcular a altura do cabeçalho
+  const { height } = useWindowDimensions(); 
+  const headerHeight = height * 0.29; 
 
   useFocusEffect(
     useCallback(() => {
@@ -93,7 +93,7 @@ export default function CreateNewsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        // ALTERAÇÃO 3: Adicionar o espaçamento no topo
+        
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
         keyboardShouldPersistTaps="handled"
       >
