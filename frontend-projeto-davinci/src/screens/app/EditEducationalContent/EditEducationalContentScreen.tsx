@@ -1,5 +1,3 @@
-// src/screens/app/EditEducationalContent/EditEducationalContentScreen.tsx
-
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import {
   View,

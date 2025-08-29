@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 import { styles } from './styles';
-import { COLORS } from '@/constants/theme';
 
 type NotificationItemProps = {
   item: {
@@ -16,7 +14,8 @@ type NotificationItemProps = {
 
 const NotificationItem = React.memo(({ item, onPress }: NotificationItemProps) => {
   return (
-    <View style={styles.container}>
+    // ALTERAÇÃO: Adicionado TouchableOpacity para tornar o item clicável
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.dateTimeContainer}>
         <Text style={styles.dateText}>{item.date}</Text>
         <Text style={styles.timeText}>{item.time}</Text>
@@ -24,8 +23,7 @@ const NotificationItem = React.memo(({ item, onPress }: NotificationItemProps) =
       <View style={styles.textContainer}>
         <Text style={styles.notificationText}>{item.text}</Text>
       </View>
-
-    </View>
+    </TouchableOpacity>
   );
 });
 
