@@ -18,6 +18,21 @@ export const styles = StyleSheet.create({
     color: COLORS.secondary,
     marginBottom: 8,
   },
+  manualTextInputWrapper: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  manualTextInput: {
+    flex: 1,
+    ...FONTS.body9,
+    color: COLORS.secondary,
+    textAlignVertical: 'top',
+  },
   imagePicker: {
     height: 200,
     width: '100%',

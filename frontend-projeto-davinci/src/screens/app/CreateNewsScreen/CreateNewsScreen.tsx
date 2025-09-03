@@ -108,7 +108,7 @@ export default function CreateNewsScreen() {
           )}
         </TouchableOpacity>
 
-        <View style={styles.formContainer}>
+        <View style={styles.contentContainer}>
           <StyledInput
             label="Título"
             iconName="type"
