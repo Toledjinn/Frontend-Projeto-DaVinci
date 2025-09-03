@@ -3,23 +3,29 @@ import {
   View,
   Text,
   SafeAreaView,
-  useWindowDimensions,
   ScrollView,
+  useWindowDimensions,
+  Image, 
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './OQueEScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+import { useSocialStore } from '@/state/socialStore'; 
 import Chefinho from '@/assets/characters/chefinho.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
+
+const userType = 'admin';
 
 export default function OQueEScreen() {
+  const router = useRouter();
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const contentBlocks = useSocialStore((state) => state.pages.oQueE);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        visible: true,
         layout: 'page-large',
         showPageHeaderElements: true,
         pageTitle: 'O QUE É?',
@@ -29,19 +35,33 @@ export default function OQueEScreen() {
     }, [])
   );
 
+  const handleEditPress = () => {
+    router.push({ pathname: '/(app)/editar-conteudo-simples', params: { page: 'oQueE' } });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        <Text style={styles.paragraph}>
-          O DaVinci Social é uma extensão do Projeto DaVinci, realizado pela Gratone Odontologia Especializada.
-        </Text>
-        <Text style={styles.paragraph}>
-          Sua finalidade é atender pacientes que não possuem condições de pagar por um tratamento odontológico adequado, visando restabelecer a estética e a função bucal de forma digna.
-        </Text>
+        {contentBlocks.map((block) => {
+          if (block.type === 'text') {
+            return <Text key={block.id} style={styles.paragraph}>{block.content}</Text>;
+          }
+          if (block.type === 'image' && block.image) {
+            return <Image key={block.id} source={block.image} style={styles.image} />;
+          }
+          return null;
+        })}
       </ScrollView>
+
+      {(userType === 'admin' || userType === 'dentista') && (
+        <ScreenFooter
+          primaryButtonTitle="Editar Conteúdo"
+          onPrimaryButtonPress={handleEditPress}
+        />
+      )}
     </SafeAreaView>
   );
 }

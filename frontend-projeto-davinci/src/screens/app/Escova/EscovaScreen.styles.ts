@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 280,
+    paddingTop: 250,
   },
   carousel: {
     flexGrow: 0,
@@ -44,44 +44,60 @@ export const styles = StyleSheet.create({
     ...FONTS.body5,
     color: COLORS.secondary,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   paragraph: {
     ...FONTS.body10,
     color: COLORS.secondary,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
+    lineHeight: 22,
   },
   image: {
     width: '100%',
-    height: 150,
+    height: 200,
     borderRadius: 8,
-    marginTop: 10,
-    resizeMode: 'contain',
+    marginBottom: 20,
   },
-
-  imageRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginTop: 10,
+  quote: {
+    ...FONTS.body10,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginBottom: 16,
+    fontStyle: 'italic',
   },
-  imageContainer: {
-    alignItems: 'center',
-    width: '45%',
+  author: {
+    ...FONTS.body11,
+    color: COLORS.gray_400,
+    alignSelf: 'flex-end',
   },
-  sideImage: {
-    width: '100%',
-    height: 80,
-    borderRadius: 8,
-    resizeMode: 'cover',
+  text1: {
+    ...FONTS.body10,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginBottom: 16,
   },
-  imageLabel: {
+  text2: {
     ...FONTS.body11,
     color: COLORS.secondary,
-    marginTop: 8,
+    textAlign: 'center',
+    marginBottom: 20,
   },
-
+  newImage: {
+    width: '80%',
+    height: 150,
+    resizeMode: 'contain',
+  },
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    width: '100%',
+  },
+  smallIcon: {
+    marginHorizontal: 5,
+  },
   listTitle: {
     ...FONTS.body7,
     color: COLORS.secondary,
@@ -106,7 +122,84 @@ export const styles = StyleSheet.create({
     flex: 1,
     lineHeight: 20,
   },
-
+  imageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 16,
+    marginBottom: 10,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    width: '45%',
+  },
+  sideImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
+  imageLabel: {
+    ...FONTS.body11,
+    color: COLORS.gray_400,
+    marginTop: 8,
+  },
+  imageGrid: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  imageGridRowTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: '2%',
+  },
+  gridImageSide: {
+    width: '49%',
+    height: 100,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
+  collageContainer: {
+    width: '100%',
+    height: 200,
+    flexDirection: 'row',
+    marginTop: 16,
+  },
+  collageMainImage: {
+    width: '58%',
+    height: '100%',
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    resizeMode: 'cover',
+  },
+  collageSideContainer: {
+    width: '42%',
+    height: '100%',
+    justifyContent: 'space-between',
+  },
+  collageSideImage: {
+    width: '100%',
+    height: '48%',
+    resizeMode: 'cover',
+  },
+  imageGridContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  gridImage: {
+    width: '48%',
+    height: 100,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
+  gridImageBottom: {
+    width: '48%', 
+    height: 100,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
   paginationContainer: {
     flexDirection: 'row',
     marginTop: 25,

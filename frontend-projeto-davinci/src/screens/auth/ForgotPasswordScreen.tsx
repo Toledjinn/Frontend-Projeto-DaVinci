@@ -70,7 +70,6 @@ export default function ForgotPasswordScreen() {
         'Validação concluída!',
         'Por segurança, é necessário alterar sua senha. Ela deve conter no mínimo 8 caracteres.'
       );
-      // router.push('/change-password');
     }
   };
 

@@ -7,30 +7,31 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  useWindowDimensions,
   TextInput,
+  useWindowDimensions, 
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './CreateNewsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { useNewsStore } from '@/state/newsStore';
-import { NewsItemProps } from '@/components/features/NewsListItem';
 import Chefinho from '@/assets/characters/chefinho.svg';
-import StyledInput from '@/components/common/StyledInput';
 import ScreenFooter from '@/components/common/ScreenFooter';
-import { COLORS } from '@/constants/theme';
+import StyledInput from '@/components/common/StyledInput';
+import { useNewsStore } from '@/state/newsStore';
+import { useNotificationStore } from '@/state/notificationStore';
+import { FONTS, COLORS } from '@/constants/theme';
 
 export default function CreateNewsScreen() {
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const addNews = useNewsStore((state) => state.addNews);
+  const addNotification = useNotificationStore((state) => state.addNotification);
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
-  const addNews = useNewsStore((state) => state.addNews);
+  const { height } = useWindowDimensions(); 
+  const headerHeight = height * 0.29; 
 
   useFocusEffect(
     useCallback(() => {
@@ -70,18 +71,21 @@ export default function CreateNewsScreen() {
       return;
     }
     
-    const newNewsItem: NewsItemProps = {
-      id: Date.now().toString(),
-      title: title,
-      snippet: content.substring(0, 100) + '...',
-      content: content,
-      date: new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }),
+    const newNewsItem = {
+      title,
+      content,
       image: { uri: imageUri },
     };
 
-    addNews(newNewsItem);
+    const createdNews = addNews(newNewsItem);
 
-    Alert.alert('Sucesso!', 'Notícia publicada.');
+    addNotification({
+      text: <>Nova Dica! <Text style={{fontFamily: FONTS.body4.fontFamily}}>{title}</Text> foi publicada. Clique para ler!</>,
+      type: 'news',
+      linkId: createdNews.id,
+    });
+    
+    Alert.alert('Sucesso!', 'Notícia publicada e notificação enviada (simulação).');
     router.back();
   };
 
@@ -89,10 +93,10 @@ export default function CreateNewsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
+        
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.label}>Imagem de Destaque</Text>
         <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
           {imageUri ? (
             <Image source={{ uri: imageUri }} style={styles.imagePreview} />
@@ -104,7 +108,7 @@ export default function CreateNewsScreen() {
           )}
         </TouchableOpacity>
 
-        <View style={{ marginBottom: 16 }}>
+        <View style={styles.formContainer}>
           <StyledInput
             label="Título"
             iconName="type"
@@ -112,20 +116,20 @@ export default function CreateNewsScreen() {
             onChangeText={setTitle}
             placeholder="Título da notícia"
           />
-        </View>
 
-        {}
-        <Text style={styles.label}>Conteúdo</Text>
-        <View style={[styles.manualInputContainer, { height: 300 }]}>
-          <Feather name="file-text" size={24} color={COLORS.gray_400} style={{ marginTop: 2 }}/>
-          <TextInput
-            value={content}
-            onChangeText={setContent}
-            placeholder="Escreva o conteúdo da notícia aqui..."
-            placeholderTextColor={COLORS.gray_400}
-            multiline
-            style={styles.manualInput}
-          />
+          <View style={styles.manualInputContainer}>
+            <Text style={styles.label}>Conteúdo</Text>
+            <View style={styles.manualTextInputWrapper}>
+              <Feather name="file-text" size={24} color={COLORS.gray_400} style={{ marginTop: 2 }}/>
+              <TextInput
+                value={content}
+                onChangeText={setContent}
+                placeholder="Escreva o conteúdo da notícia aqui..."
+                multiline
+                style={styles.manualTextInput}
+              />
+            </View>
+          </View>
         </View>
       </ScrollView>
 

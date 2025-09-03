@@ -11,7 +11,7 @@ type LargePageHeaderProps = {
 export default function LargePageHeader({ CharacterSvg, title }: LargePageHeaderProps) {
   const { width, height } = useWindowDimensions(); 
   const styles = getLargePageHeaderStyles(width, height); 
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.backgroundCircle}>

@@ -16,7 +16,6 @@ import { useLaboratorioStore } from '@/state/laboratorioStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 
-
 const userType = 'admin';
 
 export default function ParceirosScreen() {
@@ -25,14 +24,14 @@ export default function ParceirosScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const carouselItems = useLaboratorioStore((state) => state.parceiros);
+  const carouselItems = useLaboratorioStore((state) => state.pages.parceiros?.slides || []);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'PARCEIROS',
+        pageTitle: 'Parceiros',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -48,10 +47,7 @@ export default function ParceirosScreen() {
   };
 
   const handleEditPress = () => {
-    router.push({
-      pathname: '/(app)/editar-laboratorio',
-      params: { page: 'parceiros' },
-    });
+    router.push({ pathname: '/(app)/editar-laboratorio', params: { page: 'parceiros' } });
   };
 
   return (

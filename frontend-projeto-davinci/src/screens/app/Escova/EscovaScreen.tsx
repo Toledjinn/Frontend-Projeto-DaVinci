@@ -9,87 +9,26 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './EscovaScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+import { useEducationalContentStore } from '@/state/educationalContentStore';
 import Escova from '@/assets/characters/escova1.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
+import Chefinho from '@/assets/characters/chefinho.svg';
+import Pasta from '@/assets/characters/pasta.svg';
+import FioDental from '@/assets/characters/fio.svg';
+import Revelador from '@/assets/characters/revelador.svg';
 
-const carouselItems = [
-  {
-    id: '1',
-    image: require('@/assets/images/gengivite-periodontite.png'), 
-    title: 'Olá, sou a Escova!',
-    text: [
-      'Minha principal função é remover restos de alimentos, pigmentos e, principalmente, desorganizar a placa bacteriana que se acumula sobre as superfícies livres (da frente e de trás) e oclusal dos dentes.',
-    ],
-  },
-  {
-    id: '2',
-    image: require('@/assets/images/gengivite-periodontite.png'), 
-    title: 'Olá, sou a Escova!',
-    text: [
-      'Essa desorganização constante que faço da placa dificulta que os microorganismos se organizem a ponto dela se tornar cariogênica e de provocar danos aos dentes e ao periodonto (gengiva e osso que circundam os dentes).',
-    ],
-  },
-  {
-    id: '3',
-    text: [
-      'Minhas cerdas devem ser preferencialmente macias e utilizadas de forma a alcançar todas as áreas dos dentes possíveis, inclusive a entrada do sulco gengival.',
-    ],
-    beforeAfterImages: {
-      before: require('@/assets/images/antes.png'),
-      after: require('@/assets/images/depois.png'),
-    }
-  },
-  {
-    id: '4',
-    text: [
-      'Deve-se ressaltar que as características das cerdas e tufos das escovas (quantidade, distribuição, material e dureza) influenciam no potencial abrasivo.',
-      'A maior quantidade de cerdas, distribuição mais homogênea e cerdas mais macias podem diminuir o potencial abrasivo da escova, pois aumentam a área de contato e ainda melhora a capacidade de limpeza.',
-    ],
-    beforeAfterImages: {
-      before: require('@/assets/images/antes.png'),
-      after: require('@/assets/images/depois.png'),
-    }
-  },
-  {
-    id: '5',
-    image: require('@/assets/images/escova-sorriso.png'), 
-    text: [
-      'Devo ser utilizada de 2 a 3 vezes por dia, com técnica e tempos adequados, sempre acompanhada de uma pasta de dentes que contenha flúor.',
-    ],
-  },
-
-  {
-    id: '6',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'Cerdas sempre macias ou extras macias.',
-      'Revezamento diário.',
-      'Não escovar imediatamente após as refeições.',
-      'Aguardar 25 min após lavar a boca com H²O corrente de manhã.',
-      'Usar a pasta dental com o RDA correto (Informe com seu dentista).',
-      
-    ],
-  },
-
-  {
-    id: '7',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'A escova elétrica é uma boa opção para todas as situações.',
-      'Escovas unitufos, são recomendadas para pacientes com dentes mal posicionados.',
-      'Pacientes com problemas periodontais ou implantes dentários pode ser indicado escovas interdentais devendo selecionar o calibrador correto para cada caso.',
-      'A troca da escova deverá acontecer a cada três meses.',
-    ],
-  },
-];
+const userType = 'admin'; 
 
 export default function EscovaScreen() {
+  const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const carouselItems = useEducationalContentStore((state) => state.pages.escova);
 
   useFocusEffect(
     useCallback(() => {
@@ -111,6 +50,10 @@ export default function EscovaScreen() {
     }
   };
 
+  const handleEditPress = () => {
+    router.push({ pathname: '/(app)/editar-conteudo-educacional', params: { page: 'escova' } });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -127,39 +70,57 @@ export default function EscovaScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                
-                {item.beforeAfterImages && item.text && (
+                {item.collageImages ? (
                   <>
-                    {item.text.map((paragraph, index) => (
-                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
-                    ))}
-                    <View style={styles.imageRow}>
-                      <View style={styles.imageContainer}>
-                        <Image source={item.beforeAfterImages.before} style={styles.sideImage} />
-                        <Text style={styles.imageLabel}>Antes</Text>
-                      </View>
-                      <View style={styles.imageContainer}>
-                        <Image source={item.beforeAfterImages.after} style={styles.sideImage} />
-                        <Text style={styles.imageLabel}>Depois</Text>
+                    {item.text1 && <Text style={styles.paragraph}>{item.text1}</Text>}
+                    <View style={styles.collageContainer}>
+                      <Image source={item.collageImages[0]} style={styles.collageMainImage} />
+                      <View style={styles.collageSideContainer}>
+                        <Image source={item.collageImages[1]} style={styles.collageSideImage} />
+                        <Image source={item.collageImages[2]} style={styles.collageSideImage} />
                       </View>
                     </View>
+                    {item.text2 && <Text style={styles.paragraph}>{item.text2}</Text>}
                   </>
-                )}
-
-                
-                {item.image && !item.beforeAfterImages && item.text && (
+                ) : 
+                item.images ? (
                   <>
                     {item.title && <Text style={styles.title}>{item.title}</Text>}
-                    {item.text.map((paragraph, index) => (
-                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
-                    ))}
-                    <Image source={item.image} style={styles.image} />
+                    {item.text && <Text style={styles.paragraph}>{item.text.join('\n')}</Text>}
+                    <View style={styles.imageGrid}>
+                      <View style={styles.imageGridRowTop}>
+                        <Image source={item.images[0]} style={styles.gridImageSide} />
+                        <Image source={item.images[1]} style={styles.gridImageSide} />
+                      </View>
+                      <Image source={item.images[2]} style={styles.gridImageBottom} />
+                    </View>
                   </>
-                )}
-
-                
-                {item.listTitle && (
+                ) : 
+                item.quote ? (
                   <>
+                    {item.image && <Image source={item.image} style={styles.image} />}
+                    <Text style={styles.quote}>{item.quote}</Text>
+                    {item.author && <Text style={styles.author}>{item.author}</Text>}
+                  </>
+                ) : 
+                item.text1 ? (
+                  <>
+                    <Text style={styles.text1}>{item.text1}</Text>
+                    {item.text2 && <Text style={styles.text2}>{item.text2}</Text>}
+                    {item.image && <Image source={item.image} style={styles.newImage} />}
+                  </>
+                ) : 
+                item.listTitle ? (
+                  <>
+                    {item.id.startsWith('chefinho') && (
+                        <View style={styles.iconRow}>
+                            <Chefinho width={30} height={30} style={styles.smallIcon} />
+                            <Escova width={30} height={30} style={styles.smallIcon} />
+                            <Pasta width={30} height={30} style={styles.smallIcon} />
+                            <FioDental width={30} height={30} style={styles.smallIcon} />
+                            <Revelador width={30} height={30} style={styles.smallIcon} />
+                        </View>
+                    )}
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
                       <View key={index} style={styles.bulletPointContainer}>
@@ -167,6 +128,46 @@ export default function EscovaScreen() {
                         <Text style={styles.bulletText}>{point}</Text>
                       </View>
                     ))}
+                  </>
+                ) : 
+                item.beforeAfterImages ? (
+                  <>
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    <View style={styles.imageRow}>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.before} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Antes</Text>
+                        </View>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.after} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Depois</Text>
+                        </View>
+                    </View>
+                  </>
+                ) : 
+                item.imageGrid ? (
+                    <View style={styles.imageGridContainer}>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[0]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[1]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[2]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[3]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[4]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[5]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[6]} style={styles.gridImageBottom} />
+                        </View>
+                    </View>
+                ) : (
+                  <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    {item.image && <Image source={item.image} style={styles.image} />}
                   </>
                 )}
               </View>
@@ -186,6 +187,13 @@ export default function EscovaScreen() {
           ))}
         </View>
       </View>
+
+      {(userType === 'admin' || userType === 'dentista') && (
+        <ScreenFooter
+          primaryButtonTitle="Editar Conteúdo"
+          onPrimaryButtonPress={handleEditPress}
+        />
+      )}
     </SafeAreaView>
   );
 }

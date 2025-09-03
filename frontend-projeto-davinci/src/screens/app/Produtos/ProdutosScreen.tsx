@@ -16,7 +16,6 @@ import { useLaboratorioStore } from '@/state/laboratorioStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 
-
 const userType = 'admin';
 
 export default function ProdutosScreen() {
@@ -25,14 +24,14 @@ export default function ProdutosScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const carouselItems = useLaboratorioStore((state) => state.produtos);
+  const carouselItems = useLaboratorioStore((state) => state.pages.produtos.slides);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'PRODUTOS',
+        pageTitle: 'Produtos',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -48,10 +47,7 @@ export default function ProdutosScreen() {
   };
 
   const handleEditPress = () => {
-    router.push({
-      pathname: '/(app)/editar-laboratorio',
-      params: { page: 'produtos' },
-    });
+    router.push({ pathname: '/(app)/editar-laboratorio', params: { page: 'produtos' } });
   };
 
   return (
@@ -67,7 +63,7 @@ export default function ProdutosScreen() {
           style={styles.carousel}
           contentContainerStyle={styles.carouselContent}
         >
-          {carouselItems.map((item) => (
+          {carouselItems && carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
                 <Text style={styles.title}>{item.title}</Text>
@@ -79,7 +75,7 @@ export default function ProdutosScreen() {
         </ScrollView>
 
         <View style={styles.paginationContainer}>
-          {carouselItems.map((_, index) => (
+          {carouselItems && carouselItems.map((_, index) => (
             <View
               key={index}
               style={[

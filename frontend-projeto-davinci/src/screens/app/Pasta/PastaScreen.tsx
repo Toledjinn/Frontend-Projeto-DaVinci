@@ -9,66 +9,27 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './PastaScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+import { useEducationalContentStore } from '@/state/educationalContentStore';
 import Pasta from '@/assets/characters/pasta.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
+import Chefinho from '@/assets/characters/chefinho.svg';
+import Escova from '@/assets/characters/escova1.svg';
+import FioDental from '@/assets/characters/fio.svg';
+import Revelador from '@/assets/characters/revelador.svg';
 
-
-const carouselItems = [
-  {
-    id: '1',
-    title: 'Sou a Pasta de Dente!',
-    text: 'E, levada e esfregada pela escova, tenho a função de facilitar a remoção do excesso de placa dental e remover os pigmentos da superfície do dente. Também, e principalmente, ao incorporar o parceiro flúor em minha composição, ajudo na proteção dos dentes contra a desmineralização.',
-    
-    images: [
-      require('@/assets/images/dentes-pigmentados.png'),
-      require('@/assets/images/mm2-placa.png'),
-      require('@/assets/images/escova-com-pasta.png'),
-    ],
-  },
-
-  {
-    id: '2',
-    textTop: 'Além de colaborar na saúde bucal, promovo uma sensação de boca limpa agradável e ajudo a combater o mau hálito. De acordo com necessidades especiais de cada um, posso ter minha formulação alterada para combater outros problemas específicos (excesso de tártaro, hipersensibilidade dentinária,...)',
-    textBottom: 'Não esqueça de conversar sobre qual a minha composição ideal para o seu caso com o seu dentista.',
-  
-    collageImages: [
-      require('@/assets/images/juliana-paes.png'),
-      require('@/assets/images/sorriso-1.png'),
-      require('@/assets/images/sorriso-2.png'),
-    ]
-  },
-
-  {
-    id: '3',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'O flúor é imprescindível na pasta.',
-      'O RDA é um índice de abrasividade que não pode ser maior que 250 (capacidade de limpeza). Em pacientes com restaurações deve ser inferior a 100.',
-      'Importante também o RDA baixo em lesões de mancha branca, LCNC ou após alimentações acidas.',
-    ]
-  },
-
-  {
-    id: '4',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'O RDA é apenas um dos fatores a serem considerados.',
-      'Cuidado com as superfícies parcialmente desmineralizadas.',
-      'Pastas com 5000 PPM de flúor são recomendadas para pacientes com alto índice de cárie ou pacientes com xerostomia e alto índice carie radicular.',
-    ]
-  },
- 
-];
+const userType = 'admin';
 
 export default function PastaScreen() {
+  const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const carouselItems = useEducationalContentStore((state) => state.pages.pasta);
 
-  
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
@@ -89,6 +50,10 @@ export default function PastaScreen() {
     }
   };
 
+  const handleEditPress = () => {
+    router.push({ pathname: '/(app)/editar-conteudo-educacional', params: { page: 'pasta' } });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -105,36 +70,57 @@ export default function PastaScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-           
-                {item.images && (
+                {item.collageImages ? (
                   <>
-                    <Text style={styles.title}>{item.title}</Text>
-                    <Text style={styles.paragraph}>{item.text}</Text>
-                    <View style={styles.imageGrid}>
-                      <Image source={item.images[0]} style={styles.gridImageTop} />
-                      <Image source={item.images[1]} style={styles.gridImageTop} />
-                      <Image source={item.images[2]} style={styles.gridImageBottom} />
-                    </View>
-                  </>
-                )}
-
-           
-                {item.collageImages && (
-                  <>
-                    <Text style={styles.paragraph}>{item.textTop}</Text>
+                    {item.text1 && <Text style={styles.paragraph}>{item.text1}</Text>}
                     <View style={styles.collageContainer}>
                       <Image source={item.collageImages[0]} style={styles.collageMainImage} />
                       <View style={styles.collageSideContainer}>
-                      <Image source={item.collageImages[1]} style={styles.collageSideImageTop} />
-                      <Image source={item.collageImages[2]} style={styles.collageSideImageBottom} />
+                        <Image source={item.collageImages[1]} style={styles.collageSideImage} />
+                        <Image source={item.collageImages[2]} style={styles.collageSideImage} />
                       </View>
                     </View>
-                    <Text style={styles.paragraph}>{item.textBottom}</Text>
+                    {item.text2 && <Text style={styles.paragraph}>{item.text2}</Text>}
                   </>
-                )}
-
-                   {item.listTitle && (
+                ) : 
+                item.images ? (
                   <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text && <Text style={styles.paragraph}>{item.text.join('\n')}</Text>}
+                    <View style={styles.imageGrid}>
+                      <View style={styles.imageGridRowTop}>
+                        <Image source={item.images[0]} style={styles.gridImageSide} />
+                        <Image source={item.images[1]} style={styles.gridImageSide} />
+                      </View>
+                      <Image source={item.images[2]} style={styles.gridImageBottom} />
+                    </View>
+                  </>
+                ) : 
+                item.quote ? (
+                  <>
+                    {item.image && <Image source={item.image} style={styles.image} />}
+                    <Text style={styles.quote}>{item.quote}</Text>
+                    {item.author && <Text style={styles.author}>{item.author}</Text>}
+                  </>
+                ) : 
+                item.text1 ? (
+                  <>
+                    <Text style={styles.text1}>{item.text1}</Text>
+                    {item.text2 && <Text style={styles.text2}>{item.text2}</Text>}
+                    {item.image && <Image source={item.image} style={styles.newImage} />}
+                  </>
+                ) : 
+                item.listTitle ? (
+                  <>
+                    {item.id.startsWith('chefinho') && (
+                        <View style={styles.iconRow}>
+                            <Chefinho width={30} height={30} style={styles.smallIcon} />
+                            <Escova width={30} height={30} style={styles.smallIcon} />
+                            <Pasta width={30} height={30} style={styles.smallIcon} />
+                            <FioDental width={30} height={30} style={styles.smallIcon} />
+                            <Revelador width={30} height={30} style={styles.smallIcon} />
+                        </View>
+                    )}
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
                       <View key={index} style={styles.bulletPointContainer}>
@@ -142,6 +128,46 @@ export default function PastaScreen() {
                         <Text style={styles.bulletText}>{point}</Text>
                       </View>
                     ))}
+                  </>
+                ) : 
+                item.beforeAfterImages ? (
+                  <>
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    <View style={styles.imageRow}>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.before} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Antes</Text>
+                        </View>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.after} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Depois</Text>
+                        </View>
+                    </View>
+                  </>
+                ) : 
+                item.imageGrid ? (
+                    <View style={styles.imageGridContainer}>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[0]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[1]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[2]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[3]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[4]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[5]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[6]} style={styles.gridImageBottom} />
+                        </View>
+                    </View>
+                ) : (
+                  <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    {item.image && <Image source={item.image} style={styles.image} />}
                   </>
                 )}
               </View>
@@ -161,6 +187,14 @@ export default function PastaScreen() {
           ))}
         </View>
       </View>
+
+      {(userType === 'admin' || userType === 'dentista') && (
+        <ScreenFooter
+          primaryButtonTitle="Editar Conteúdo"
+          onPrimaryButtonPress={handleEditPress}
+        />
+      )}
     </SafeAreaView>
   );
 }
+

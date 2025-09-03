@@ -3,64 +3,33 @@ import {
   View,
   Text,
   SafeAreaView,
+  Image,
   ScrollView,
   useWindowDimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './FluorScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+import { useEducationalContentStore } from '@/state/educationalContentStore';
 import Fluor from '@/assets/characters/fluor.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
+import Chefinho from '@/assets/characters/chefinho.svg';
+import Escova from '@/assets/characters/escova1.svg';
+import Pasta from '@/assets/characters/pasta.svg';
+import FioDental from '@/assets/characters/fio.svg';
+import Revelador from '@/assets/characters/revelador.svg';
 
-
-const carouselItems = [
-  
-  {
-    id: '1',
-    text: [
-      'Sou importante demais na prevenção da cárie e meu principal papel é fazer com que os dentes sejam mais resistentes aos ácidos produzidos pelas bactérias do biofilme. Se estou presente no meio bucal consigo reduzir a perda de mineral nos momentos em que o ambiente fica ácido (após a ingestão de alimentos, por exemplo) e acelerar o processo de remineralização entre as refeições/lanches.',
-    ],
-  },
-
-  {
-    id: '2',
-    text: [
-      'Assim, sou incorporado na água de abastecimento e nas pastas de dente para estar a toda hora disponível. Nas pastas, sempre devo ter uma concentração de ao menos 1000ppm de flúor. Para a maioria dos pacientes, minha baixa concentração e alta frequência de uso (na água e na pasta) garantem boa proteção frente à doença cárie.',
-    ],
-  },
-
-  {
-    id: '3',
-    text: [
-      'Em alguns casos, eu, flúor, também posso ser utilizado sob a forma de bochechos, géis ou vernizes aplicados sobre os dentes. Converse com seu dentista sobre a melhor forma como eu posso lhe ajudar a manter uma ótima saúde bucal!',
-    ],
-  },
-
-  {
-    id: '4',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'A cárie é profundamente influenciada pela exposição do fluoreto, que reduz a desmineralização e aumenta a remineralização.',
-      'O fluoreto reduz a progressão da cárie (desde os estágios iniciais até os estágios mais avançados), independente do fator da taxa de progressão ser lenta, moderada ou rápida.',
-    ],
-  },
-
-  {
-    id: '5',
-    listTitle: 'O que é importante e devemos entender!',
-    bulletPoints: [
-      'A cárie não é a única doença oral relacionada à desmineralização. A erosão dentária, causada pela ação direta de ácidos sobre as superfícies dentárias sem ação de bactérias, resultada em desgaste aumentado.',
-      'Mesmo com o uso de dentifrícios fluoretados pela maior parte das pessoas, a incidência de bio corrosão tem aumentado, devido à ação de ácidos, de origem endogena e exogena, no meio bucal.',
-    ],
-  },
-];
+const userType = 'admin'; 
 
 export default function FluorScreen() {
+  const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const carouselItems = useEducationalContentStore((state) => state.pages.fluor);
 
   useFocusEffect(
     useCallback(() => {
@@ -82,6 +51,10 @@ export default function FluorScreen() {
     }
   };
 
+  const handleEditPress = () => {
+    router.push({ pathname: '/(app)/editar-conteudo-educacional', params: { page: 'fluor' } });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -98,18 +71,57 @@ export default function FluorScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                
-
-                {item.text && (
+                {item.collageImages ? (
                   <>
-                    {item.text.map((paragraph, index) => (
-                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
-                    ))}
+                    {item.text1 && <Text style={styles.paragraph}>{item.text1}</Text>}
+                    <View style={styles.collageContainer}>
+                      <Image source={item.collageImages[0]} style={styles.collageMainImage} />
+                      <View style={styles.collageSideContainer}>
+                        <Image source={item.collageImages[1]} style={styles.collageSideImage} />
+                        <Image source={item.collageImages[2]} style={styles.collageSideImage} />
+                      </View>
+                    </View>
+                    {item.text2 && <Text style={styles.paragraph}>{item.text2}</Text>}
                   </>
-                )}
-
-                {item.listTitle && (
+                ) : 
+                item.images ? (
                   <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text && <Text style={styles.paragraph}>{item.text.join('\n')}</Text>}
+                    <View style={styles.imageGrid}>
+                      <View style={styles.imageGridRowTop}>
+                        <Image source={item.images[0]} style={styles.gridImageSide} />
+                        <Image source={item.images[1]} style={styles.gridImageSide} />
+                      </View>
+                      <Image source={item.images[2]} style={styles.gridImageBottom} />
+                    </View>
+                  </>
+                ) : 
+                item.quote ? (
+                  <>
+                    {item.image && <Image source={item.image} style={styles.image} />}
+                    <Text style={styles.quote}>{item.quote}</Text>
+                    {item.author && <Text style={styles.author}>{item.author}</Text>}
+                  </>
+                ) : 
+                item.text1 ? (
+                  <>
+                    <Text style={styles.text1}>{item.text1}</Text>
+                    {item.text2 && <Text style={styles.text2}>{item.text2}</Text>}
+                    {item.image && <Image source={item.image} style={styles.newImage} />}
+                  </>
+                ) : 
+                item.listTitle ? (
+                  <>
+                    {item.id.startsWith('chefinho') && (
+                        <View style={styles.iconRow}>
+                            <Chefinho width={30} height={30} style={styles.smallIcon} />
+                            <Escova width={30} height={30} style={styles.smallIcon} />
+                            <Pasta width={30} height={30} style={styles.smallIcon} />
+                            <FioDental width={30} height={30} style={styles.smallIcon} />
+                            <Revelador width={30} height={30} style={styles.smallIcon} />
+                        </View>
+                    )}
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
                       <View key={index} style={styles.bulletPointContainer}>
@@ -117,6 +129,46 @@ export default function FluorScreen() {
                         <Text style={styles.bulletText}>{point}</Text>
                       </View>
                     ))}
+                  </>
+                ) : 
+                item.beforeAfterImages ? (
+                  <>
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    <View style={styles.imageRow}>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.before} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Antes</Text>
+                        </View>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.after} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Depois</Text>
+                        </View>
+                    </View>
+                  </>
+                ) : 
+                item.imageGrid ? (
+                    <View style={styles.imageGridContainer}>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[0]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[1]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[2]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[3]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[4]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[5]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[6]} style={styles.gridImageBottom} />
+                        </View>
+                    </View>
+                ) : (
+                  <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    {item.image && <Image source={item.image} style={styles.image} />}
                   </>
                 )}
               </View>
@@ -136,6 +188,14 @@ export default function FluorScreen() {
           ))}
         </View>
       </View>
+
+      {(userType === 'admin' || userType === 'dentista') && (
+        <ScreenFooter
+          primaryButtonTitle="Editar Conteúdo"
+          onPrimaryButtonPress={handleEditPress}
+        />
+      )}
     </SafeAreaView>
   );
 }
+

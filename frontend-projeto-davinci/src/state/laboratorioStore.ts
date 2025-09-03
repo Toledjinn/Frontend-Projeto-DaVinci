@@ -1,69 +1,141 @@
 import { create } from 'zustand';
 import { ImageSourcePropType } from 'react-native';
-
-export type LabCarouselItem = {
+export type CarouselSlide = {
   id: string;
   title: string;
   text: string;
   image: ImageSourcePropType;
 };
-
 type PageName = 'produtos' | 'trabalhos' | 'parceiros';
-
 type LaboratorioState = {
-  produtos: LabCarouselItem[];
-  trabalhos: LabCarouselItem[];
-  parceiros: LabCarouselItem[];
-  updatePageContent: (page: PageName, newContent: LabCarouselItem[]) => void;
+  pages: Record<PageName, { title: string; slides: CarouselSlide[] }>;
+  updateSlide: (page: PageName, slideId: string, newContent: Partial<CarouselSlide>) => void;
+  addSlide: (page: PageName) => void;
+  removeSlide: (page: PageName, slideId: string) => void;
 };
 
-export const useLaboratorioStore = create<LaboratorioState>((set) => ({
-  produtos: [
-    {
-      id: '1',
-      title: 'Coroas de Zircônia Pura',
-      text: 'Oferecemos coroas de zircônia de alta translucidez, conhecidas pela sua estética natural e resistência superior. Ideais para restaurações anteriores e posteriores.',
-      image: require('@/assets/images/produto-1.png'),
+const MOCK_DATA = {
+    produtos: {
+        title: 'Produtos',
+        slides: [
+            {
+              id: 'prod1',
+              title: 'Coroas de Zircônia',
+              text: 'Oferecemos coroas de zircônia fresadas com tecnologia CAD/CAM, garantindo uma adaptação perfeita e uma estética natural inigualável.',
+              image: require('@/assets/images/produto-1.png'),
+            },
+            {
+              id: 'prod2',
+              title: 'Lentes de Contato Dental',
+              text: 'Nossas lentes de contato são ultrafinas e resistentes, ideais para transformações do sorriso com mínimo desgaste dental.',
+              image: require('@/assets/images/produto-2.png'),
+            },
+        ],
     },
-    {
-      id: '2',
-      title: 'Lentes de Contato Dental em Dissilicato de Lítio',
-      text: 'As nossas lentes de contato são fabricadas com dissilicato de lítio, proporcionando uma combinação perfeita de durabilidade e uma aparência vibrante e natural para o sorriso.',
-      image: require('@/assets/images/produto-2.png'),
+    trabalhos: {
+        title: 'Trabalhos',
+        slides: [
+            {
+                id: 'trab1',
+                title: 'Reabilitação Oral Completa',
+                text: 'Casos complexos de reabilitação com implantes e próteses totais, devolvendo a função e a estética ao paciente.',
+                image: require('@/assets/images/trabalho-1.png'),
+            },
+            {
+                id: 'trab2',
+                title: 'Facetas em Resina Composta',
+                text: 'Trabalhos artísticos de facetas em resina composta, realizados com técnica estratificada para um resultado natural.',
+                image: require('@/assets/images/trabalho-2.png'),
+            },
+        ],
     },
-  ],
-  trabalhos: [
-    {
-      id: '1',
-      title: 'Reabilitação Oral Completa',
-      text: 'Caso complexo de reabilitação com implantes e coroas de porcelana, restaurando a função e a estética do sorriso.',
-      image: require('@/assets/images/trabalho-1.png'),
+    parceiros: {
+        title: 'Parceiros',
+        slides: [
+            {
+                id: 'parc1',
+                title: 'ArtSmile Laboratório Protético',
+                text: 'Nosso principal parceiro para trabalhos de prótese, conhecido pela precisão e pelo uso de materiais de ponta.',
+                image: require('@/assets/images/parceiro-1.png'),
+            },
+            {
+                id: 'parc2',
+                title: 'Dental Supply Co.',
+                text: 'Fornecedor oficial de todos os nossos materiais, garantindo a qualidade e a rastreabilidade de resinas, cerâmicas e outros insumos.',
+                image: require('@/assets/images/parceiro-2.png'),
+            },
+        ],
     },
-    {
-      id: '2',
-      title: 'Facetas em Resina Composta',
-      text: 'Transformação do sorriso através da aplicação de facetas em resina composta, técnica minimamente invasiva com resultados imediatos.',
-      image: require('@/assets/images/trabalho-2.png'),
-    },
-  ],
-  parceiros: [
-    {
-      id: '1',
-      title: 'Laboratório Protético ArtSmile',
-      text: 'A nossa parceria com o ArtSmile garante trabalhos protéticos de alta precisão e estética, utilizando as mais recentes tecnologias de CAD/CAM.',
-      image: require('@/assets/images/parceiro-1.png'),
-    },
-    {
-      id: '2',
-      title: 'Dental Supply Co.',
-      text: 'Trabalhamos com os melhores materiais do mercado, fornecidos pela Dental Supply Co., assegurando a durabilidade e a qualidade de todos os nossos tratamentos.',
-      image: require('@/assets/images/parceiro-2.png'),
-    },
-  ],
+};
 
-  updatePageContent: (page, newContent) =>
-    set((state) => ({
-      ...state,
-      [page]: newContent,
-    })),
+
+export const useLaboratorioStore = create<LaboratorioState>((set) => ({
+  pages: MOCK_DATA,
+
+  updateSlide: (page, slideId, newContent) => {
+    set((state) => {
+      const pageToUpdate = state.pages[page];
+      if (pageToUpdate) {
+        return {
+          pages: {
+            ...state.pages,
+            [page]: {
+              ...pageToUpdate,
+              slides: pageToUpdate.slides.map((slide) =>
+                slide.id === slideId ? { ...slide, ...newContent } : slide
+              ),
+            },
+          },
+        };
+      }
+      return state;
+    });
+  },
+
+  addSlide: (page) => {
+    set((state) => {
+      const pageToUpdate = state.pages[page];
+      if (pageToUpdate) {
+        const newSlide: CarouselSlide = {
+          id: `slide_${Date.now()}`, 
+          title: 'Novo Título',
+          text: 'Novo texto do slide.',
+          image: require('@/assets/images/placeholder.png'), 
+        };
+        return {
+          pages: {
+            ...state.pages,
+            [page]: {
+              ...pageToUpdate,
+              slides: [...pageToUpdate.slides, newSlide],
+            },
+          },
+        };
+      }
+      return state;
+    });
+  },
+
+  removeSlide: (page, slideId) => {
+    set((state) => {
+      const pageToUpdate = state.pages[page];
+      if (pageToUpdate) {
+        if (pageToUpdate.slides.length <= 1) {
+          alert('Não é possível remover o último slide.');
+          return state;
+        }
+        return {
+          pages: {
+            ...state.pages,
+            [page]: {
+              ...pageToUpdate,
+              slides: pageToUpdate.slides.filter((slide) => slide.id !== slideId),
+            },
+          },
+        };
+      }
+      return state;
+    });
+  },
 }));
+

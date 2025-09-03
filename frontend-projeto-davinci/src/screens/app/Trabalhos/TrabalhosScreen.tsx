@@ -24,14 +24,14 @@ export default function TrabalhosScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const carouselItems = useLaboratorioStore((state) => state.trabalhos);
+  const carouselItems = useLaboratorioStore((state) => state.pages.trabalhos?.slides || []);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'TRABALHOS',
+        pageTitle: 'Trabalhos',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -47,10 +47,7 @@ export default function TrabalhosScreen() {
   };
 
   const handleEditPress = () => {
-    router.push({
-      pathname: '/(app)/editar-laboratorio',
-      params: { page: 'trabalhos' },
-    });
+    router.push({ pathname: '/(app)/editar-laboratorio', params: { page: 'trabalhos' } });
   };
 
   return (
@@ -99,3 +96,4 @@ export default function TrabalhosScreen() {
     </SafeAreaView>
   );
 }
+
