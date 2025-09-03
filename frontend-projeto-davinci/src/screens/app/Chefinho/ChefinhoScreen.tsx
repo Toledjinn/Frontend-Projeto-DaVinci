@@ -103,7 +103,6 @@ export default function ChefinhoScreen() {
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
                 
-                {/* Layout 1: Citação */}
                 {item.quote && (
                   <>
                     <Image source={item.image} style={styles.image} />
@@ -112,7 +111,6 @@ export default function ChefinhoScreen() {
                   </>
                 )}
 
-                {/* Layout 2: Texto e Imagem */}
                 {item.text1 && (
                   <>
                     <Text style={styles.text1}>{item.text1}</Text>
@@ -121,7 +119,6 @@ export default function ChefinhoScreen() {
                   </>
                 )}
 
-                {/* Layout 3: Lista de Tópicos */}
                 {item.listTitle && (
                   <>
                     <View style={styles.iconRow}>

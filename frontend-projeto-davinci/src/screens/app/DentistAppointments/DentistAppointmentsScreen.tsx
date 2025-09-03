@@ -1,39 +1,40 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { SafeAreaView, useWindowDimensions, View, Text, FlatList } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { styles } from './MedicalRecordScreen.styles';
+import { styles } from './DentistAppointmentsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import Prontuario from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import AppointmentListItem from '@/components/features/AppointmentListItem';
 import RecordFilterModal from '@/components/features/RecordFilterModal';
-import { findUserById } from '@/data/mockUsers';
-import { getAppointmentsByPatientId, Appointment } from '@/data/mockAppointments';
+import { findUserById, UserProfile } from '@/data/mockUsers'; 
+import { getAppointmentsByDentistName, Appointment } from '@/data/mockAppointments';
+import UserPlaceholder from '@/assets/icons/user-placeholder.svg'; 
 
-export default function MedicalRecordScreen() {
+export default function DentistAppointmentsScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const { patientId } = useLocalSearchParams<{ patientId: string }>();
+  const { dentistId } = useLocalSearchParams<{ dentistId: string }>();
 
-  const [patientName, setPatientName] = useState('');
+  const [dentist, setDentist] = useState<UserProfile | null>(null); 
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [selectedDentists, setSelectedDentists] = useState<string[]>([]);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
 
   useEffect(() => {
-    if (patientId) {
-      const patient = findUserById(patientId);
-      setPatientName(patient?.name || '');
-      const patientAppointments = getAppointmentsByPatientId(patientId);
-      setAllAppointments(patientAppointments);
+    if (dentistId) {
+      const foundDentist = findUserById(dentistId);
+      if (foundDentist) {
+        setDentist(foundDentist);
+        const dentistAppointments = getAppointmentsByDentistName(foundDentist.name);
+        setAllAppointments(dentistAppointments);
+      }
     }
-  }, [patientId]);
+  }, [dentistId]);
 
   const filteredAppointments = useMemo(() => {
     let appointments = [...allAppointments];
@@ -46,55 +47,65 @@ export default function MedicalRecordScreen() {
         inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1);
         appointments = appointments.filter(appt => new Date(appt.date.split('/').reverse().join('-')) < inclusiveEndDate);
     }
-    if (selectedDentists.length > 0) {
-        appointments = appointments.filter(appt => selectedDentists.includes(appt.dentist));
-    }
     if (selectedSpecialties.length > 0) {
         appointments = appointments.filter(appt => selectedSpecialties.includes(appt.specialty));
     }
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
-      appointments = appointments.filter(appt => 
+      appointments = appointments.filter(appt =>
         appt.procedures.some(proc => proc.toLowerCase().includes(lowercasedQuery))
       );
     }
 
     return appointments;
-  }, [allAppointments, searchQuery, startDate, endDate, selectedDentists, selectedSpecialties]);
+  }, [allAppointments, searchQuery, startDate, endDate, selectedSpecialties]);
 
-  const dentistOptions = useMemo(() => [...new Set(allAppointments.map(a => a.dentist))], [allAppointments]);
   const specialtyOptions = useMemo(() => [...new Set(allAppointments.map(a => a.specialty))], [allAppointments]);
 
   useFocusEffect(
     useCallback(() => {
-      setHeaderConfig({
-        layout: 'page',
-        showPageHeaderElements: true,
-        pageTitle: `Prontuário de ${patientName}`,
-        CharacterSvg: Prontuario,
-        showNotificationIcon: true,
-      });
-    }, [patientName])
+      if (dentist) { 
+        setHeaderConfig({
+          layout: 'profile', 
+          showBackground: true, 
+          showPageHeaderElements: true,
+          pageTitle: `Consultas de ${dentist.name}`,
+          UserImageSvg: dentist.image || UserPlaceholder,
+          showNotificationIcon: true,
+          userName: dentist.name,
+          riskLevel: dentist.riskLevel, 
+        });
+      }
+    }, [dentist])
   );
 
   const handleApplyFilter = (filters: any) => {
     setStartDate(filters.start);
     setEndDate(filters.end);
-    setSelectedDentists(filters.dentists);
     setSelectedSpecialties(filters.specialties);
   };
 
+  if (!dentist) {
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.outerContainer}>
+                <Text style={styles.emptyText}>Carregando informações do dentista...</Text>
+            </View>
+        </SafeAreaView>
+    );
+  }
+  
   const handleNewAppointment = () => { 
     router.push({
-      pathname: '/(app)/schedule-appointment',
-      params: { patientId: patientId },
+        pathname: '/(app)/schedule-appointment',
+        params: { dentistId: dentist?.id }
     });
   };
 
   const handleAppointmentPress = (id: string) => {
     router.push(`/(app)/appointment/${id}`);
   };
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
@@ -104,7 +115,7 @@ export default function MedicalRecordScreen() {
             onSearchChange={setSearchQuery}
             onFilterPress={() => setFilterModalVisible(true)}
           />
-          <FlatList
+           <FlatList
             data={filteredAppointments}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
@@ -123,9 +134,9 @@ export default function MedicalRecordScreen() {
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApply={handleApplyFilter}
-        dentistOptions={dentistOptions}
+        dentistOptions={[]}
         specialtyOptions={specialtyOptions}
-        initialFilters={{ start: startDate, end: endDate, dentists: selectedDentists, specialties: selectedSpecialties }}
+        initialFilters={{ start: startDate, end: endDate, dentists: [], specialties: selectedSpecialties }}
       />
     </SafeAreaView>
   );

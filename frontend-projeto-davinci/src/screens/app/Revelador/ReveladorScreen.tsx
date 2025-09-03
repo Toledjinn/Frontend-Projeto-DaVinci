@@ -106,7 +106,6 @@ export default function ReveladorScreen() {
                   </>
                 )}
 
-                {/* Layout 2: Lista de Tópicos */}
                 {item.listTitle && (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>

@@ -91,7 +91,6 @@ export default function EscovaScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Configura o cabeçalho padrão sempre que a tela entra em foco
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
@@ -125,11 +124,11 @@ export default function EscovaScreen() {
           style={styles.carousel}
           contentContainerStyle={styles.carouselContent}
         >
-         {carouselItems.map((item) => (
+          {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
                 
-                {item.beforeAfterImages && (
+                {item.beforeAfterImages && item.text && (
                   <>
                     {item.text.map((paragraph, index) => (
                       <Text key={index} style={styles.paragraph}>{paragraph}</Text>
@@ -140,7 +139,6 @@ export default function EscovaScreen() {
                         <Text style={styles.imageLabel}>Antes</Text>
                       </View>
                       <View style={styles.imageContainer}>
-                        {/* CORREÇÃO: O nome do estilo estava incompleto */}
                         <Image source={item.beforeAfterImages.after} style={styles.sideImage} />
                         <Text style={styles.imageLabel}>Depois</Text>
                       </View>
@@ -149,9 +147,8 @@ export default function EscovaScreen() {
                 )}
 
                 
-                {item.image && !item.beforeAfterImages && (
+                {item.image && !item.beforeAfterImages && item.text && (
                   <>
-                    {/* Renderiza o título apenas se ele existir */}
                     {item.title && <Text style={styles.title}>{item.title}</Text>}
                     {item.text.map((paragraph, index) => (
                       <Text key={index} style={styles.paragraph}>{paragraph}</Text>

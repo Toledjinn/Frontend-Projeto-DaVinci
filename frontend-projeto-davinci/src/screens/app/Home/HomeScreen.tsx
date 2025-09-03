@@ -62,7 +62,13 @@ export default function HomeScreen() {
   );
 
 const handleButtonPress = (sectionId: string, buttonId: string) => {
-    if (buttonId === 'dentistas') {
+    if (buttonId === 'consultas') {
+      router.push('/(app)/consultas');
+    } else if (buttonId === 'agendar') {
+      router.push('/(app)/schedule-appointment');
+    } else if (buttonId === 'solicitacoes') { 
+      router.push('/(app)/solicitacoes');
+    } else if (buttonId === 'dentistas') {
       router.push('/(app)/dentists');
     } else if (buttonId === 'pacientes') {
       router.push('/(app)/patients');

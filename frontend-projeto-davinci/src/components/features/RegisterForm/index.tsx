@@ -100,7 +100,6 @@ export default function RegisterForm() {
         
         setName(userData.name);
         
-        // Dados Pessoais
         const genderValue = getDetail('gênero').toLowerCase();
         const genderItem = genderItems.find(item => item.label.toLowerCase() === genderValue);
         setGender(genderItem ? genderItem.value : null);
@@ -114,14 +113,11 @@ export default function RegisterForm() {
         const maritalStatusValue = getDetail('estado civil');
         const maritalStatusItem = maritalStatusItems.find(item => item.label.startsWith(maritalStatusValue));
         setMaritalStatus(maritalStatusItem ? maritalStatusItem.value : null);
-        
         setCpf(getDetail('cpf'));
         setPhone(getDetail('telefone'));
         setEmail(getDetail('e-mail'));
         setNationality(getDetail('nacionalidade'));
         setNaturalness(getDetail('naturalidade'));
-
-        // Endereço
         setAddress(getDetail('endereço'));
         setCep(getDetail('cep'));
         setNeighborhood(getDetail('bairro'));
