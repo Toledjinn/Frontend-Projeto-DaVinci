@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...FONTS.h2,
+    ...FONTS.body5,
     color: COLORS.secondary,
     textAlign: 'center',
     marginBottom: 16,
@@ -51,56 +51,52 @@ export const styles = StyleSheet.create({
     color: COLORS.secondary,
     textAlign: 'center',
     marginBottom: 20,
+    lineHeight: 22,
   },
-  imageGridContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  imageRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  gridImageTop: {
-    width: '48%',
-    height: 100,
-    borderRadius: 8,
-    margin: '1%',
-    resizeMode: 'cover',
-  },
-  gridImageBottom: {
-    width: '60%',
-    height: 100,
-    borderRadius: 8,
-    margin: '1%',
-    resizeMode: 'cover',
-  },
-  collageContainer: {
+  image: {
     width: '100%',
     height: 200,
-    flexDirection: 'row',
-    gap: 5,
+    borderRadius: 8,
     marginBottom: 20,
   },
-  collageMainImage: {
-    flex: 1.5,
-    height: '100%',
-    borderRadius: 8,
-    borderTopLeftRadius: 8,
-    borderBottomLeftRadius: 8,
+  quote: {
+    ...FONTS.body10,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginBottom: 16,
+    fontStyle: 'italic',
   },
-  collageSideContainer: {
-    flex: 1,
-    height: '100%',
-    justifyContent: 'space-between',
-    gap: 5,
+  author: {
+    ...FONTS.body11,
+    color: COLORS.gray_400,
+    alignSelf: 'flex-end',
   },
-  collageSideImage: {
-    flex: 1,
+  text1: {
+    ...FONTS.body10,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  text2: {
+    ...FONTS.body11,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  newImage: {
+    width: '80%',
+    height: 150,
+    resizeMode: 'contain',
+  },
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
     width: '100%',
-    borderRadius: 8,
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
+  },
+  smallIcon: {
+    marginHorizontal: 5,
   },
   listTitle: {
     ...FONTS.body7,
@@ -118,15 +114,91 @@ export const styles = StyleSheet.create({
     ...FONTS.body10,
     color: COLORS.secondary,
     marginRight: 8,
-    lineHeight: 20, 
+    lineHeight: 20,
   },
   bulletText: {
     ...FONTS.body10,
     color: COLORS.secondary,
-    flex: 1, 
+    flex: 1,
     lineHeight: 20,
   },
-
+  imageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 16,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    width: '45%',
+  },
+  sideImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
+  imageLabel: {
+    ...FONTS.body11,
+    color: COLORS.gray_400,
+    marginTop: 8,
+  },
+  imageGrid: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  imageGridRowTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: '2%',
+  },
+  gridImageSide: {
+    width: '49%',
+    height: 100,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
+  collageContainer: {
+    width: '100%',
+    height: 200,
+    flexDirection: 'row',
+    marginTop: 16,
+  },
+  collageMainImage: {
+    width: '58%',
+    height: '100%',
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    resizeMode: 'cover',
+  },
+  collageSideContainer: {
+    width: '42%',
+    height: '100%',
+    justifyContent: 'space-between',
+  },
+  collageSideImage: {
+    width: '100%',
+    height: '48%',
+    resizeMode: 'cover',
+  },
+  imageGridContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  gridImage: {
+    width: '48%',
+    height: 100,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
+  gridImageBottom: {
+    width: '48%',
+    height: 100,
+    borderRadius: 8,
+    resizeMode: 'cover',
+  },
   paginationContainer: {
     flexDirection: 'row',
     marginTop: 25,
@@ -138,3 +210,4 @@ export const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
 });
+

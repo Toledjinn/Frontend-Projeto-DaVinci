@@ -16,13 +16,14 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-    paddingTop: 180, 
+    paddingTop: 250, 
   },
   slideEditor: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 10, 
+    marginBottom: 16, 
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -111,7 +112,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    paddingVertical: 10,
   },
   removeSlideButton: {
     padding: 8,
@@ -164,6 +165,16 @@ export const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 8,
     overflow: 'hidden',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  slideContent: {
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.gray_100,
+    marginTop: 10,
   },
 });
 

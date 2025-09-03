@@ -15,8 +15,12 @@ import { useUIStore } from '@/state/uiStore';
 import { useEducationalContentStore } from '@/state/educationalContentStore';
 import FioDental from '@/assets/characters/fio.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
+import Chefinho from '@/assets/characters/chefinho.svg';
+import Escova from '@/assets/characters/escova1.svg';
+import Pasta from '@/assets/characters/pasta.svg';
+import Revelador from '@/assets/characters/revelador.svg';
 
-const userType = 'admin';
+const userType = 'admin'; 
 
 export default function FioDentalScreen() {
   const router = useRouter();
@@ -66,34 +70,105 @@ export default function FioDentalScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {item.title && (
+                {item.collageImages ? (
                   <>
-                    <Text style={styles.title}>{item.title}</Text>
-                    {item.text?.map((paragraph, index) => (
-                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
-                    ))}
-                    <Image source={item.image!} style={styles.image} />
+                    {item.text1 && <Text style={styles.paragraph}>{item.text1}</Text>}
+                    <View style={styles.collageContainer}>
+                      <Image source={item.collageImages[0]} style={styles.collageMainImage} />
+                      <View style={styles.collageSideContainer}>
+                        <Image source={item.collageImages[1]} style={styles.collageSideImage} />
+                        <Image source={item.collageImages[2]} style={styles.collageSideImage} />
+                      </View>
+                    </View>
+                    {item.text2 && <Text style={styles.paragraph}>{item.text2}</Text>}
                   </>
-                )}
-
-                {item.imageGrid && (
-                  <View style={styles.imageGridContainer}>
-                    <View style={styles.imageRow}>
-                      <Image source={item.imageGrid[0]} style={styles.gridImage} />
-                      <Image source={item.imageGrid[1]} style={styles.gridImage} />
+                ) : 
+                item.images ? (
+                  <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text && <Text style={styles.paragraph}>{item.text.join('\n')}</Text>}
+                    <View style={styles.imageGrid}>
+                      <View style={styles.imageGridRowTop}>
+                        <Image source={item.images[0]} style={styles.gridImageSide} />
+                        <Image source={item.images[1]} style={styles.gridImageSide} />
+                      </View>
+                      <Image source={item.images[2]} style={styles.gridImageBottom} />
                     </View>
+                  </>
+                ) : 
+                item.quote ? (
+                  <>
+                    {item.image && <Image source={item.image} style={styles.image} />}
+                    <Text style={styles.quote}>{item.quote}</Text>
+                    {item.author && <Text style={styles.author}>{item.author}</Text>}
+                  </>
+                ) : 
+                item.text1 ? (
+                  <>
+                    <Text style={styles.text1}>{item.text1}</Text>
+                    {item.text2 && <Text style={styles.text2}>{item.text2}</Text>}
+                    {item.image && <Image source={item.image} style={styles.newImage} />}
+                  </>
+                ) : 
+                item.listTitle ? (
+                  <>
+                    {item.id.startsWith('chefinho') && (
+                        <View style={styles.iconRow}>
+                            <Chefinho width={30} height={30} style={styles.smallIcon} />
+                            <Escova width={30} height={30} style={styles.smallIcon} />
+                            <Pasta width={30} height={30} style={styles.smallIcon} />
+                            <FioDental width={30} height={30} style={styles.smallIcon} />
+                            <Revelador width={30} height={30} style={styles.smallIcon} />
+                        </View>
+                    )}
+                    <Text style={styles.listTitle}>{item.listTitle}</Text>
+                    {item.bulletPoints?.map((point, index) => (
+                      <View key={index} style={styles.bulletPointContainer}>
+                        <Text style={styles.bullet}>•</Text>
+                        <Text style={styles.bulletText}>{point}</Text>
+                      </View>
+                    ))}
+                  </>
+                ) : 
+                item.beforeAfterImages ? (
+                  <>
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
                     <View style={styles.imageRow}>
-                      <Image source={item.imageGrid[2]} style={styles.gridImage} />
-                      <Image source={item.imageGrid[3]} style={styles.gridImage} />
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.before} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Antes</Text>
+                        </View>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.after} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Depois</Text>
+                        </View>
                     </View>
-                    <View style={styles.imageRow}>
-                      <Image source={item.imageGrid[4]} style={styles.gridImage} />
-                      <Image source={item.imageGrid[5]} style={styles.gridImage} />
+                  </>
+                ) : 
+                item.imageGrid ? (
+                    <View style={styles.imageGridContainer}>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[0]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[1]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[2]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[3]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[4]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[5]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[6]} style={styles.gridImageBottom} />
+                        </View>
                     </View>
-                    <View style={styles.imageRow}>
-                      <Image source={item.imageGrid[6]} style={styles.gridImageBottom} />
-                    </View>
-                  </View>
+                ) : (
+                  <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    {item.image && <Image source={item.image} style={styles.image} />}
+                  </>
                 )}
               </View>
             </View>
@@ -112,6 +187,7 @@ export default function FioDentalScreen() {
           ))}
         </View>
       </View>
+
       {(userType === 'admin' || userType === 'dentista') && (
         <ScreenFooter
           primaryButtonTitle="Editar Conteúdo"
@@ -121,3 +197,4 @@ export default function FioDentalScreen() {
     </SafeAreaView>
   );
 }
+

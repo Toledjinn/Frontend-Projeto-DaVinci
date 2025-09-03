@@ -15,6 +15,10 @@ import { useUIStore } from '@/state/uiStore';
 import { useEducationalContentStore } from '@/state/educationalContentStore';
 import Pasta from '@/assets/characters/pasta.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
+import Chefinho from '@/assets/characters/chefinho.svg';
+import Escova from '@/assets/characters/escova1.svg';
+import FioDental from '@/assets/characters/fio.svg';
+import Revelador from '@/assets/characters/revelador.svg';
 
 const userType = 'admin';
 
@@ -66,22 +70,7 @@ export default function PastaScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {item.images && (
-                  <>
-                    {item.title && <Text style={styles.title}>{item.title}</Text>}
-                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
-                    <View style={styles.imageGridContainer}>
-                        <View style={styles.imageRow}>
-                            <Image source={item.images[0]} style={styles.gridImageTop} />
-                            <Image source={item.images[1]} style={styles.gridImageTop} />
-                        </View>
-                        <View style={styles.imageRow}>
-                            <Image source={item.images[2]} style={styles.gridImageBottom} />
-                        </View>
-                    </View>
-                  </>
-                )}
-                {item.collageImages && (
+                {item.collageImages ? (
                   <>
                     {item.text1 && <Text style={styles.paragraph}>{item.text1}</Text>}
                     <View style={styles.collageContainer}>
@@ -93,9 +82,45 @@ export default function PastaScreen() {
                     </View>
                     {item.text2 && <Text style={styles.paragraph}>{item.text2}</Text>}
                   </>
-                )}
-                {item.listTitle && (
+                ) : 
+                item.images ? (
                   <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text && <Text style={styles.paragraph}>{item.text.join('\n')}</Text>}
+                    <View style={styles.imageGrid}>
+                      <View style={styles.imageGridRowTop}>
+                        <Image source={item.images[0]} style={styles.gridImageSide} />
+                        <Image source={item.images[1]} style={styles.gridImageSide} />
+                      </View>
+                      <Image source={item.images[2]} style={styles.gridImageBottom} />
+                    </View>
+                  </>
+                ) : 
+                item.quote ? (
+                  <>
+                    {item.image && <Image source={item.image} style={styles.image} />}
+                    <Text style={styles.quote}>{item.quote}</Text>
+                    {item.author && <Text style={styles.author}>{item.author}</Text>}
+                  </>
+                ) : 
+                item.text1 ? (
+                  <>
+                    <Text style={styles.text1}>{item.text1}</Text>
+                    {item.text2 && <Text style={styles.text2}>{item.text2}</Text>}
+                    {item.image && <Image source={item.image} style={styles.newImage} />}
+                  </>
+                ) : 
+                item.listTitle ? (
+                  <>
+                    {item.id.startsWith('chefinho') && (
+                        <View style={styles.iconRow}>
+                            <Chefinho width={30} height={30} style={styles.smallIcon} />
+                            <Escova width={30} height={30} style={styles.smallIcon} />
+                            <Pasta width={30} height={30} style={styles.smallIcon} />
+                            <FioDental width={30} height={30} style={styles.smallIcon} />
+                            <Revelador width={30} height={30} style={styles.smallIcon} />
+                        </View>
+                    )}
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
                       <View key={index} style={styles.bulletPointContainer}>
@@ -104,13 +129,44 @@ export default function PastaScreen() {
                       </View>
                     ))}
                   </>
-                )}
-                 {item.title && !item.images && (
-                   <>
-                    <Text style={styles.title}>{item.title}</Text>
-                    {item.text?.map((paragraph, index) => (
-                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
-                    ))}
+                ) : 
+                item.beforeAfterImages ? (
+                  <>
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                    <View style={styles.imageRow}>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.before} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Antes</Text>
+                        </View>
+                        <View style={styles.imageContainer}>
+                            <Image source={item.beforeAfterImages.after} style={styles.sideImage} />
+                            <Text style={styles.imageLabel}>Depois</Text>
+                        </View>
+                    </View>
+                  </>
+                ) : 
+                item.imageGrid ? (
+                    <View style={styles.imageGridContainer}>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[0]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[1]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[2]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[3]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[4]} style={styles.gridImage} />
+                            <Image source={item.imageGrid[5]} style={styles.gridImage} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.imageGrid[6]} style={styles.gridImageBottom} />
+                        </View>
+                    </View>
+                ) : (
+                  <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
                     {item.image && <Image source={item.image} style={styles.image} />}
                   </>
                 )}

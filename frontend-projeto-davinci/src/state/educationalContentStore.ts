@@ -23,7 +23,7 @@ type PageName = 'chefinho' | 'escova' | 'pasta' | 'fioDental' | 'fluor' | 'revel
 type EducationalContentState = {
   pages: Record<PageName, CarouselSlide[]>;
   updatePage: (page: PageName, newSlides: CarouselSlide[]) => void;
-  addSlide: (page: PageName) => void;
+  addSlide: (page: PageName, layoutKey: string) => void;
   removeSlide: (page: PageName, slideId: string) => void;
 };
 
@@ -270,17 +270,39 @@ export const useEducationalContentStore = create<EducationalContentState>((set) 
         [page]: newSlides,
       },
     })),
-  
-  addSlide: (page) => {
+  addSlide: (page, layoutKey) => {
     set((state) => {
       const pageToUpdate = state.pages[page];
       if (pageToUpdate) {
-        const newSlide: CarouselSlide = {
-          id: `slide_${Date.now()}`,
-          title: 'Novo Título',
-          text: ['Novo texto do slide.'],
-          image: require('@/assets/images/placeholder.png'),
-        };
+        let newSlide: CarouselSlide = { id: `slide_${Date.now()}` };
+
+        switch (layoutKey) {
+          case 'quote':
+            newSlide = { ...newSlide, quote: '', author: '', image: require('@/assets/images/placeholder.png') };
+            break;
+          case 'text_duo':
+            newSlide = { ...newSlide, text1: '', text2: '', image: require('@/assets/images/placeholder.png') };
+            break;
+          case 'list':
+            newSlide = { ...newSlide, listTitle: 'Novo Título da Lista', bulletPoints: ['Novo tópico'] };
+            break;
+          case 'before_after':
+            newSlide = { ...newSlide, text: [''], beforeAfterImages: { before: require('@/assets/images/placeholder.png'), after: require('@/assets/images/placeholder.png') } };
+            break;
+          case 'image_grid':
+            newSlide = { ...newSlide, imageGrid: Array(7).fill(require('@/assets/images/placeholder.png')) };
+            break;
+          case 'image_grid_pasta':
+            newSlide = { ...newSlide, title: 'Novo Título', text: [''], images: Array(3).fill(require('@/assets/images/placeholder.png')) };
+            break;
+          case 'collage':
+            newSlide = { ...newSlide, text1: '', text2: '', collageImages: Array(3).fill(require('@/assets/images/placeholder.png')) };
+            break;
+          default:
+            newSlide = { ...newSlide, title: 'Novo Título', text: ['Novo texto.'], image: require('@/assets/images/placeholder.png') };
+            break;
+        }
+
         return {
           pages: {
             ...state.pages,
