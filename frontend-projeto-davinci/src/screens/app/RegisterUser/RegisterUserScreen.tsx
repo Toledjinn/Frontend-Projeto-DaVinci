@@ -63,7 +63,7 @@ export default function RegisterUserScreen() {
         <ScreenFooter
           secondaryButtonTitle="Cancelar"
           onSecondaryButtonPress={handleCancel}
-          primaryButtonTitle={isEditing ? "Salvar Alterações" : "Cadastrar"}
+          primaryButtonTitle={isEditing ? "Salvar" : "Cadastrar"}
           onPrimaryButtonPress={handleSave}
         />
       </View>

@@ -148,7 +148,7 @@ export default function EditSimpleContentScreen() {
       <ScreenFooter
         secondaryButtonTitle="Cancelar"
         onSecondaryButtonPress={() => router.back()}
-        primaryButtonTitle="Salvar Alterações"
+        primaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
       />
     </SafeAreaView>

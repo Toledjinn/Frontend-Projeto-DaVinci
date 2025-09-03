@@ -137,7 +137,7 @@ export default function AppointmentDetailScreen() {
         />
       ) : (
         <ScreenFooter
-          secondaryButtonTitle="Cancelar Consulta"
+          secondaryButtonTitle="Cancelar"
           onSecondaryButtonPress={handleCancelAppointment}
           primaryButtonTitle="Reagendar"
           onPrimaryButtonPress={handleReschedule}
