@@ -68,30 +68,32 @@ export default function PastaScreen() {
               <View style={styles.card}>
                 {item.images && (
                   <>
-                    <Text style={styles.title}>{item.title}</Text>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
                     {item.text?.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
-                    <View style={styles.imageGrid}>
-                      <Image source={item.images[0]} style={styles.gridImageTop} />
-                      <Image source={item.images[1]} style={styles.gridImageTop} />
-                      <Image source={item.images[2]} style={styles.gridImageBottom} />
+                    <View style={styles.imageGridContainer}>
+                        <View style={styles.imageRow}>
+                            <Image source={item.images[0]} style={styles.gridImageTop} />
+                            <Image source={item.images[1]} style={styles.gridImageTop} />
+                        </View>
+                        <View style={styles.imageRow}>
+                            <Image source={item.images[2]} style={styles.gridImageBottom} />
+                        </View>
                     </View>
                   </>
                 )}
-
                 {item.collageImages && (
                   <>
-                    <Text style={styles.paragraph}>{item.text1}</Text>
+                    {item.text1 && <Text style={styles.paragraph}>{item.text1}</Text>}
                     <View style={styles.collageContainer}>
                       <Image source={item.collageImages[0]} style={styles.collageMainImage} />
                       <View style={styles.collageSideContainer}>
-                        <Image source={item.collageImages[1]} style={styles.collageSideImageTop} />
-                        <Image source={item.collageImages[2]} style={styles.collageSideImageBottom} />
+                        <Image source={item.collageImages[1]} style={styles.collageSideImage} />
+                        <Image source={item.collageImages[2]} style={styles.collageSideImage} />
                       </View>
                     </View>
-                    <Text style={styles.paragraph}>{item.text2}</Text>
+                    {item.text2 && <Text style={styles.paragraph}>{item.text2}</Text>}
                   </>
                 )}
-
                 {item.listTitle && (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
@@ -101,6 +103,15 @@ export default function PastaScreen() {
                         <Text style={styles.bulletText}>{point}</Text>
                       </View>
                     ))}
+                  </>
+                )}
+                 {item.title && !item.images && (
+                   <>
+                    <Text style={styles.title}>{item.title}</Text>
+                    {item.text?.map((paragraph, index) => (
+                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
+                    ))}
+                    {item.image && <Image source={item.image} style={styles.image} />}
                   </>
                 )}
               </View>
@@ -120,6 +131,7 @@ export default function PastaScreen() {
           ))}
         </View>
       </View>
+
       {(userType === 'admin' || userType === 'dentista') && (
         <ScreenFooter
           primaryButtonTitle="Editar Conteúdo"
@@ -129,3 +141,4 @@ export default function PastaScreen() {
     </SafeAreaView>
   );
 }
+

@@ -6,47 +6,82 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
-    flex: 1,
-  },
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 120,
+    padding: 24,
+    paddingTop: 180,
   },
-  formContainer: {
+  blockContainer: {
     backgroundColor: COLORS.white,
-    borderRadius: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    position: 'relative',
   },
-  sectionTitle: {
-    ...FONTS.body7,
-    color: COLORS.secondary,
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray_200,
-    paddingBottom: 8,
+  removeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
+    padding: 5,
   },
-  fieldLabel: {
+  label: {
     ...FONTS.body3,
     color: COLORS.secondary,
     marginBottom: 8,
   },
   manualInputContainer: {
-    height: 200,
-    flexDirection: 'row',
+  },
+  manualTextInputWrapper: {
     backgroundColor: COLORS.white,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  manualInput: {
+  manualTextInput: {
     ...FONTS.body9,
     color: COLORS.secondary,
-    flex: 1,
     textAlignVertical: 'top',
+    minHeight: 150,
   },
+  imagePicker: {
+    width: '100%',
+    height: 180,
+    borderRadius: 8,
+    backgroundColor: COLORS.gray_100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  imagePreview: {
+    width: '100%',
+    height: '100%',
+  },
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  addButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 16,
+  },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+  },
+  addButtonText: {
+    ...FONTS.body10,
+    color: COLORS.secondary,
+    marginLeft: 8,
+  }
 });

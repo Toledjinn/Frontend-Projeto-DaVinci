@@ -3,13 +3,14 @@ import {
   View,
   Text,
   SafeAreaView,
-  useWindowDimensions,
   ScrollView,
+  useWindowDimensions,
+  Image, 
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './OQueEScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { useSocialStore } from '@/state/socialStore';
+import { useSocialStore } from '@/state/socialStore'; 
 import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 
@@ -20,12 +21,11 @@ export default function OQueEScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const oQueEContent = useSocialStore((state) => state.oQueE);
+  const contentBlocks = useSocialStore((state) => state.pages.oQueE);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        visible: true,
         layout: 'page-large',
         showPageHeaderElements: true,
         pageTitle: 'O QUE É?',
@@ -45,11 +45,15 @@ export default function OQueEScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        {oQueEContent.paragraphs.map((paragraph, index) => (
-          <Text key={index} style={styles.paragraph}>
-            {paragraph}
-          </Text>
-        ))}
+        {contentBlocks.map((block) => {
+          if (block.type === 'text') {
+            return <Text key={block.id} style={styles.paragraph}>{block.content}</Text>;
+          }
+          if (block.type === 'image' && block.image) {
+            return <Image key={block.id} source={block.image} style={styles.image} />;
+          }
+          return null;
+        })}
       </ScrollView>
 
       {(userType === 'admin' || userType === 'dentista') && (

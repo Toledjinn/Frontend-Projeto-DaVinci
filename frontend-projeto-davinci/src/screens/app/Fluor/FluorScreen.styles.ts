@@ -28,8 +28,8 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    paddingHorizontal: 20,
     paddingVertical: 30,
+    paddingHorizontal: 20,
     alignItems: 'center',
     width: '100%',
     shadowColor: '#000',
@@ -41,11 +41,23 @@ export const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
   },
+  title: {
+    ...FONTS.h2,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
   paragraph: {
     ...FONTS.body10,
     color: COLORS.secondary,
     textAlign: 'center',
     marginBottom: 16,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginTop: 4,
   },
   listTitle: {
     ...FONTS.body7,
@@ -63,12 +75,12 @@ export const styles = StyleSheet.create({
     ...FONTS.body10,
     color: COLORS.secondary,
     marginRight: 8,
-    lineHeight: 20,
+    lineHeight: 20, 
   },
   bulletText: {
     ...FONTS.body10,
     color: COLORS.secondary,
-    flex: 1,
+    flex: 1, 
     lineHeight: 20,
   },
   paginationContainer: {

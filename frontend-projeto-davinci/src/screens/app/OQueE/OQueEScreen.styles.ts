@@ -1,5 +1,3 @@
-
-
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
@@ -16,10 +14,16 @@ export const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   paragraph: {
-    ...FONTS.body10,
+    ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'center',
+    marginBottom: 24,
     lineHeight: 22,
-    marginTop: 20,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 16,
+    marginBottom: 24,
   },
 });

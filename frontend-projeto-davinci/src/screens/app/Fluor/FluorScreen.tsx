@@ -3,6 +3,7 @@ import {
   View,
   Text,
   SafeAreaView,
+  Image,
   ScrollView,
   useWindowDimensions,
   NativeSyntheticEvent,
@@ -65,7 +66,7 @@ export default function FluorScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-                {item.listTitle ? (
+                {item.listTitle && (
                   <>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
@@ -75,13 +76,17 @@ export default function FluorScreen() {
                       </View>
                     ))}
                   </>
-                ) : (
+                )}
+                {item.text && !item.listTitle && (
                   <>
-                    {item.text?.map((paragraph, index) => (
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    {item.text.map((paragraph, index) => (
                       <Text key={index} style={styles.paragraph}>{paragraph}</Text>
                     ))}
+                    {item.image && <Image source={item.image} style={styles.image} />}
                   </>
                 )}
+                
               </View>
             </View>
           ))}

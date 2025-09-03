@@ -77,7 +77,6 @@ export default function ChefinhoScreen() {
                     <Text style={styles.author}>{item.author}</Text>
                   </>
                 )}
-
                 {item.text1 && (
                   <>
                     <Text style={styles.text1}>{item.text1}</Text>
@@ -85,15 +84,14 @@ export default function ChefinhoScreen() {
                     <Image source={item.image!} style={styles.newImage} />
                   </>
                 )}
-
                 {item.listTitle && (
                   <>
                     <View style={styles.iconRow}>
-                      <Chefinho width={55} height={55} style={styles.smallIcon} />
-                      <Escova width={55} height={55} style={styles.smallIcon} />
-                      <Pasta width={55} height={55} style={styles.smallIcon} />
-                      <FioDental width={55} height={55} style={styles.smallIcon} />
-                      <Revelador width={55} height={55} style={styles.smallIcon} />
+                      <Chefinho width={50} height={50} style={styles.smallIcon} />
+                      <Escova width={50} height={50} style={styles.smallIcon} />
+                      <Pasta width={50} height={50} style={styles.smallIcon} />
+                      <FioDental width={50} height={50} style={styles.smallIcon} />
+                      <Revelador width={50} height={50} style={styles.smallIcon} />
                     </View>
                     <Text style={styles.listTitle}>{item.listTitle}</Text>
                     {item.bulletPoints?.map((point, index) => (
@@ -104,6 +102,16 @@ export default function ChefinhoScreen() {
                     ))}
                   </>
                 )}
+                {item.title && (
+                   <>
+                    <Text style={styles.title}>{item.title}</Text>
+                    {item.text?.map((paragraph, index) => (
+                      <Text key={index} style={styles.paragraph}>{paragraph}</Text>
+                    ))}
+                    {item.image && <Image source={item.image} style={styles.image} />}
+                  </>
+                )}
+
               </View>
             </View>
           ))}
@@ -131,3 +139,4 @@ export default function ChefinhoScreen() {
     </SafeAreaView>
   );
 }
+

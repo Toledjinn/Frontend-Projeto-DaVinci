@@ -6,85 +6,164 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
+  container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scrollView: {
+    width: '100%',
   },
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 120,
+    padding: 24,
+    paddingTop: 180, 
   },
   slideEditor: {
     backgroundColor: COLORS.white,
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  slideHeader: {
-    ...FONTS.body7,
+  slideTitle: {
+    ...FONTS.body5,
     color: COLORS.secondary,
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray_200,
-    paddingBottom: 8,
   },
-  fieldLabel: {
+  label: {
     ...FONTS.body3,
     color: COLORS.secondary,
     marginBottom: 8,
     marginTop: 16,
   },
-  thumbnail: {
+  imagePicker: {
     width: '100%',
-    height: 150,
+    height: 180,
     borderRadius: 8,
-    marginTop: 4,
-    resizeMode: 'cover',
+    backgroundColor: COLORS.gray_100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  imagePreview: {
+    width: '100%',
+    height: '100%',
+  },
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   manualInputContainer: {
-    height: 150,
+    marginTop: 16,
+  },
+  manualTextInputWrapper: {
+    flexDirection: 'row',
     backgroundColor: COLORS.white,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
-    padding: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  manualInput: {
+  manualTextInput: {
+    flex: 1,
     ...FONTS.body9,
     color: COLORS.secondary,
-    flex: 1,
     textAlignVertical: 'top',
   },
-  imageRow: {
+  imageRowEditor: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  imageContainer: {
+  imageContainerEditor: {
     width: '48%',
+    alignItems: 'center',
+    height: 150,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
-  imageGridEditor: {
+  imageLabelEditor: {
+    ...FONTS.body11,
+    color: COLORS.gray_400,
+    marginTop: 8,
+  },
+  gridContainerEditor: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
+  gridImageContainerEditor: {
+    width: '48%', 
+    height: 150,
+    marginBottom: 16,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  slideHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  removeSlideButton: {
+    padding: 8,
+  },
+  addSlideButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    backgroundColor: COLORS.white,
+    marginTop: 8,
+  },
+  addSlideButtonText: {
+    ...FONTS.body7,
+    color: COLORS.secondary,
+    marginLeft: 8,
+  },
+  imageGridEditor: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
+  },
   gridImageContainer: {
     width: '48%',
-    marginBottom: '4%',
+    height: 100,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
-  gridImage: {
+  collageContainerEditor: {
     width: '100%',
-    height: 120,
-    borderRadius: 4,
+    height: 200,
+    flexDirection: 'row',
+    gap: 5,
   },
-  collageSideContainer: {
-    width: '38%',
-    marginLeft: '2%',
+  collageMainImageContainer: {
+    flex: 1.5,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  collageSideContainerEditor: {
+    flex: 1,
     justifyContent: 'space-between',
+    gap: 5,
   },
-  collageSideImage: {
-    width: '100%',
-    height: 74,
-    borderRadius: 4,
+  collageSideImageContainer: {
+    flex: 1,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
 });
+

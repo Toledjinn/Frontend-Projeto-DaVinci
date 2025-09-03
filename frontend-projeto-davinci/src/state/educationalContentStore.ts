@@ -7,11 +7,11 @@ export type CarouselSlide = {
   text?: string[];
   quote?: string;
   author?: string;
-  image?: ImageSourcePropType;
   text1?: string;
   text2?: string;
   listTitle?: string;
   bulletPoints?: string[];
+  image?: ImageSourcePropType;
   images?: ImageSourcePropType[];
   collageImages?: ImageSourcePropType[];
   beforeAfterImages?: { before: ImageSourcePropType; after: ImageSourcePropType };
@@ -23,6 +23,8 @@ type PageName = 'chefinho' | 'escova' | 'pasta' | 'fioDental' | 'fluor' | 'revel
 type EducationalContentState = {
   pages: Record<PageName, CarouselSlide[]>;
   updatePage: (page: PageName, newSlides: CarouselSlide[]) => void;
+  addSlide: (page: PageName) => void;
+  removeSlide: (page: PageName, slideId: string) => void;
 };
 
 export const useEducationalContentStore = create<EducationalContentState>((set) => ({
@@ -268,4 +270,45 @@ export const useEducationalContentStore = create<EducationalContentState>((set) 
         [page]: newSlides,
       },
     })),
+  
+  addSlide: (page) => {
+    set((state) => {
+      const pageToUpdate = state.pages[page];
+      if (pageToUpdate) {
+        const newSlide: CarouselSlide = {
+          id: `slide_${Date.now()}`,
+          title: 'Novo Título',
+          text: ['Novo texto do slide.'],
+          image: require('@/assets/images/placeholder.png'),
+        };
+        return {
+          pages: {
+            ...state.pages,
+            [page]: [...pageToUpdate, newSlide],
+          },
+        };
+      }
+      return state;
+    });
+  },
+
+  removeSlide: (page, slideId) => {
+    set((state) => {
+      const pageToUpdate = state.pages[page];
+      if (pageToUpdate) {
+        if (pageToUpdate.length <= 1) {
+          alert('Não é possível remover o último slide.');
+          return state;
+        }
+        return {
+          pages: {
+            ...state.pages,
+            [page]: pageToUpdate.filter((slide) => slide.id !== slideId),
+          },
+        };
+      }
+      return state;
+    });
+  },
 }));
+

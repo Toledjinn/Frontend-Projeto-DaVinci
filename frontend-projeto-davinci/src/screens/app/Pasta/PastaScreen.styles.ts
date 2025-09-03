@@ -1,5 +1,3 @@
-
-
 import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
@@ -43,10 +41,10 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...FONTS.body5,
+    ...FONTS.h2,
     color: COLORS.secondary,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   paragraph: {
     ...FONTS.body10,
@@ -54,72 +52,55 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  imageGrid: {
+  imageGridContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  imageRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
     width: '100%',
   },
   gridImageTop: {
-    width: '30%',
+    width: '48%',
     height: 100,
     borderRadius: 8,
     margin: '1%',
     resizeMode: 'cover',
   },
   gridImageBottom: {
-    width: '50%',
+    width: '60%',
     height: 100,
     borderRadius: 8,
     margin: '1%',
     resizeMode: 'cover',
   },
-  paginationContainer: {
-    flexDirection: 'row',
-    marginTop: 25,
-  },
-  paginationDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginHorizontal: 4,
-  },
-
   collageContainer: {
+    width: '100%',
+    height: 200,
     flexDirection: 'row',
-    width: '80%',
-    height: 150, 
+    gap: 5,
     marginBottom: 20,
   },
   collageMainImage: {
-    width: '60%',
+    flex: 1.5,
     height: '100%',
+    borderRadius: 8,
     borderTopLeftRadius: 8,
     borderBottomLeftRadius: 8,
-    resizeMode: 'cover',
   },
   collageSideContainer: {
-    width: '40%',
+    flex: 1,
     height: '100%',
     justifyContent: 'space-between',
+    gap: 5,
   },
   collageSideImage: {
+    flex: 1,
     width: '100%',
-    height: '50%',
     borderRadius: 8,
-    resizeMode: 'cover',
-  },
-
-  collageSideImageTop: {
-    width: '100%',
-    height: '50%',
-    borderTopRightRadius: 8, 
-  },
-  collageSideImageBottom: {
-    width: '100%',
-    height: '50%',
-    borderBottomRightRadius: 8, 
-    resizeMode: 'cover',
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
   },
   listTitle: {
     ...FONTS.body7,
@@ -137,13 +118,23 @@ export const styles = StyleSheet.create({
     ...FONTS.body10,
     color: COLORS.secondary,
     marginRight: 8,
-    lineHeight: 20,
+    lineHeight: 20, 
   },
   bulletText: {
     ...FONTS.body10,
     color: COLORS.secondary,
-    flex: 1,
+    flex: 1, 
     lineHeight: 20,
   },
 
+  paginationContainer: {
+    flexDirection: 'row',
+    marginTop: 25,
+  },
+  paginationDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginHorizontal: 4,
+  },
 });

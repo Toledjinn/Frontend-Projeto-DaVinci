@@ -1,73 +1,66 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
+  SafeAreaView,
+  ScrollView,
   View,
   Text,
-  SafeAreaView,
-  useWindowDimensions,
-  ScrollView,
-  Image,
   TouchableOpacity,
+  Image,
   Alert,
   TextInput,
 } from 'react-native';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { Feather } from '@expo/vector-icons';
 import { styles } from './EditLabPageScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { useLaboratorioStore, LabCarouselItem } from '@/state/laboratorioStore';
+import { useLaboratorioStore, CarouselSlide } from '@/state/laboratorioStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
-import StyledInput from '@/components/common/StyledInput';
 import ScreenFooter from '@/components/common/ScreenFooter';
+import StyledInput from '@/components/common/StyledInput';
 import { COLORS } from '@/constants/theme';
-import { Feather } from '@expo/vector-icons';
+
+type PageName = 'produtos' | 'trabalhos' | 'parceiros';
 
 export default function EditLabPageScreen() {
   const router = useRouter();
-  const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const { page } = useLocalSearchParams<{ page: PageName }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const { page } = useLocalSearchParams<{ page: 'produtos' | 'trabalhos' | 'parceiros' }>();
+  const pageContent = useLaboratorioStore((state) => state.pages[page!]);
+  const updateSlide = useLaboratorioStore((state) => state.updateSlide);
+  const addSlide = useLaboratorioStore((state) => state.addSlide);
+  const removeSlide = useLaboratorioStore((state) => state.removeSlide);
   
-  const { produtos, trabalhos, parceiros, updatePageContent } = useLaboratorioStore();
-
-  const [editedItems, setEditedItems] = useState<LabCarouselItem[]>([]);
-
-  const originalItems = useMemo(() => {
-    switch (page) {
-      case 'produtos': return produtos;
-      case 'trabalhos': return trabalhos;
-      case 'parceiros': return parceiros;
-      default: return [];
-    }
-  }, [page, produtos, trabalhos, parceiros]);
+  const [editableSlides, setEditableSlides] = useState<CarouselSlide[]>([]);
 
   useEffect(() => {
-    setEditedItems(originalItems);
-  }, [originalItems]);
+    if (pageContent) {
+      setEditableSlides(JSON.parse(JSON.stringify(pageContent.slides)));
+    }
+  }, [pageContent]);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        visible: true,
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: `EDITAR ${page?.toUpperCase()}`,
+        pageTitle: `EDITAR ${pageContent?.title.toUpperCase() || ''}`,
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
-    }, [page])
+    }, [pageContent])
   );
 
-  const handleTextChange = (text: string, index: number, field: 'title' | 'text') => {
-    const newItems = [...editedItems];
-    newItems[index] = { ...newItems[index], [field]: text };
-    setEditedItems(newItems);
+  const handleSlideChange = (index: number, field: keyof CarouselSlide, value: string) => {
+    const newSlides = [...editableSlides];
+    (newSlides[index] as any)[field] = value;
+    setEditableSlides(newSlides);
   };
 
   const handleImageChange = async (index: number) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permissão necessária', 'É preciso permitir o acesso à galeria.');
+      Alert.alert('Permissão necessária', 'Você precisa conceder permissão para aceder à galeria.');
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -77,58 +70,93 @@ export default function EditLabPageScreen() {
       quality: 0.8,
     });
     if (!result.canceled) {
-      const newItems = [...editedItems];
-      newItems[index] = { ...newItems[index], image: { uri: result.assets[0].uri } };
-      setEditedItems(newItems);
+      const newSlides = [...editableSlides];
+      newSlides[index].image = { uri: result.assets[0].uri };
+      setEditableSlides(newSlides);
     }
   };
 
   const handleSaveChanges = () => {
-    if (page) {
-      updatePageContent(page, editedItems);
-      Alert.alert('Sucesso', 'Conteúdo atualizado!');
-      router.back();
-    }
+    editableSlides.forEach((slide) => {
+      updateSlide(page!, slide.id, slide);
+    });
+    Alert.alert('Sucesso!', 'As alterações foram salvas.');
+    router.back();
   };
+
+  const handleAddSlide = () => {
+    addSlide(page!);
+  };
+
+  const handleRemoveSlide = (slideId: string) => {
+    Alert.alert(
+      "Remover Slide",
+      "Tem certeza que deseja remover este slide?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Remover", style: "destructive", onPress: () => removeSlide(page!, slideId) }
+      ]
+    );
+  };
+
+  if (!pageContent) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <Text>Página não encontrada.</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
+        contentContainerStyle={styles.contentContainer}
       >
-        {editedItems.map((item, index) => (
-          <View key={item.id} style={styles.slideEditor}>
-            <Text style={styles.slideHeader}>Slide {index + 1}</Text>
-            
-            <View style={{ marginBottom: 16 }}>
-              <StyledInput
-                label="Título"
-                iconName="type"
-                value={item.title}
-                onChangeText={(text) => handleTextChange(text, index, 'title')}
-              />
-            </View>
-            
-            <Text style={styles.fieldLabel}>Texto</Text>
-            <View style={styles.manualInputContainer}>
-              <Feather name="file-text" size={24} color={COLORS.gray_400} style={{ marginTop: 2 }}/>
-              <TextInput
-                value={item.text}
-                onChangeText={(text) => handleTextChange(text, index, 'text')}
-                placeholder="Escreva o texto do slide aqui..."
-                placeholderTextColor={COLORS.gray_400}
-                multiline
-                style={styles.manualInput}
-              />
+        {editableSlides.map((slide, index) => (
+          <View key={slide.id} style={styles.slideEditor}>
+            <View style={styles.slideHeader}>
+              <Text style={styles.slideTitle}>Slide {index + 1}</Text>
+              <TouchableOpacity style={styles.removeSlideButton} onPress={() => handleRemoveSlide(slide.id)}>
+                 <Feather name="trash-2" size={20} color={COLORS.red} />
+              </TouchableOpacity>
             </View>
 
-            <Text style={styles.fieldLabel}>Imagem</Text>
-            <TouchableOpacity onPress={() => handleImageChange(index)}>
-              <Image source={item.image} style={styles.thumbnail} />
+            <StyledInput
+              label="Título"
+              iconName="type"
+              value={slide.title}
+              onChangeText={(text) => handleSlideChange(index, 'title', text)}
+            />
+            
+            <View style={styles.manualInputContainer}>
+              <Text style={styles.label}>Texto</Text>
+              <View style={styles.manualTextInputWrapper}>
+                <TextInput
+                  value={slide.text}
+                  onChangeText={(text) => handleSlideChange(index, 'text', text)}
+                  multiline
+                  style={styles.manualTextInput}
+                />
+              </View>
+            </View>
+
+            <Text style={styles.label}>Imagem</Text>
+            <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(index)}>
+              <Image source={slide.image} style={styles.imagePreview} />
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
             </TouchableOpacity>
           </View>
         ))}
+
+        <TouchableOpacity style={styles.addSlideButton} onPress={handleAddSlide}>
+          <Feather name="plus-circle" size={22} color={COLORS.secondary} />
+          <Text style={styles.addSlideButtonText}>Adicionar Novo Slide</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <ScreenFooter
@@ -140,3 +168,4 @@ export default function EditLabPageScreen() {
     </SafeAreaView>
   );
 }
+
