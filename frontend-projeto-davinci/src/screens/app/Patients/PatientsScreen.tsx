@@ -58,7 +58,7 @@ export default function PatientsScreen() {
           <SearchAndFilterBar
             searchPlaceholder="Digite o nome do paciente"
             onSearchChange={setSearchQuery}
-            onFilterPress={() => { }}
+            onFilterPress={() => {}}
           />
           <ScrollView
             style={styles.scrollView}

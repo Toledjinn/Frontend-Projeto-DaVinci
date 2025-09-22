@@ -45,7 +45,6 @@ export const getStyledPickerStyles = (height: number, width: number) => {
     errorPlaceholder: {
       height: 20,
     },
-
     modalOverlay: {
       flex: 1,
       justifyContent: 'flex-end',

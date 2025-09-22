@@ -25,6 +25,7 @@ export default function UserDetailScreen() {
   }, [id]);
 
   const isPatient = user?.type === 'patient';
+  const isDentist = user?.type === 'dentist';
   const hasAllergies = isPatient && user.allergies && user.allergies.length > 0;
 
   useFocusEffect(
@@ -47,6 +48,15 @@ export default function UserDetailScreen() {
       router.push({
         pathname: "/record/[patientId]",
         params: { patientId: user.id },
+      });
+    }
+  };
+
+  const handleViewAppointments = () => {
+    if (user) {
+      router.push({
+        pathname: "/dentist-appointments/[dentistId]",
+        params: { dentistId: user.id },
       });
     }
   };
@@ -95,11 +105,11 @@ export default function UserDetailScreen() {
         </View>
       </ScrollView>
 
-      <ScreenFooter 
+      <ScreenFooter
         primaryButtonTitle={isPatient ? "Prontuário" : "Ver Agendamentos"}
-        onPrimaryButtonPress={isPatient ? handleViewRecord : () => {}}
-        secondaryButtonTitle={isPatient ? "Editar Dados" : undefined}
-        onSecondaryButtonPress={isPatient ? handleEditData : undefined}
+        onPrimaryButtonPress={isPatient ? handleViewRecord : (isDentist ? handleViewAppointments : () => {})}
+        secondaryButtonTitle={!isDentist ? "Editar Dados" : undefined}
+        onSecondaryButtonPress={!isDentist ? handleEditData : undefined}
       />
     </SafeAreaView>
   );

@@ -7,7 +7,7 @@ import StyledInput from '@/components/common/StyledInput';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
 import StyledPicker, { PickerItem } from '@/components/common/StyledPicker';
 import StyledSwitch from '@/components/common/StyledSwitch';
-import StyledMultiSelect, { MultiSelectItem } from '@/components/common/StyledMultiSelect'; 
+import StyledMultiSelect, { MultiSelectItem } from '@/components/common/StyledMultiSelect';
 import { maskCPF, maskPhone, maskCep } from '@/utils/maskUtils';
 import { validateCPF } from '@/utils/cpfUtils';
 import { COLORS } from '@/constants/theme';
@@ -113,14 +113,11 @@ export default function RegisterForm() {
         const maritalStatusValue = getDetail('estado civil');
         const maritalStatusItem = maritalStatusItems.find(item => item.label.startsWith(maritalStatusValue));
         setMaritalStatus(maritalStatusItem ? maritalStatusItem.value : null);
-        
         setCpf(getDetail('cpf'));
         setPhone(getDetail('telefone'));
         setEmail(getDetail('e-mail'));
         setNationality(getDetail('nacionalidade'));
         setNaturalness(getDetail('naturalidade'));
-
-
         setAddress(getDetail('endereço'));
         setCep(getDetail('cep'));
         setNeighborhood(getDetail('bairro'));
@@ -132,7 +129,6 @@ export default function RegisterForm() {
             setCity(cityVal);
             setState(stateVal);
         }
-
 
         if (userData.type === 'admin') {
             const roleValue = getDetail('cargo');

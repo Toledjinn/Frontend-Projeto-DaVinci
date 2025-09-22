@@ -28,7 +28,7 @@ export default function RegisterUserScreen() {
   const router = useRouter();
   const { userType, userId } = useLocalSearchParams<{ userType: string, userId?: string }>();
   
-  const isEditing = !!userId;
+  const isEditing = !!userId; 
 
   useFocusEffect(
     useCallback(() => {
@@ -63,7 +63,7 @@ export default function RegisterUserScreen() {
         <ScreenFooter
           secondaryButtonTitle="Cancelar"
           onSecondaryButtonPress={handleCancel}
-          primaryButtonTitle={isEditing ? "Salvar Alterações" : "Cadastrar"}
+          primaryButtonTitle={isEditing ? "Salvar" : "Cadastrar"}
           onPrimaryButtonPress={handleSave}
         />
       </View>

@@ -15,7 +15,13 @@ const AppointmentListItem = React.memo(({ item, onPress }: AppointmentListItemPr
     realizada: { text: 'Realizada', color: COLORS.green, icon: 'check-circle' as const },
     agendada: { text: 'Agendada', color: COLORS.primary, icon: 'calendar' as const },
     cancelada: { text: 'Cancelada', color: COLORS.red, icon: 'x-circle' as const },
+    pendente: { text: 'Pendente', color: COLORS.gray_400, icon: 'alert-circle' as const },
   };
+
+  const currentStatus = statusInfo[item.status];
+  if (!currentStatus) {
+    return null; 
+  }
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
@@ -29,9 +35,9 @@ const AppointmentListItem = React.memo(({ item, onPress }: AppointmentListItemPr
           {item.procedures.join(', ')}
         </Text>
         <View style={styles.statusContainer}>
-          <Feather name={statusInfo[item.status].icon} size={14} color={statusInfo[item.status].color} />
-          <Text style={[styles.statusText, { color: statusInfo[item.status].color }]}>
-            {statusInfo[item.status].text}
+          <Feather name={currentStatus.icon} size={14} color={currentStatus.color} />
+          <Text style={[styles.statusText, { color: currentStatus.color }]}>
+            {currentStatus.text}
           </Text>
         </View>
       </View>

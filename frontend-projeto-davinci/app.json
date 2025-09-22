@@ -30,10 +30,10 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "primaryColor": "#FFC045",
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.frontendprojetodavinci"
+      "package": "com.toled1nn.frontendprojetodavinci"
     },
+    "primaryColor": "#FFC045",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -48,7 +48,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "1616d3ff-0bad-4615-8e2a-ca035466b9a9"
+        "projectId": "098c1dac-d657-4698-906a-47b09c4b5572"
       }
     }
   }

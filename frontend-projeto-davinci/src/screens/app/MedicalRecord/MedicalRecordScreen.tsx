@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { SafeAreaView, useWindowDimensions, View, Text, FlatList } from 'react-native';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { styles } from './MedicalRecordScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Prontuario from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import AppointmentListItem from '@/components/features/AppointmentListItem';
-import RecordFilterModal from '@/components/features/RecordFilterModal'; 
+import RecordFilterModal from '@/components/features/RecordFilterModal';
 import { findUserById } from '@/data/mockUsers';
 import { getAppointmentsByPatientId, Appointment } from '@/data/mockAppointments';
 
@@ -19,7 +19,6 @@ export default function MedicalRecordScreen() {
 
   const [patientName, setPatientName] = useState('');
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
-  
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -85,6 +84,17 @@ export default function MedicalRecordScreen() {
     setSelectedSpecialties(filters.specialties);
   };
 
+  const handleNewAppointment = () => { 
+    router.push({
+      pathname: '/(app)/schedule-appointment',
+      params: { patientId: patientId },
+    });
+  };
+
+  const handleAppointmentPress = (id: string) => {
+    router.push(`/(app)/appointment/${id}`);
+  };
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
@@ -98,7 +108,7 @@ export default function MedicalRecordScreen() {
             data={filteredAppointments}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <AppointmentListItem item={item} onPress={() => console.log('Ver detalhes da consulta', item.id)} />
+              <AppointmentListItem item={item} onPress={() => handleAppointmentPress(item.id)} /> 
             )}
             contentContainerStyle={styles.scrollContentContainer}
             ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
@@ -106,7 +116,7 @@ export default function MedicalRecordScreen() {
         </View>
         <ScreenFooter
           primaryButtonTitle="Nova Consulta"
-          onPrimaryButtonPress={() => console.log('Nova Consulta')}
+          onPrimaryButtonPress={handleNewAppointment}
         />
       </View>
       <RecordFilterModal
