@@ -37,11 +37,8 @@
     "react-native-web": "~0.20.0",
     "zustand": "^5.0.6",
     "expo-image-picker": "~16.1.4",
-<<<<<<< HEAD
-    "react-native-webview": "13.13.5"
-=======
+    "react-native-webview": "13.13.5",
     "expo-constants": "~17.1.7"
->>>>>>> 23be208c17914cfb85d9a899c2df14f02ec38891
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

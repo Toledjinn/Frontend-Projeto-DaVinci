@@ -20,15 +20,10 @@ export default function LaboratorioScreen() {
 
  
   const labButtons = [
-<<<<<<< HEAD
     { id: 'produtos', title: 'Nossa Filosofia', onPress: () => router.push('/(app)/produtos') },
     { id: 'trabalhos', title: 'Trabalhos', onPress: () => router.push('(app)/trabalhos') },
     { id: 'parceiros', title: 'Parceiros', onPress: () => router.push('(app)/parceiros') },
-=======
-    { id: 'produtos', title: 'Produtos', onPress: () => router.push('/(app)/produtos') },
-    { id: 'trabalhos', title: 'Trabalhos', onPress: () => router.push('/(app)/trabalhos') },
-    { id: 'parceiros', title: 'Parceiros', onPress: () => router.push('/(app)/parceiros') },
->>>>>>> 23be208c17914cfb85d9a899c2df14f02ec38891
+
   ];
 
   useFocusEffect(

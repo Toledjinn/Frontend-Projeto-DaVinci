@@ -18,7 +18,8 @@ import Escova4 from '@/assets/characters/escova4.svg';
 const actionButtons = [
   { id: '1', title: 'O que é?', SvgComponent: Escova4, route: '/(app)/o-que-e' },
   { id: '2', title: 'Como Participar', SvgComponent: Escova2, route: '/(app)/como-participar' },
-];
+  { id: '3', title: 'Depoimentos', SvgComponent: Chefinho, route: '/(app)/depoimentos' },
+]; 
 
 export default function SocialScreen() {
   const router = useRouter();

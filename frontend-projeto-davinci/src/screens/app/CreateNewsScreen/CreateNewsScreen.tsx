@@ -109,11 +109,10 @@ export default function CreateNewsScreen() {
           )}
         </TouchableOpacity>
 
-<<<<<<< HEAD
-        <View style={styles.blockContainer}>
-=======
+
+
         <View style={styles.contentContainer}>
->>>>>>> 23be208c17914cfb85d9a899c2df14f02ec38891
+
           <StyledInput
             label="Título"
             iconName="type"

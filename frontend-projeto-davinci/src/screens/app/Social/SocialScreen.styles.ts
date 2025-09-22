@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
   },
   buttonItem: {
     alignItems: 'center',
-    width: '40%',
+    width: '30%', 
   },
   itemCircle: {
     width: 100,
