@@ -1,3 +1,3 @@
-import DentistsScreen from '@/screens/app/Dentists/DentistsScreen';
+import DepoimentosScreen from '@/screens/app/Depoimentos/DepoimentosScreen';
 
-export default DentistsScreen;
+export default DepoimentosScreen;
