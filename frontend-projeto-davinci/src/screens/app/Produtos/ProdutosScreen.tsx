@@ -10,6 +10,7 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { WebView } from 'react-native-webview';
 import { styles } from './ProdutosScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useLaboratorioStore } from '@/state/laboratorioStore';
@@ -38,6 +39,15 @@ export default function ProdutosScreen() {
     }, [])
   );
 
+  const convertToEmbedUrl = (url?: string) => {
+    if (!url) return '';
+    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (videoIdMatch && videoIdMatch[1]) {
+      return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+    }
+    return url;
+  };
+
   const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
     const index = Math.round(event.nativeEvent.contentOffset.x / slideSize);
@@ -47,7 +57,7 @@ export default function ProdutosScreen() {
   };
 
   const handleEditPress = () => {
-    router.push({ pathname: '/(app)/editar-laboratorio', params: { page: 'produtos' } });
+    router.push({ pathname: '/editar-laboratorio', params: { page: 'produtos' } });
   };
 
   return (
@@ -67,7 +77,20 @@ export default function ProdutosScreen() {
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Image source={item.image} style={styles.image} />
+                
+                {item.videoUrl ? (
+                  <View style={styles.videoContainer}>
+                    <WebView
+                      style={styles.video}
+                      javaScriptEnabled={true}
+                      domStorageEnabled={true}
+                      source={{ uri: convertToEmbedUrl(item.videoUrl) }}
+                    />
+                  </View>
+                ) : (
+                  <Image source={item.image} style={styles.image} />
+                )}
+
                 <Text style={styles.paragraph}>{item.text}</Text>
               </View>
             </View>

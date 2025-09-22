@@ -1,18 +1,19 @@
 import { create } from 'zustand';
 import { ImageSourcePropType } from 'react-native';
-import React from 'react';
+
 export type ContentBlock = {
   id: string;
-  type: 'text' | 'image';
-  content?: string; 
-  image?: ImageSourcePropType; 
+  type: 'text' | 'image' | 'video'; 
+  content?: string;
+  image?: ImageSourcePropType;
+  videoUrl?: string; 
 };
 
 type PageName = 'oQueE' | 'comoParticipar';
 type SocialState = {
   pages: Record<PageName, ContentBlock[]>;
   updateBlock: (page: PageName, blockId: string, newContent: Partial<ContentBlock>) => void;
-  addBlock: (page: PageName, type: 'text' | 'image') => void;
+  addBlock: (page: PageName, type: 'text' | 'image' | 'video') => void;
   removeBlock: (page: PageName, blockId: string) => void;
 };
 
@@ -67,12 +68,28 @@ export const useSocialStore = create<SocialState>((set) => ({
   
   addBlock: (page, type) => {
     set((state) => {
-      const newBlock: ContentBlock = {
-        id: `block_${Date.now()}`,
-        type,
-        content: type === 'text' ? 'Novo parágrafo...' : undefined,
-        image: type === 'image' ? require('@/assets/images/placeholder.png') : undefined,
-      };
+      let newBlock: ContentBlock;
+      
+      if (type === 'text') {
+        newBlock = {
+          id: `block_${Date.now()}`,
+          type: 'text',
+          content: 'Novo parágrafo...',
+        };
+      } else if (type === 'image') {
+        newBlock = {
+          id: `block_${Date.now()}`,
+          type: 'image',
+          image: require('@/assets/images/placeholder.png'), 
+        };
+      } else { 
+        newBlock = {
+          id: `block_${Date.now()}`,
+          type: 'video',
+          videoUrl: '',
+        };
+      }
+
       return {
         pages: {
           ...state.pages,
@@ -91,3 +108,4 @@ export const useSocialStore = create<SocialState>((set) => ({
     }));
   },
 }));
+

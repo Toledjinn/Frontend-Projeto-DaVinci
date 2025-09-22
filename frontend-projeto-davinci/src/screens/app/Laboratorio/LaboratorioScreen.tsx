@@ -1,5 +1,3 @@
-
-
 import React, { useCallback } from 'react';
 import {
   View,
@@ -22,7 +20,7 @@ export default function LaboratorioScreen() {
 
  
   const labButtons = [
-    { id: 'produtos', title: 'Produtos', onPress: () => router.push('/(app)/produtos') },
+    { id: 'produtos', title: 'Nossa Filosofia', onPress: () => router.push('/(app)/produtos') },
     { id: 'trabalhos', title: 'Trabalhos', onPress: () => router.push('(app)/trabalhos') },
     { id: 'parceiros', title: 'Parceiros', onPress: () => router.push('(app)/parceiros') },
   ];

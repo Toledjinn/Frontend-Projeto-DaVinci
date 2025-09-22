@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 260, 
+    paddingTop: 260,
   },
   carousel: {
     flexGrow: 0,
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    paddingVertical: 30, 
+    paddingVertical: 30,
     paddingHorizontal: 20,
     alignItems: 'center',
     width: '100%',
@@ -211,5 +211,15 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
     marginHorizontal: 4,
   },
+  videoContainer: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 20,
+    backgroundColor: '#000',
+  },
+  video: {
+    flex: 1,
+  },
 });
-

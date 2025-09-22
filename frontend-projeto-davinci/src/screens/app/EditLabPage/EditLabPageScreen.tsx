@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   TextInput,
+  Modal,
 } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -27,22 +28,26 @@ export default function EditLabPageScreen() {
   const { page } = useLocalSearchParams<{ page: PageName }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const pageContent = useLaboratorioStore((state) => state.pages[page!]);
-  const updateSlide = useLaboratorioStore((state) => state.updateSlide);
-  const addSlide = useLaboratorioStore((state) => state.addSlide);
-  const removeSlide = useLaboratorioStore((state) => state.removeSlide);
+  const { updateSlide, addSlide, removeSlide } = useLaboratorioStore();
   
   const [editableSlides, setEditableSlides] = useState<CarouselSlide[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [expandedSlideId, setExpandedSlideId] = useState<string | null>(null);
 
   useEffect(() => {
     if (pageContent) {
-      setEditableSlides(JSON.parse(JSON.stringify(pageContent.slides)));
+      const slides = JSON.parse(JSON.stringify(pageContent.slides));
+      setEditableSlides(slides);
+      if (slides.length > 0) {
+        setExpandedSlideId(slides[0].id);
+      }
     }
   }, [pageContent]);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        layout: 'page',
+        layout: 'page-large',
         showPageHeaderElements: true,
         pageTitle: `EDITAR ${pageContent?.title.toUpperCase() || ''}`,
         CharacterSvg: Chefinho,
@@ -50,6 +55,9 @@ export default function EditLabPageScreen() {
       });
     }, [pageContent])
   );
+  const handleToggleSlide = (slideId: string) => {
+    setExpandedSlideId(currentId => currentId === slideId ? null : slideId);
+  };
 
   const handleSlideChange = (index: number, field: keyof CarouselSlide, value: string) => {
     const newSlides = [...editableSlides];
@@ -60,7 +68,7 @@ export default function EditLabPageScreen() {
   const handleImageChange = async (index: number) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permissão necessária', 'Você precisa conceder permissão para aceder à galeria.');
+      Alert.alert('Permissão necessária');
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -84,8 +92,9 @@ export default function EditLabPageScreen() {
     router.back();
   };
 
-  const handleAddSlide = () => {
-    addSlide(page!);
+  const handleLayoutSelect = (layout: 'image' | 'video') => {
+    addSlide(page!, layout);
+    setIsModalVisible(false);
   };
 
   const handleRemoveSlide = (slideId: string) => {
@@ -117,47 +126,98 @@ export default function EditLabPageScreen() {
       >
         {editableSlides.map((slide, index) => (
           <View key={slide.id} style={styles.slideEditor}>
-            <View style={styles.slideHeader}>
-              <Text style={styles.slideTitle}>Slide {index + 1}</Text>
-              <TouchableOpacity style={styles.removeSlideButton} onPress={() => handleRemoveSlide(slide.id)}>
-                 <Feather name="trash-2" size={20} color={COLORS.red} />
-              </TouchableOpacity>
-            </View>
-
-            <StyledInput
-              label="Título"
-              iconName="type"
-              value={slide.title}
-              onChangeText={(text) => handleSlideChange(index, 'title', text)}
-            />
-            
-            <View style={styles.manualInputContainer}>
-              <Text style={styles.label}>Texto</Text>
-              <View style={styles.manualTextInputWrapper}>
-                <TextInput
-                  value={slide.text}
-                  onChangeText={(text) => handleSlideChange(index, 'text', text)}
-                  multiline
-                  style={styles.manualTextInput}
-                />
-              </View>
-            </View>
-
-            <Text style={styles.label}>Imagem</Text>
-            <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(index)}>
-              <Image source={slide.image} style={styles.imagePreview} />
-              <View style={styles.imageOverlay}>
-                <Feather name="edit-2" size={24} color={COLORS.white} />
+            <TouchableOpacity onPress={() => handleToggleSlide(slide.id)}>
+              <View style={styles.slideHeader}>
+                <Text style={styles.slideTitle}>Slide {index + 1}</Text>
+                <View style={styles.headerActions}>
+                  <TouchableOpacity style={styles.removeSlideButton} onPress={() => handleRemoveSlide(slide.id)}>
+                    <Feather name="trash-2" size={20} color={COLORS.red} />
+                  </TouchableOpacity>
+                  <Feather name={expandedSlideId === slide.id ? 'chevron-up' : 'chevron-down'} size={24} color={COLORS.secondary} />
+                </View>
               </View>
             </TouchableOpacity>
+            {expandedSlideId === slide.id && (
+              <View style={styles.slideContent}>
+                <View style={styles.blockContainer}>
+                  <StyledInput
+                    label="Título"
+                    iconName="type"
+                    value={slide.title}
+                    onChangeText={(text) => handleSlideChange(index, 'title', text)}
+                  />
+                </View>
+                
+                <View style={styles.blockContainer}>
+                  <Text style={styles.label}>Texto</Text>
+                  <TextInput
+                    value={slide.text}
+                    onChangeText={(text) => handleSlideChange(index, 'text', text)}
+                    multiline
+                    style={[styles.textInput, { minHeight: 120 }]}
+                  />
+                </View>
+
+                {slide.image !== undefined && (
+                  <View style={styles.blockContainer}>
+                    <Text style={styles.label}>Imagem</Text>
+                    <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(index)}>
+                      <Image source={slide.image} style={styles.imagePreview} />
+                      <View style={styles.imageOverlay}>
+                        <Feather name="edit-2" size={24} color={COLORS.white} />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {slide.videoUrl !== undefined && (
+                  <View style={styles.blockContainer}>
+                    <Text style={styles.label}>URL do Vídeo (YouTube)</Text>
+                    <TextInput
+                      value={slide.videoUrl || ''}
+                      onChangeText={(text) => handleSlideChange(index, 'videoUrl', text)}
+                      placeholder="Cole o link aqui (opcional)"
+                      style={styles.textInput}
+                    />
+                  </View>
+                )}
+              </View>
+            )}
           </View>
         ))}
 
-        <TouchableOpacity style={styles.addSlideButton} onPress={handleAddSlide}>
+        <TouchableOpacity style={styles.addSlideButton} onPress={() => setIsModalVisible(true)}>
           <Feather name="plus-circle" size={22} color={COLORS.secondary} />
           <Text style={styles.addSlideButtonText}>Adicionar Novo Slide</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Escolha o tipo de slide</Text>
+            
+            <TouchableOpacity style={styles.modalOptionButton} onPress={() => handleLayoutSelect('image')}>
+              <Feather name="image" size={20} color={COLORS.secondary} />
+              <Text style={styles.modalOptionText}>Slide com Imagem</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.modalOptionButton} onPress={() => handleLayoutSelect('video')}>
+              <Feather name="video" size={20} color={COLORS.secondary} />
+              <Text style={styles.modalOptionText}>Slide com Vídeo</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsModalVisible(false)}>
+              <Text style={styles.modalCloseButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <ScreenFooter
         secondaryButtonTitle="Cancelar"

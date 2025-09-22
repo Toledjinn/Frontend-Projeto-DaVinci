@@ -26,4 +26,17 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 24,
   },
+  
+  videoContainer: {
+    width: '100%',
+    aspectRatio: 16 / 9, 
+    borderRadius: 16,
+    overflow: 'hidden', 
+    marginBottom: 24,
+    backgroundColor: '#000', 
+  },
+  video: {
+    flex: 1,
+  },
 });
+

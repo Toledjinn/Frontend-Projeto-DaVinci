@@ -209,5 +209,15 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
     marginHorizontal: 4,
   },
+  videoContainer: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 20,
+    backgroundColor: '#000',
+  },
+  video: {
+    flex: 1,
+  },
 });
-

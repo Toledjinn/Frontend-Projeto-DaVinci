@@ -59,6 +59,17 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     resizeMode: 'cover',
   },
+  videoContainer: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 20,
+  },
+  video: {
+    width: '100%',
+    height: '100%',
+  },
   paginationContainer: {
     flexDirection: 'row',
     marginTop: 25,

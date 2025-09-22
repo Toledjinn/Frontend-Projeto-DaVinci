@@ -24,7 +24,42 @@ import { COLORS } from '@/constants/theme';
 type PageName = 'chefinho' | 'escova' | 'pasta' | 'fioDental' | 'fluor' | 'revelador';
 
 const SlideContentEditor = ({ slide, index, handleSlideChange, handleImageChange }: { slide: CarouselSlide, index: number, handleSlideChange: Function, handleImageChange: Function }) => {
-  if (slide.collageImages !== undefined) {
+  if (slide.videoUrl !== undefined) {
+    return (
+      <>
+        <StyledInput
+          label="Título do Vídeo"
+          iconName="type"
+          value={slide.title || ''}
+          onChangeText={(text) => handleSlideChange(index, 'title', text)}
+        />
+        <View style={styles.manualInputContainer}>
+          <Text style={styles.label}>Descrição</Text>
+          <View style={styles.manualTextInputWrapper}>
+            <TextInput
+              value={slide.text?.join('\n') || ''}
+              onChangeText={(text) => handleSlideChange(index, 'text', text.split('\n'))}
+              multiline
+              style={[styles.manualTextInput, { height: 100 }]}
+            />
+          </View>
+        </View>
+        <View style={styles.manualInputContainer}>
+          <Text style={styles.label}>URL do Vídeo (YouTube)</Text>
+          <View style={styles.manualTextInputWrapper}>
+            <TextInput
+              value={slide.videoUrl || ''}
+              onChangeText={(text) => handleSlideChange(index, 'videoUrl', text)}
+              placeholder="Cole o link do YouTube aqui"
+              style={styles.manualTextInput}
+            />
+          </View>
+        </View>
+      </>
+    );
+  }
+  
+  else if (slide.collageImages !== undefined) {
     return (
        <>
         {slide.text1 !== undefined && <View style={styles.manualInputContainer}><Text style={styles.label}>Texto Superior</Text><View style={styles.manualTextInputWrapper}><TextInput value={slide.text1 || ''} onChangeText={(text) => handleSlideChange(index, 'text1', text)} multiline style={[styles.manualTextInput, {height: 100}]} /></View></View>}
@@ -400,7 +435,6 @@ export default function EditEducationalContentScreen() {
         </TouchableOpacity>
 
       </ScrollView>
-
       <AddSlideModal 
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
@@ -416,4 +450,3 @@ export default function EditEducationalContentScreen() {
     </SafeAreaView>
   );
 }
-

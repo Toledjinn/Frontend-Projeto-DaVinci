@@ -10,37 +10,19 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    padding: 24,
-    paddingBottom: 120, 
+    paddingHorizontal: 24,
+    paddingTop: 250,
   },
   blockContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 24,
   },
   label: {
     ...FONTS.body3,
     color: COLORS.secondary,
     marginBottom: 8,
-  },
-  imagePicker: {
-    height: 200,
-    width: '100%',
-    backgroundColor: COLORS.white,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-    overflow: 'hidden',
-  },
-  imagePickerText: {
-    ...FONTS.body10,
-    color: COLORS.gray_400,
-    marginTop: 8,
-  },
-  imagePreview: {
-    width: '100%',
-    height: '100%',
   },
   textInput: {
     ...FONTS.body9,
@@ -52,6 +34,24 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.gray_200,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    minHeight: 150,
+  },
+  imagePicker: {
+    width: '100%',
+    height: 180,
+    borderRadius: 8,
+    backgroundColor: COLORS.gray_100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  imagePreview: {
+    width: '100%',
+    height: '100%',
+  },
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
 });

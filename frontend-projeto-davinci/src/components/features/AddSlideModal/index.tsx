@@ -5,6 +5,7 @@ import { styles } from './styles';
 import { COLORS } from '@/constants/theme';
 
 const LAYOUT_OPTIONS = [
+  { key: 'video_simple', label: 'Slide com Vídeo' },
   { key: 'default', label: 'Título, Texto e Imagem' },
   { key: 'quote', label: 'Citação com Imagem' },
   { key: 'text_duo', label: 'Dois Blocos de Texto com Imagem' },
@@ -54,3 +55,4 @@ export default function AddSlideModal({ visible, onClose, onSelectLayout }: AddS
     </Modal>
   );
 }
+

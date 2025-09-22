@@ -8,12 +8,14 @@ export type NewsItem = {
   content: string;
   date: string;
   image: ImageSourcePropType;
+  videoUrl?: string; 
 };
 
 type NewsState = {
   news: NewsItem[];
   getNewsById: (id: string) => NewsItem | undefined;
-  addNews: (newItem: { title: string; content: string; image: ImageSourcePropType }) => NewsItem; 
+  addNews: (newItem: { title: string; content: string; image: ImageSourcePropType }) => NewsItem;
+  updateNews: (id: string, updatedData: Partial<NewsItem>) => void; 
 };
 
 const MOCK_NEWS: NewsItem[] = [
@@ -24,6 +26,7 @@ const MOCK_NEWS: NewsItem[] = [
     content: 'O flúor é um mineral natural que desempenha um papel crucial na saúde bucal. Ele atua de duas maneiras principais: fortalecendo o esmalte dos dentes, tornando-os mais resistentes aos ácidos produzidos pelas bactérias, e promovendo a remineralização, que é o processo de reparação do esmalte em estágios iniciais de cárie. É por isso que ele é adicionado à água potável em muitas comunidades e é um ingrediente essencial nas pastas de dente.',
     date: '28 de Ago, 2025',
     image: require('@/assets/images/novidade-1.png'),
+    videoUrl: undefined, 
   },
   {
     id: '2',
@@ -32,6 +35,7 @@ const MOCK_NEWS: NewsItem[] = [
     content: 'O clareamento dental é um dos procedimentos estéticos mais procurados. Um mito comum é que ele enfraquece os dentes, o que não é verdade quando realizado sob a supervisão de um profissional. Outro ponto importante é que clareamentos caseiros sem orientação podem ser perigosos e causar sensibilidade ou danos à gengiva. A verdade é que um clareamento bem-sucedido, seja em consultório ou com moldeiras supervisionadas, pode rejuvenescer o sorriso de forma segura e eficaz.',
     date: '27 de Ago, 2025',
     image: require('@/assets/images/novidade-2.png'),
+    videoUrl: undefined, 
   },
 ];
 
@@ -44,7 +48,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
     const newNewsItemWithId: NewsItem = {
       ...newItem,
       id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }),
+      date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }),
       snippet: newItem.content.substring(0, 100) + '...',
     };
 
@@ -53,5 +57,12 @@ export const useNewsStore = create<NewsState>((set, get) => ({
     }));
 
     return newNewsItemWithId;
+  },
+  updateNews: (id, updatedData) => {
+    set((state) => ({
+      news: state.news.map((item) =>
+        item.id === id ? { ...item, ...updatedData } : item
+      ),
+    }));
   },
 }));

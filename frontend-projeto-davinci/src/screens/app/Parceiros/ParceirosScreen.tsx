@@ -10,6 +10,7 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { WebView } from 'react-native-webview'; 
 import { styles } from './ParceirosScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useLaboratorioStore } from '@/state/laboratorioStore';
@@ -17,6 +18,17 @@ import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 
 const userType = 'admin';
+
+const convertYouTubeUrl = (url: string) => {
+  if (!url) return '';
+  let videoId = '';
+  if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1].split('?')[0];
+  } else if (url.includes('watch?v=')) {
+    videoId = url.split('watch?v=')[1].split('&')[0];
+  }
+  return `https://www.youtube.com/embed/${videoId}`;
+};
 
 export default function ParceirosScreen() {
   const router = useRouter();
@@ -67,7 +79,18 @@ export default function ParceirosScreen() {
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Image source={item.image} style={styles.image} />
+                {item.videoUrl ? (
+                  <View style={styles.videoContainer}>
+                    <WebView
+                      source={{ uri: convertYouTubeUrl(item.videoUrl) }}
+                      style={styles.video}
+                      allowsFullscreenVideo
+                    />
+                  </View>
+                ) : (
+                  item.image && <Image source={item.image} style={styles.image} />
+                )}
+
                 <Text style={styles.paragraph}>{item.text}</Text>
               </View>
             </View>

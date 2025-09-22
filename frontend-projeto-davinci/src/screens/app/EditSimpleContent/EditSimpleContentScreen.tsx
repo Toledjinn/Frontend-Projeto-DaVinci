@@ -59,6 +59,12 @@ export default function EditSimpleContentScreen() {
     newBlocks[index].content = newContent;
     setEditableBlocks(newBlocks);
   };
+  
+  const handleVideoUrlChange = (index: number, newUrl: string) => {
+    const newBlocks = [...editableBlocks];
+    newBlocks[index].videoUrl = newUrl;
+    setEditableBlocks(newBlocks);
+  };
 
   const handleImageChange = async (index: number) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -87,7 +93,7 @@ export default function EditSimpleContentScreen() {
     router.back();
   };
 
-  const handleAddBlock = (type: 'text' | 'image') => {
+  const handleAddBlock = (type: 'text' | 'image' | 'video') => {
     addBlock(page!, type);
   };
 
@@ -129,6 +135,20 @@ export default function EditSimpleContentScreen() {
                 </TouchableOpacity>
               </View>
             )}
+
+            {block.type === 'video' && (
+              <View style={styles.manualInputContainer}>
+                <Text style={styles.label}>Vídeo {index + 1}</Text>
+                <View style={styles.manualTextInputWrapper}>
+                  <TextInput
+                    value={block.videoUrl}
+                    onChangeText={(text) => handleVideoUrlChange(index, text)}
+                    placeholder="Cole a URL do YouTube aqui"
+                    style={[styles.manualTextInput, { minHeight: 50 }]}
+                  />
+                </View>
+              </View>
+            )}
           </View>
         ))}
 
@@ -140,6 +160,10 @@ export default function EditSimpleContentScreen() {
             <TouchableOpacity style={styles.addButton} onPress={() => handleAddBlock('image')}>
                 <Feather name="image" size={16} color={COLORS.secondary} />
                 <Text style={styles.addButtonText}>Adicionar Imagem</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.addButton} onPress={() => handleAddBlock('video')}>
+                <Feather name="video" size={16} color={COLORS.secondary} />
+                <Text style={styles.addButtonText}>Adicionar Vídeo</Text>
             </TouchableOpacity>
         </View>
 
@@ -154,3 +178,4 @@ export default function EditSimpleContentScreen() {
     </SafeAreaView>
   );
 }
+

@@ -8,7 +8,7 @@ import {
   Image,
   Alert,
   TextInput,
-  useWindowDimensions, 
+  useWindowDimensions,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -30,8 +30,9 @@ export default function CreateNewsScreen() {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const { height } = useWindowDimensions(); 
-  const headerHeight = height * 0.29; 
+  const [videoUrl, setVideoUrl] = useState(''); 
+  const { height } = useWindowDimensions();
+  const headerHeight = height * 0.29;
 
   useFocusEffect(
     useCallback(() => {
@@ -75,6 +76,7 @@ export default function CreateNewsScreen() {
       title,
       content,
       image: { uri: imageUri },
+      videoUrl, 
     };
 
     const createdNews = addNews(newNewsItem);
@@ -93,7 +95,6 @@ export default function CreateNewsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
         keyboardShouldPersistTaps="handled"
       >
@@ -108,7 +109,7 @@ export default function CreateNewsScreen() {
           )}
         </TouchableOpacity>
 
-        <View style={styles.formContainer}>
+        <View style={styles.blockContainer}>
           <StyledInput
             label="Título"
             iconName="type"
@@ -116,21 +117,29 @@ export default function CreateNewsScreen() {
             onChangeText={setTitle}
             placeholder="Título da notícia"
           />
-
-          <View style={styles.manualInputContainer}>
-            <Text style={styles.label}>Conteúdo</Text>
-            <View style={styles.manualTextInputWrapper}>
-              <Feather name="file-text" size={24} color={COLORS.gray_400} style={{ marginTop: 2 }}/>
-              <TextInput
-                value={content}
-                onChangeText={setContent}
-                placeholder="Escreva o conteúdo da notícia aqui..."
-                multiline
-                style={styles.manualTextInput}
-              />
-            </View>
-          </View>
         </View>
+
+        <View style={styles.blockContainer}>
+          <Text style={styles.label}>Conteúdo</Text>
+          <TextInput
+            value={content}
+            onChangeText={setContent}
+            placeholder="Escreva o conteúdo da notícia aqui..."
+            multiline
+            style={styles.textInput}
+          />
+        </View>
+
+        <View style={styles.blockContainer}>
+          <Text style={styles.label}>URL do Vídeo (YouTube)</Text>
+          <TextInput
+            value={videoUrl}
+            onChangeText={setVideoUrl}
+            placeholder="Cole o link aqui (opcional)"
+            style={styles.textInput}
+          />
+        </View>
+
       </ScrollView>
 
       <ScreenFooter

@@ -82,7 +82,7 @@ export default function UserDetailScreen() {
       >
         {isPatient && (
             <ScreenFooter
-                primaryButtonTitle="Histórico"
+                primaryButtonTitle="Saúde Bucal"
                 onPrimaryButtonPress={() => console.log('Histórico Pressionado')}
                 secondaryButtonTitle="Saúde Sistêmica"
                 onSecondaryButtonPress={() => console.log('Saúde Sistêmica Pressionado')}

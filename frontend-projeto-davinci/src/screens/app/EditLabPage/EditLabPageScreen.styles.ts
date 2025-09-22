@@ -16,12 +16,14 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-    paddingTop: 180, 
+    paddingTop: 250,
+    paddingBottom: 120,
   },
   slideEditor: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     marginBottom: 24,
     shadowColor: '#000',
     shadowOffset: {
@@ -32,6 +34,9 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  blockContainer: {
+    marginBottom: 16,
+  },
   slideTitle: {
     ...FONTS.body5,
     color: COLORS.secondary,
@@ -40,7 +45,17 @@ export const styles = StyleSheet.create({
     ...FONTS.body3,
     color: COLORS.secondary,
     marginBottom: 8,
-    marginTop: 16,
+  },
+  textInput: {
+    ...FONTS.body9,
+    color: COLORS.secondary,
+    textAlignVertical: 'top',
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   imagePicker: {
     width: '100%',
@@ -61,34 +76,24 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
-  manualInputContainer: {
-    marginTop: 16,
-  },
-  manualTextInputWrapper: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  manualTextInput: {
-    flex: 1,
-    ...FONTS.body9,
-    color: COLORS.secondary,
-    textAlignVertical: 'top',
-    marginLeft: 16,
-    height: 120,
-  },
   slideHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    paddingVertical: 10,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   removeSlideButton: {
     padding: 8,
+  },
+  slideContent: {
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.gray_100,
+    marginTop: 10,
   },
   addSlideButton: {
     flexDirection: 'row',
@@ -106,5 +111,44 @@ export const styles = StyleSheet.create({
     color: COLORS.secondary,
     marginLeft: 8,
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    backgroundColor: COLORS.white,
+    padding: 24,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    ...FONTS.h3,
+    color: COLORS.secondary,
+    marginBottom: 24,
+  },
+  modalOptionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.gray_100,
+    padding: 16,
+    borderRadius: 8,
+    width: '100%',
+    marginBottom: 12,
+  },
+  modalOptionText: {
+    ...FONTS.body7,
+    color: COLORS.secondary,
+    marginLeft: 12,
+  },
+  modalCloseButton: {
+    marginTop: 12,
+    padding: 12,
+  },
+  modalCloseButtonText: {
+    ...FONTS.body9,
+    color: COLORS.gray_400,
+  }
 });
 

@@ -1,5 +1,3 @@
-
-
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
@@ -30,6 +28,17 @@ export const styles = StyleSheet.create({
     height: 200,
     borderRadius: 8,
     marginBottom: 20,
+  },
+  videoContainer: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 20,
+    backgroundColor: '#000',
+  },
+  video: {
+    flex: 1,
   },
   content: {
     ...FONTS.body10,

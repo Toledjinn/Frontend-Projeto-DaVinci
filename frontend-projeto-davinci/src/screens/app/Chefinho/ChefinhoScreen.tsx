@@ -10,6 +10,7 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
+import WebView from 'react-native-webview'; 
 import { styles } from './ChefinhoScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useEducationalContentStore } from '@/state/educationalContentStore';
@@ -20,7 +21,18 @@ import Pasta from '@/assets/characters/pasta.svg';
 import FioDental from '@/assets/characters/fio.svg';
 import Revelador from '@/assets/characters/revelador.svg';
 
-const userType = 'admin'; 
+const userType = 'admin';
+
+const convertYouTubeUrl = (url?: string | null): string | null => {
+  if (!url) return null;
+  let videoId = '';
+  if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1].split('?')[0];
+  } else if (url.includes('watch?v=')) {
+    videoId = url.split('watch?v=')[1].split('&')[0];
+  }
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+};
 
 export default function ChefinhoScreen() {
   const router = useRouter();
@@ -70,8 +82,21 @@ export default function ChefinhoScreen() {
           {carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
-
-                {item.collageImages ? (
+                {item.videoUrl ? (
+                  <>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    <View style={styles.videoContainer}>
+                      <WebView
+                        style={styles.video}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        source={{ uri: convertYouTubeUrl(item.videoUrl)! }}
+                      />
+                    </View>
+                    {item.text && item.text.map((p, i) => <Text key={i} style={styles.paragraph}>{p}</Text>)}
+                  </>
+                ) :
+                item.collageImages ? (
                   <>
                     {item.text1 && <Text style={styles.paragraph}>{item.text1}</Text>}
                     <View style={styles.collageContainer}>

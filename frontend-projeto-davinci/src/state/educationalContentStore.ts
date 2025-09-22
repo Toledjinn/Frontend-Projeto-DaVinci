@@ -16,6 +16,7 @@ export type CarouselSlide = {
   collageImages?: ImageSourcePropType[];
   beforeAfterImages?: { before: ImageSourcePropType; after: ImageSourcePropType };
   imageGrid?: ImageSourcePropType[];
+  videoUrl?: string;
 };
 
 type PageName = 'chefinho' | 'escova' | 'pasta' | 'fioDental' | 'fluor' | 'revelador';
@@ -277,6 +278,9 @@ export const useEducationalContentStore = create<EducationalContentState>((set) 
         let newSlide: CarouselSlide = { id: `slide_${Date.now()}` };
 
         switch (layoutKey) {
+          case 'video_simple':
+            newSlide = { ...newSlide, title: 'Novo Título do Vídeo', text: [''], videoUrl: '' };
+            break;
           case 'quote':
             newSlide = { ...newSlide, quote: '', author: '', image: require('@/assets/images/placeholder.png') };
             break;
@@ -333,4 +337,4 @@ export const useEducationalContentStore = create<EducationalContentState>((set) 
     });
   },
 }));
-
+ 
