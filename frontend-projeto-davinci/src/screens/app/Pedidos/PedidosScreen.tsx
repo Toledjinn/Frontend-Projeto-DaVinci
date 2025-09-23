@@ -18,7 +18,6 @@ import { COLORS } from '@/constants/theme';
 
 const userType = 'admin';
 
-// Função para obter a cor do status do pedido
 const getStatusColor = (status: OrderStatus) => {
   switch (status) {
     case 'Aprovado':
@@ -44,12 +43,9 @@ export default function PedidosScreen() {
   const allOrders = usePedidosStore((state) => state.orders);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // FILTRO ATUALIZADO: Agora esconde pedidos com o status 'Cancelado'.
   const filteredOrders = useMemo(() => {
-    // Primeiro, filtra para incluir apenas pedidos que NÃO foram cancelados.
     const nonCancelledOrders = allOrders.filter(order => order.status !== 'Cancelado');
 
-    // Em seguida, aplica a busca por nome na lista filtrada.
     if (!searchQuery) {
       return nonCancelledOrders;
     }
