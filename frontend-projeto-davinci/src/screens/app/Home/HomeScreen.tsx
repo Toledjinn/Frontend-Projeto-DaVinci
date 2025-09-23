@@ -40,6 +40,7 @@ const SECTIONS = [
     buttons: [
       { id: 'pedidos', title: 'Pedidos' },
       { id: 'estoque', title: 'Estoque' },
+      { id: 'loja', title: 'Loja' },
     ],
   },
 ];
@@ -86,6 +87,8 @@ export default function HomeScreen() {
       router.push('/(app)/estoque');
     } else if (buttonId === 'pedidos') {
       router.push('/(app)/pedidos');  
+    } else if (buttonId === 'loja') {
+      router.push('/(app)/loja');   
     } else {
       console.log(`Botão pressionado: ${sectionId} - ${buttonId}`);
     }

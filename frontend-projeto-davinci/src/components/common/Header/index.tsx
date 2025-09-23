@@ -11,6 +11,7 @@ import PageHeader from '@/components/common/PageTitle';
 import ProfileHeader from '@/components/common/ProfileImage';
 import ImagePickerHeader from '@/components/common/ImagePickerHeader';
 import LargePageHeader from '@/components/common/LargePageHeader';
+import ShoppingCartIcon from '@/assets/icons/shoppingcart.svg'; 
 
 import { COLORS } from '@/constants/theme';
 import { useUIStore as useUIStoreHeader } from '@/state/uiStore';
@@ -64,9 +65,10 @@ export default function Header() {
       {layout === 'page' && showPageHeaderElements && CharacterSvg && (
         <PageHeader CharacterSvg={CharacterSvg} title={pageTitle} />
       )}
-      {layout === 'page-large' && showPageHeaderElements && CharacterSvg && (
+      {(layout === 'page-large' || layout === 'loja') && showPageHeaderElements && CharacterSvg && (
         <LargePageHeader CharacterSvg={CharacterSvg} title={pageTitle} />
       )}
+
       {layout === 'profile' && UserImageSvg && userName && (
         <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} riskLevel={riskLevel} />
       )}
@@ -83,7 +85,7 @@ export default function Header() {
               </View>
             </TouchableOpacity>
           )}
-          {(layout === 'page' || layout === 'profile' || layout === 'page-large' || layout === 'register') && (
+          {(layout === 'page' || layout === 'profile' || layout === 'page-large' || layout === 'register' || layout === 'loja') && (
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton} activeOpacity={1}>
               <Feather name="chevron-left" size={40} color={COLORS.secondary} />
             </TouchableOpacity>
@@ -99,10 +101,15 @@ export default function Header() {
         </View>
 
         <View style={styles.rightSection}>
-          {showNotificationIcon && (
+          {showNotificationIcon && layout !== 'loja' && (
             <TouchableOpacity style={styles.notificationContainer} onPress={() => router.push('/(app)/notifications')} activeOpacity={1}>
               <NotificacaoIcon height={height * 0.042} />
               <View style={styles.notificationDot} />
+            </TouchableOpacity>
+          )}
+          {layout === 'loja' && (
+            <TouchableOpacity style={styles.notificationContainer} onPress={() => router.push('/(app)/carrinho')} activeOpacity={1}>
+              <ShoppingCartIcon height={height * 0.042} />
             </TouchableOpacity>
           )}
         </View>

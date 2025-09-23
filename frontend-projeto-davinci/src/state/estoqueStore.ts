@@ -23,7 +23,6 @@ type EstoqueState = {
   removeProduct: (category: CategoryName, productId: string) => void;
 };
 
-// Dados de exemplo atualizados com os novos campos
 const MOCK_DATA: Record<CategoryName, ProductItem[]> = {
   'Escovas': [
     { id: 'esc1', name: 'Slim Soft Black 2 unid.', brand: 'Colgate', description: 'Cerdas macias para uma limpeza profunda e suave.', price: 19.99, status: 'Em estoque', quantity: 5, image: require('@/assets/images/placeholder.png') },
