@@ -23,25 +23,27 @@ export default function ScreenFooter({
         <TouchableOpacity
           style={[
             styles.button,
-            styles.secondaryButton,
+            styles.primaryButton,
             styles.buttonFlex,
             styles.secondaryMargin,
           ]}
           onPress={onSecondaryButtonPress}
         >
-          <Text style={styles.secondaryButtonText}>{secondaryButtonTitle}</Text>
+          <Text style={styles.primaryButtonText}>{secondaryButtonTitle}</Text>
         </TouchableOpacity>
       )}
 
       <TouchableOpacity
         style={[
           styles.button,
-          styles.primaryButton,
+          isSingleButton ? styles.primaryButton : styles.secondaryButton,
           isSingleButton ? styles.buttonSingle : [styles.buttonFlex, styles.primaryMargin],
         ]}
         onPress={onPrimaryButtonPress}
       >
-        <Text style={styles.primaryButtonText}>{primaryButtonTitle}</Text>
+        <Text style={isSingleButton ? styles.primaryButtonText : styles.secondaryButtonText}>
+          {primaryButtonTitle}
+        </Text>
       </TouchableOpacity>
     </View>
   );

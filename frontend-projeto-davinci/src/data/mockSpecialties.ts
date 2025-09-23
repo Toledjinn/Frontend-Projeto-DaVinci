@@ -10,3 +10,14 @@ export const ALL_SPECIALTIES: string[] = [
   'Periodontia',
   'Prótese',
 ].sort();
+
+export const SPECIALTIES: string[] = [
+  'Clínica Geral',
+  'Endodontia',
+  'Harmonização Facial',
+  'Implantodontia',
+  'Odontopediatria',
+  'Ortodontia',
+  'Periodontia',
+  'Prótese',
+].sort();

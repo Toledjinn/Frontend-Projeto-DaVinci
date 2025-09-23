@@ -129,3 +129,16 @@ export const getPendingAppointments = (): Appointment[] => {
   return ALL_APPOINTMENTS.filter(appt => appt.status === 'pendente')
     .sort((a, b) => new Date(b.date.split('/').reverse().join('-')).getTime() - new Date(a.date.split('/').reverse().join('-')).getTime());
 };
+
+export const updateAppointmentStatus = (
+  appointmentId: string,
+  newStatus: 'realizada' | 'agendada' | 'cancelada' | 'pendente'
+): boolean => {
+  const appointmentIndex = ALL_APPOINTMENTS.findIndex(appt => appt.id === appointmentId);
+  if (appointmentIndex > -1) {
+    ALL_APPOINTMENTS[appointmentIndex].status = newStatus;
+    console.log(`Status do agendamento ${appointmentId} atualizado para ${newStatus}`);
+    return true;
+  }
+  return false;
+};

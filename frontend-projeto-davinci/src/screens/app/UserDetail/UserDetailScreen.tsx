@@ -8,10 +8,11 @@ import ScreenFooter from '@/components/common/ScreenFooter';
 import { findUserById, UserProfile } from '@/data/mockUsers';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import AllergyWarning from '@/components/features/AllergyWarning';
+import StyledButton from '@/components/common/StyledButton';
 
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.31;
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -91,12 +92,16 @@ export default function UserDetailScreen() {
         showsVerticalScrollIndicator={false}
       >
         {isPatient && (
-            <ScreenFooter
-                primaryButtonTitle="Histórico"
-                onPrimaryButtonPress={() => console.log('Histórico Pressionado')}
-                secondaryButtonTitle="Saúde Sistêmica"
-                onSecondaryButtonPress={() => console.log('Saúde Sistêmica Pressionado')}
-            />
+          <View style={styles.buttonActionsContainer}>
+            <StyledButton
+              title="Diagnóstico"
+              variant="secondary" 
+              onPress={() => router.push({ 
+              pathname: '/(app)/diagnostico', 
+              params: { patientId: user.id } 
+            })}
+          />
+          </View>
         )}
         
         <View style={styles.mainContent}>

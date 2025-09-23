@@ -9,16 +9,10 @@ export const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  buttonContainer: {
-    marginBottom: 24, 
-  },
   contentContainer: {
     paddingHorizontal: 24,
     paddingBottom: 40,
-  },
-  centered: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+    marginTop: 12
   },
 });
+
