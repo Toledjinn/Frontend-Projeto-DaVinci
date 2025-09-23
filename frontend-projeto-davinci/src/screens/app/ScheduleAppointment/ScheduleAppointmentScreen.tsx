@@ -26,7 +26,7 @@ export default function ScheduleAppointmentScreen() {
     const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
     
     const params = useLocalSearchParams<{
-        mode?: 'reschedule';
+        mode?: 'reschedule' | 'repropose';
         appointmentId?: string;
         patientId?: string;
         dentistId?: string;
@@ -38,9 +38,10 @@ export default function ScheduleAppointmentScreen() {
     }>();
 
     const isRescheduleMode = params.mode === 'reschedule';
+    const isReproposeMode = params.mode === 'repropose';
 
-    const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
-    const [selectedDentistId, setSelectedDentistId] = useState<string | null>(null);
+    const [selectedPatientId, setSelectedPatientId] = useState<string | null>(params.patientId || null);
+    const [selectedDentistId, setSelectedDentistId] = useState<string | null>(params.dentistId || null);
     const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
     const [selectedProcedures, setSelectedProcedures] = useState<string[]>([]);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -48,43 +49,55 @@ export default function ScheduleAppointmentScreen() {
     const [observations, setObservations] = useState('');
 
     useEffect(() => {
-        if (isRescheduleMode) {
+        if (isRescheduleMode || isReproposeMode) {
             setSelectedPatientId(params.patientId || null);
             setSelectedDentistId(params.dentistId || null);
             setSelectedSpecialty(params.specialty || null);
             setSelectedProcedures(params.procedures ? JSON.parse(params.procedures) : []);
             setObservations(params.observations || '');
 
-            if (params.date) {
+            if (isRescheduleMode && params.date) {
                 const [day, month, year] = params.date.split('/');
                 const dateObject = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
                 setSelectedDate(dateObject);
             }
-            if (params.time) {
+            if (isRescheduleMode && params.time) {
                 const [hours, minutes] = params.time.split(':');
                 const timeObject = new Date();
                 timeObject.setHours(parseInt(hours), parseInt(minutes), 0, 0);
                 setSelectedTime(timeObject);
             }
-        } else {
-            setSelectedPatientId(params.patientId || null);
-            setSelectedDentistId(params.dentistId || null);
         }
-    }, [params.appointmentId]);
+    }, [
+        params.mode, 
+        params.patientId, 
+        params.dentistId, 
+        params.specialty, 
+        params.procedures, 
+        params.date, 
+        params.time, 
+        params.observations
+    ]);
 
 
     const specialtyItems: PickerItem[] = ALL_SPECIALTIES.map(s => ({ label: s, value: s }));
 
     useFocusEffect(
         useCallback(() => {
+            const getTitle = () => {
+                if (isRescheduleMode) return 'Reagendar Consulta';
+                if (isReproposeMode) return 'Sugerir nova data/horário';
+                return 'Agendar Consulta';
+            };
+
             setHeaderConfig({
                 layout: 'page',
                 showPageHeaderElements: true,
-                pageTitle: isRescheduleMode ? 'Reagendar Consulta' : 'Agendar Consulta',
+                pageTitle: getTitle(),
                 CharacterSvg: Chefinho,
                 showNotificationIcon: true,
             });
-        }, [isRescheduleMode])
+        }, [isRescheduleMode, isReproposeMode])
     );
 
     const handleCancel = () => {
@@ -97,14 +110,18 @@ export default function ScheduleAppointmentScreen() {
             return;
         }
         
-        if (isRescheduleMode) {
-            console.log('Reagendando consulta:', params.appointmentId);
-            alert('Consulta reagendada com sucesso! (Simulação)');
-        } else {
-            console.log('Agendando nova consulta');
-            alert('Consulta agendada com sucesso! (Simulação)');
-        }
+        const actionText = isRescheduleMode ? 'reagendada' : (isReproposeMode ? 'sugestão enviada' : 'agendada');
+        
+        console.log(`Ação: ${actionText}`);
+        alert(`Consulta ${actionText} com sucesso! (Simulação)`);
+        
         router.back();
+    };
+    
+    const primaryButtonTitle = () => {
+        if (isRescheduleMode) return "Reagendar";
+        if (isReproposeMode) return "Sugerir";
+        return "Agendar";
     };
 
     return (
@@ -179,7 +196,7 @@ export default function ScheduleAppointmentScreen() {
                 <ScreenFooter
                     secondaryButtonTitle="Cancelar"
                     onSecondaryButtonPress={handleCancel}
-                    primaryButtonTitle={isRescheduleMode ? "Reagendar" : "Agendar"}
+                    primaryButtonTitle={primaryButtonTitle()}
                     onPrimaryButtonPress={handleSchedule}
                 />
             </View>

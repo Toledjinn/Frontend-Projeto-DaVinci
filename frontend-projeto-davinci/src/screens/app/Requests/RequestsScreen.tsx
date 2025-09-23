@@ -57,9 +57,11 @@ export default function RequestsScreen() {
   );
 
   const handleRequestPress = (id: string) => {
-   router.push(`/appointment/${id}`);
+    router.push({
+      pathname: `/(app)/appointment/${id}`,
+      params: { mode: 'review' },
+    });
   };
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>

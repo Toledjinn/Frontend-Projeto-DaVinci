@@ -20,12 +20,24 @@ export const styles = StyleSheet.create({
   },
   mainContent: {
     paddingHorizontal: 24,
-    top: -32
+    top: -24
   },
   inlineFooter: {
     paddingTop: 0, 
     paddingBottom: 16, 
     paddingHorizontal: 0,
     backgroundColor: 'transparent',
-  }
+  },
+  buttonActionsContainer: {
+    paddingHorizontal: 24,
+    marginBottom: 32,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  buttonInRow: {
+    flex: 1, 
+  },
 });
