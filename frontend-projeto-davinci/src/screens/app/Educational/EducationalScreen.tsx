@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './EducationalScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -58,7 +58,7 @@ export default function EducationalScreen() {
 
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={[styles.container, { paddingTop: headerHeight }]}>
         <Text style={styles.description}>
           Nós somos promotores da saúde, na verdade manejadores de
@@ -83,6 +83,6 @@ export default function EducationalScreen() {
           ))}
         </View>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

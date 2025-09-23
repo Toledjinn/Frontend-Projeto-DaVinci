@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, SafeAreaView, ScrollView, useWindowDimensions, TextInput, Text } from 'react-native';
+import { View, ScrollView, useWindowDimensions, TextInput, Text } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './ScheduleAppointmentScreen.styles';
@@ -14,7 +15,6 @@ import { getUsers } from '@/data/mockUsers';
 import { COLORS } from '@/constants/theme';
 import StyledUserPicker from '@/components/common/StyledUserPicker';
 import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
-import { ALL_PROCEDURES } from '@/data/mockProcedures';
 
 const MOCK_PATIENTS = getUsers('patient');
 const MOCK_DENTISTS = getUsers('dentist');
@@ -31,7 +31,6 @@ export default function ScheduleAppointmentScreen() {
         patientId?: string;
         dentistId?: string;
         specialty?: string;
-        procedures?: string;
         date?: string;
         time?: string;
         observations?: string;
@@ -43,7 +42,6 @@ export default function ScheduleAppointmentScreen() {
     const [selectedPatientId, setSelectedPatientId] = useState<string | null>(params.patientId || null);
     const [selectedDentistId, setSelectedDentistId] = useState<string | null>(params.dentistId || null);
     const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
-    const [selectedProcedures, setSelectedProcedures] = useState<string[]>([]);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<Date | null>(null);
     const [observations, setObservations] = useState('');
@@ -53,7 +51,6 @@ export default function ScheduleAppointmentScreen() {
             setSelectedPatientId(params.patientId || null);
             setSelectedDentistId(params.dentistId || null);
             setSelectedSpecialty(params.specialty || null);
-            setSelectedProcedures(params.procedures ? JSON.parse(params.procedures) : []);
             setObservations(params.observations || '');
 
             if (isRescheduleMode && params.date) {
@@ -73,7 +70,6 @@ export default function ScheduleAppointmentScreen() {
         params.patientId, 
         params.dentistId, 
         params.specialty, 
-        params.procedures, 
         params.date, 
         params.time, 
         params.observations
@@ -125,7 +121,7 @@ export default function ScheduleAppointmentScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaProvider style={styles.safeArea}>
             <View style={styles.outerContainer}>
                 <ScrollView
                     style={styles.scrollView}
@@ -163,16 +159,6 @@ export default function ScheduleAppointmentScreen() {
                         />
                     </View>
                     <View style={styles.inputWrapper}>
-                        <StyledMultiSelect
-                            label="Procedimentos"
-                            iconName="clipboard"
-                            items={ALL_PROCEDURES}
-                            selectedItems={selectedProcedures}
-                            onSelectionChange={setSelectedProcedures}
-                            placeholder="Selecione os procedimentos"
-                        />
-                    </View>
-                    <View style={styles.inputWrapper}>
                        <StyledDatePicker label="Data" value={selectedDate} onChange={setSelectedDate} />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -194,12 +180,12 @@ export default function ScheduleAppointmentScreen() {
                     </View>
                 </ScrollView>
                 <ScreenFooter
-                    secondaryButtonTitle="Cancelar"
-                    onSecondaryButtonPress={handleCancel}
-                    primaryButtonTitle={primaryButtonTitle()}
-                    onPrimaryButtonPress={handleSchedule}
+                    secondaryButtonTitle={primaryButtonTitle()}
+                    onSecondaryButtonPress={handleSchedule}
+                    primaryButtonTitle="Cancelar"
+                    onPrimaryButtonPress={handleCancel}
                 />
             </View>
-        </SafeAreaView>
+        </SafeAreaProvider>
     );
 }

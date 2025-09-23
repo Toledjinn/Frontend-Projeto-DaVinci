@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -85,7 +85,7 @@ export default function EditDepoimentosScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
@@ -151,6 +151,6 @@ export default function EditDepoimentosScreen() {
         primaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

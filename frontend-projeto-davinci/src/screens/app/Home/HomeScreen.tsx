@@ -1,5 +1,6 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions } from 'react-native';
+import { ScrollView, useWindowDimensions } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './HomeScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -89,7 +90,7 @@ const handleButtonPress = (sectionId: string, buttonId: string) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -106,6 +107,6 @@ const handleButtonPress = (sectionId: string, buttonId: string) => {
           />
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

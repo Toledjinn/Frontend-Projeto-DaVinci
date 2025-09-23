@@ -268,7 +268,7 @@ const ALL_USERS: UserProfile[] = [
     name: 'Luiz Eduardo de Almeida Toledo Leal', 
     image: null,
     type: 'patient',
-    allergies: [],
+    allergies: ['Poeira'],
     riskLevel: 'baixo',
     details: [
         { id: 'p1-1', label: 'Gênero', value: 'Masculino' },
@@ -286,7 +286,6 @@ const ALL_USERS: UserProfile[] = [
         { id: 'p1-13', label: 'Nacionalidade', value: 'Brasileira' },
         { id: 'p1-14', label: 'Naturalidade', value: 'Curitiba / PR' },
         { id: 'p1-15', label: 'Alergias', value: 'Nenhuma' },
-        { id: 'p1-16', label: 'Última consulta', value: '15/04/2025' },
     ]
   },
   { 
@@ -312,7 +311,6 @@ const ALL_USERS: UserProfile[] = [
         { id: 'p2-13', label: 'Nacionalidade', value: 'Brasileira' },
         { id: 'p2-14', label: 'Naturalidade', value: 'Porto Alegre / RS' },
         { id: 'p2-15', label: 'Alergias', value: 'Poeira' },
-        { id: 'p2-16', label: 'Última consulta', value: '21/05/2025' },
     ]
   },
   { 
@@ -320,7 +318,7 @@ const ALL_USERS: UserProfile[] = [
     name: 'Bruce Wayne', 
     image: null,
     type: 'patient',
-    allergies: ['Penicilina', 'Látex'],
+    allergies: [],
     riskLevel: 'alto',
     details: [
         { id: 'p3-1', label: 'Gênero', value: 'Masculino' },
@@ -338,7 +336,6 @@ const ALL_USERS: UserProfile[] = [
         { id: 'p3-13', label: 'Nacionalidade', value: 'Americana' },
         { id: 'p3-14', label: 'Naturalidade', value: 'Gotham / NJ' },
         { id: 'p3-15', label: 'Alergias', value: 'Penicilina, Látex' },
-        { id: 'p3-16', label: 'Última consulta', value: '01/03/2025' },
     ]
   },
   { 
@@ -346,7 +343,7 @@ const ALL_USERS: UserProfile[] = [
     name: 'Tony Stark', 
     image: null,
     type: 'patient',
-    allergies: ['Níquel'],
+    allergies: [],
     riskLevel: 'moderado',
     details: [
         { id: 'p4-1', label: 'Gênero', value: 'Masculino' },
@@ -364,7 +361,6 @@ const ALL_USERS: UserProfile[] = [
         { id: 'p4-13', label: 'Nacionalidade', value: 'Americana' },
         { id: 'p4-14', label: 'Naturalidade', value: 'New York / NY' },
         { id: 'p4-15', label: 'Alergias', value: 'Níquel' },
-        { id: 'p4-16', label: 'Última consulta', value: '10/06/2025' },
     ]
   },
   { 
@@ -390,7 +386,6 @@ const ALL_USERS: UserProfile[] = [
         { id: 'p5-13', label: 'Nacionalidade', value: 'Americana' },
         { id: 'p5-14', label: 'Naturalidade', value: 'New York / NY' },
         { id: 'p5-15', label: 'Alergias', value: 'Nenhuma' },
-        { id: 'p5-16', label: 'Última consulta', value: '22/07/2025' },
     ]
   },
   { 
@@ -416,7 +411,6 @@ const ALL_USERS: UserProfile[] = [
         { id: 'p6-13', label: 'Nacionalidade', value: 'Brasileira' },
         { id: 'p6-14', label: 'Naturalidade', value: 'São Paulo / SP' },
         { id: 'p6-15', label: 'Alergias', value: 'Nenhuma' },
-        { id: 'p6-16', label: 'Última consulta', value: '30/08/2025' },
     ]
   },
   { 
@@ -442,7 +436,6 @@ const ALL_USERS: UserProfile[] = [
         { id: 'p7-13', label: 'Nacionalidade', value: 'Americana' },
         { id: 'p7-14', label: 'Naturalidade', value: 'Oklahoma / OK' },
         { id: 'p7-15', label: 'Alergias', value: 'O flúor tem alergia a ele' },
-        { id: 'p7-16', label: 'Última consulta', value: 'Sempre que ele quiser' },
     ]
   },
 ];

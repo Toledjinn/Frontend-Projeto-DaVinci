@@ -4,9 +4,9 @@ import { SvgProps } from 'react-native-svg';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { getUserListItemStyles } from './styles';
-import { COLORS } from '@/constants/theme';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import { User } from '../UserList';
+import { COLORS } from '@/constants/theme';
 
 type UserListItemProps = {
   item: User;
@@ -31,11 +31,26 @@ const UserListItem = React.memo(({ item }: UserListItemProps) => {
         <ImageComponent width="100%" height="100%" />
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.nameText} numberOfLines={1}>{item.name}</Text>
-        <Text style={styles.detailText} numberOfLines={1}>{item.detailLine1}</Text>
+        <Text style={styles.nameText}>{item.name}</Text>
+        
+        <Text style={styles.detailText}>
+          {item.detailLabel ? (
+            <>
+              <Text style={styles.detailLabel}>{item.detailLabel} </Text>
+              {item.detailValue}
+            </>
+          ) : (
+            item.detailLine1
+          )}
+        </Text>
       </View>
+      
+      {item.hasAllergies && (
+        <Feather name="alert-triangle" size={24} color={COLORS.red} style={styles.alertIcon} />
+      )}
+
       <View style={styles.iconContainer}>
-        <Feather name="eye" size={28} color={COLORS.gray_400} />
+        <Feather name="chevron-right" size={28} color={COLORS.gray_400} />
       </View>
     </TouchableOpacity>
   );

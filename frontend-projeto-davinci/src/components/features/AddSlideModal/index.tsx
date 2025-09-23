@@ -1,6 +1,7 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList, SafeAreaView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { styles } from './styles';
 import { COLORS } from '@/constants/theme';
 
@@ -38,7 +39,7 @@ export default function AddSlideModal({ visible, onClose, onSelectLayout }: AddS
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <SafeAreaView style={styles.modalContent}>
+        <SafeAreaProvider style={styles.modalContent}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Adicionar Novo Slide</Text>
             <TouchableOpacity onPress={onClose}>
@@ -50,7 +51,7 @@ export default function AddSlideModal({ visible, onClose, onSelectLayout }: AddS
             keyExtractor={(item) => item.key}
             renderItem={renderItem}
           />
-        </SafeAreaView>
+        </SafeAreaProvider>
       </View>
     </Modal>
   );

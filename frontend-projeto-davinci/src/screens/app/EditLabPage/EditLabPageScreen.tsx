@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -72,15 +72,22 @@ export default function EditLabPageScreen() {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+       mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.8,
     });
     if (!result.canceled) {
-      const newSlides = [...editableSlides];
-      newSlides[index].image = { uri: result.assets[0].uri };
-      setEditableSlides(newSlides);
+      const uri = result.assets?.[0]?.uri;
+      if (!uri) return;
+
+      setEditableSlides(prev => {
+        const next = [...prev];
+        const slide = next[index];
+        if (!slide) return prev;
+        next[index] = { ...slide, image: { uri } };
+        return next;
+      });
     }
   };
 
@@ -110,16 +117,16 @@ export default function EditLabPageScreen() {
 
   if (!pageContent) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaProvider style={styles.safeArea}>
         <View style={styles.container}>
           <Text>Página não encontrada.</Text>
         </View>
-      </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
@@ -225,7 +232,7 @@ export default function EditLabPageScreen() {
         primaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

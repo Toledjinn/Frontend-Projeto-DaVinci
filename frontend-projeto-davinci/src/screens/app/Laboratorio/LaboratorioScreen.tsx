@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   useWindowDimensions,
   ScrollView,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './LaboratorioScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -20,11 +20,11 @@ export default function LaboratorioScreen() {
 
  
   const labButtons = [
-    { id: 'produtos', title: 'Nossa Filosofia', onPress: () => router.push('/(app)/produtos') },
-    { id: 'trabalhos', title: 'Trabalhos', onPress: () => router.push('(app)/trabalhos') },
-    { id: 'parceiros', title: 'Parceiros', onPress: () => router.push('(app)/parceiros') },
-
+    { id: 'produtos',  title: 'Nossa Filosofia', onPress: () => router.push('/(app)/produtos') },
+    { id: 'trabalhos', title: 'Trabalhos', onPress: () => router.push('/(app)/trabalhos') },
+    { id: 'parceiros', title: 'Parceiros', onPress: () => router.push('/(app)/parceiros') },
   ];
+
 
   useFocusEffect(
     useCallback(() => {
@@ -40,7 +40,7 @@ export default function LaboratorioScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -52,6 +52,6 @@ export default function LaboratorioScreen() {
         <HomeSection title="" buttons={labButtons} />
 
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

@@ -4,18 +4,18 @@ import { styles } from './styles';
 
 type ProfileDataItemProps = {
   label: string;
-  value: string;
+  value: React.ReactNode;
 };
 
-const ProfileDataItem = React.memo(({ label, value }: ProfileDataItemProps) => {
+export default function ProfileDataItem({ label, value }: ProfileDataItemProps) {
   return (
     <View style={styles.itemContainer}>
-      <View style={styles.itemRow}>
-        <Text style={styles.itemLabel}>{label}</Text>
+      <Text style={styles.itemLabel}>{label}</Text>
+      {typeof value === 'string' ? (
         <Text style={styles.itemValue}>{value}</Text>
-      </View>
+      ) : (
+        <View style={styles.itemContainer}>{value}</View>
+      )}
     </View>
   );
-});
-
-export default ProfileDataItem;
+}

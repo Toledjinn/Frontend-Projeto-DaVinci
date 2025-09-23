@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   View,
-  SafeAreaView,
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
@@ -9,6 +8,7 @@ import {
   Platform,
   useWindowDimensions
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { styles } from './ChangePasswordScreen.styles';
 import StyledInput from '@/components/common/StyledInput';
@@ -73,7 +73,7 @@ export default function ChangePasswordScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -116,6 +116,6 @@ export default function ChangePasswordScreen() {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

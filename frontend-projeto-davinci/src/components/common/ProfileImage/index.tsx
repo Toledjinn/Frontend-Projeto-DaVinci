@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, useWindowDimensions, NativeSyntheticEvent, TextLayoutEventData } from 'react-native';
+import { View, Text, useWindowDimensions, TextLayoutEvent } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 import { getProfileHeaderStyles } from './styles'; 
 import RiskLevelIndicator from '../RiskLevelIndicator';
@@ -16,7 +16,7 @@ export default function ProfileHeader({ UserImageSvg, userName, riskLevel }: Pro
   const { width, height } = useWindowDimensions(); 
   const [numberOfLines, setNumberOfLines] = useState(0);
   
-  const onTextLayout = (e: NativeSyntheticEvent<TextLayoutEventData>) => {
+  const onTextLayout = (e: TextLayoutEvent) => {
     const lines = e.nativeEvent.lines.length;
     if (lines > 0 && lines !== numberOfLines) {
       setNumberOfLines(lines);

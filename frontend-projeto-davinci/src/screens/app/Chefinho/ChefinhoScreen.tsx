@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useRef } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
   View,
   Text,
-  SafeAreaView,
   Image,
   ScrollView,
   useWindowDimensions,
@@ -67,7 +67,7 @@ export default function ChefinhoScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={styles.container}>
         <ScrollView
           ref={scrollViewRef}
@@ -220,7 +220,7 @@ export default function ChefinhoScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

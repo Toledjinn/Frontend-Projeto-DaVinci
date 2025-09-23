@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   useWindowDimensions,
 } from 'react-native';
@@ -13,6 +12,7 @@ import { useUIStore } from '@/state/uiStore';
 import { useDepoimentosStore } from '@/state/depoimentosStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const userType = 'admin';
 
@@ -52,7 +52,7 @@ export default function DepoimentosScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -81,7 +81,7 @@ export default function DepoimentosScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

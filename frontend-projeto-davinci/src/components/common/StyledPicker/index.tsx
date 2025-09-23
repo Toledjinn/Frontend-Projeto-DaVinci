@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
-  SafeAreaView,
   useWindowDimensions,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 import { getStyledPickerStyles } from './styles';
 import { COLORS } from '@/constants/theme';
@@ -18,7 +18,7 @@ export interface PickerItem {
 }
 
 interface StyledPickerProps {
-  label: string;
+  label?: string;
   iconName: string;
   items: PickerItem[];
   selectedValue: string | null;
@@ -52,7 +52,7 @@ export default function StyledPicker({
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{label}</Text>
+      {label && <Text style={styles.label}>{label}</Text>}
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
         style={[styles.inputContainer, { borderColor }]}
@@ -87,7 +87,7 @@ export default function StyledPicker({
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <SafeAreaView style={styles.modalContent}>
+          <SafeAreaProvider style={styles.modalContent}>
             <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>{label}</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -106,7 +106,7 @@ export default function StyledPicker({
                 </TouchableOpacity>
               )}
             />
-          </SafeAreaView>
+          </SafeAreaProvider>
         </View>
       </Modal>
     </View>

@@ -31,9 +31,6 @@ const AppointmentListItem = React.memo(({ item, onPress }: AppointmentListItemPr
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.dentistText}>{item.dentist}</Text>
-        <Text style={styles.procedureText} numberOfLines={1}>
-          {item.procedures.join(', ')}
-        </Text>
         <View style={styles.statusContainer}>
           <Feather name={currentStatus.icon} size={14} color={currentStatus.color} />
           <Text style={[styles.statusText, { color: currentStatus.color }]}>

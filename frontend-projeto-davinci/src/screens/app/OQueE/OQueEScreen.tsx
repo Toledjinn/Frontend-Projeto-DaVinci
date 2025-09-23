@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   useWindowDimensions,
   Image,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { styles } from './OQueEScreen.styles';
@@ -50,7 +50,7 @@ export default function OQueEScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -85,7 +85,7 @@ export default function OQueEScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

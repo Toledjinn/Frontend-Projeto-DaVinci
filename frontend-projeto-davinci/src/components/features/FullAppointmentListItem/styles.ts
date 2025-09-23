@@ -41,10 +41,24 @@ export const styles = StyleSheet.create({
     ...FONTS.body11,
     color: COLORS.gray_400,
   },
+  dateTimeContainer: {
+    position: 'absolute',
+    top: 16, 
+    right: 16, 
+    alignItems: 'flex-end', 
+  },
+  dateText: {
+    ...FONTS.body8, 
+    color: COLORS.secondary,
+  },
+  timeText: {
+    ...FONTS.body11, 
+    color: COLORS.gray_400,
+  },
   statusContainer: {
     position: 'absolute', 
-    bottom: 8,           
-    right: 8,          
+    bottom: 16, 
+    right: 16,          
     flexDirection: 'row',
     alignItems: 'center',
   },

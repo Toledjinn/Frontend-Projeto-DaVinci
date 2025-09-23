@@ -5,8 +5,11 @@ import { SvgProps } from 'react-native-svg';
 export type User = {
   id: string;
   name: string;
-  detailLine1: string;
+  detailLine1?: string;
+  detailLabel?: string;
+  detailValue?: string;
   image: React.FC<SvgProps> | null;
+  hasAllergies?: boolean; 
   specialties?: string[];
   role?: string;
 };

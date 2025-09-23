@@ -33,13 +33,22 @@ export const getUserListItemStyles = (height: number) => {
       ...FONTS.body7,
       color: COLORS.secondary,
     },
+    detailLabel: {
+      ...FONTS.body8,
+      color: COLORS.gray_400,
+    },
     detailText: {
       ...FONTS.body11,
       color: COLORS.gray_400,
-      
+      top: 4
+    },
+    alertIcon: {
+      marginHorizontal: 8,
     },
     iconContainer: {
-      paddingLeft: 12,
+      paddingLeft: 4,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });
 };

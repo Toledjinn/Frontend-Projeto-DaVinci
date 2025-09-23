@@ -1,5 +1,5 @@
 export const ALL_SPECIALTIES: string[] = [
-  'Primeira consulta',
+  'Primeira Consulta',
   'Segunda Consulta',
   'Clínica Geral',
   'Endodontia',

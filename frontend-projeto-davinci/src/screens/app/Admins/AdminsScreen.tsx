@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions, View } from 'react-native';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './AdminsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -8,7 +9,7 @@ import UserList, { User } from '@/components/features/UserList';
 import FotoPerfil from '@/assets/images/FotoPerfil.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
-import FilterModal from '@/components/features/FilterModal';
+import AdminFilterModal from '@/components/features/AdminFilterModal';
 import { getUsers as getAdmins } from '@/data/mockUsers';
 
 const MOCK_ADMINS = getAdmins('admin');
@@ -26,6 +27,7 @@ export default function AdminsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedGenders, setSelectedGenders] = useState<string[]>([]); 
 
   useFocusEffect(
     useCallback(() => {
@@ -39,8 +41,9 @@ export default function AdminsScreen() {
     }, [])
   );
 
-  const handleApplyFilter = (roles: string[]) => {
-    setSelectedRoles(roles);
+  const handleApplyFilter = (filters: { genders: string[]; roles: string[] }) => {
+    setSelectedGenders(filters.genders);
+    setSelectedRoles(filters.roles);
     setFilterModalVisible(false);
   };
 
@@ -52,24 +55,28 @@ export default function AdminsScreen() {
   };
 
   const filteredAdmins = useMemo(() => {
-    const admins = MOCK_ADMINS.map(user => ({
+    return MOCK_ADMINS
+      .filter(user => {
+        if (selectedGenders.length === 0) return true;
+        const genderDetail = user.details.find(d => d.label === 'Gênero');
+        return genderDetail && selectedGenders.includes(genderDetail.value);
+      })
+      .filter(user => {
+        if (selectedRoles.length === 0) return true;
+        return user.role && selectedRoles.includes(user.role);
+      })
+      .filter(user => {
+        return user.name.toLowerCase().includes(searchQuery.toLowerCase());
+      })
+      .map(user => ({
         ...user,
         detailLine1: user.role || 'N/A'
-    }));
-    
-    return admins.filter((admin) => {
-      const nameMatch = admin.name.toLowerCase().includes(searchQuery.toLowerCase());
+      }));
+  }, [searchQuery, selectedRoles, selectedGenders]);
 
-      const roleMatch =
-        selectedRoles.length === 0 ||
-        (admin.role && selectedRoles.includes(admin.role));
-
-      return nameMatch && roleMatch;
-    });
-  }, [searchQuery, selectedRoles]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -90,14 +97,16 @@ export default function AdminsScreen() {
           onPrimaryButtonPress={handleRegisterPress}
         />
       </View>
-      <FilterModal
-        title="Filtrar por Cargo"
+      <AdminFilterModal
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApply={handleApplyFilter}
-        options={availableRoles}
-        initialSelectedOptions={selectedRoles}
+        roleOptions={availableRoles}
+        initialFilters={{
+          genders: selectedGenders,
+          roles: selectedRoles,
+        }}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

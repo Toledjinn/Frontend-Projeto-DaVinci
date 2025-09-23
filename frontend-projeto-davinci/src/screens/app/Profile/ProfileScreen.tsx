@@ -1,11 +1,13 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions } from 'react-native';
+import { ScrollView, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './ProfileScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import ProfileDataList from '@/components/features/ProfileDataList';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import { findUserById } from '@/data/mockUsers';
+import { formatUserName } from '@/utils/nameUtils';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
   const { height } = useWindowDimensions();
@@ -35,19 +37,18 @@ export default function ProfileScreen() {
           layout: 'profile',
           showBackground: true,
           showNotificationIcon: false,
-          userName: user.name,
+          userName: formatUserName(user.name),
           UserImageSvg: user.image,
         });
       }
     }, [user])
   );
-
   if (!user) {
     return null;
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
@@ -62,6 +63,6 @@ export default function ProfileScreen() {
         primaryButtonTitle="Sair"
         onPrimaryButtonPress={handleLogout}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

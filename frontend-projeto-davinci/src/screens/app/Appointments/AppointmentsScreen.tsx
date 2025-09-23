@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { SafeAreaView, useWindowDimensions, View, Text, FlatList } from 'react-native';
+import { useWindowDimensions, View, Text, FlatList } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './AppointmentsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -9,7 +10,7 @@ import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import FullAppointmentListItem from '@/components/features/FullAppointmentListItem';
 import RecordFilterModal from '@/components/features/RecordFilterModal';
 import { getUsers } from '@/data/mockUsers';
-import { getAllAppointments, Appointment } from '@/data/mockAppointments';
+import { getAllAppointments, Appointment, APPOINTMENT_STATUSES } from '@/data/mockAppointments';
 import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 
 export default function AppointmentsScreen() {
@@ -24,15 +25,18 @@ export default function AppointmentsScreen() {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedDentists, setSelectedDentists] = useState<string[]>([]);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
-
+  
   useEffect(() => {
     setAllAppointments(getAllAppointments());
   }, []);
 
   const filteredAppointments = useMemo(() => {
     const patients = getUsers('patient');
-    let appointmentsWithPatientData = allAppointments.map(appt => {
+    let appointmentsWithPatientData = allAppointments
+      .filter(appt => appt.status !== 'pendente')
+      .map(appt => {
         const patient = patients.find(p => p.id === appt.patientId);
         return {
             ...appt,
@@ -56,6 +60,9 @@ export default function AppointmentsScreen() {
     if (selectedSpecialties.length > 0) {
         appointmentsWithPatientData = appointmentsWithPatientData.filter(appt => selectedSpecialties.includes(appt.specialty));
     }
+     if (selectedStatus.length > 0) {
+        appointmentsWithPatientData = appointmentsWithPatientData.filter(appt => selectedStatus.includes(appt.status));
+    }
     
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
@@ -65,7 +72,7 @@ export default function AppointmentsScreen() {
     }
 
     return appointmentsWithPatientData;
-  }, [allAppointments, searchQuery, startDate, endDate, selectedDentists, selectedSpecialties]);
+  }, [allAppointments, searchQuery, startDate, endDate, selectedDentists, selectedSpecialties, selectedStatus]);
 
   const dentistOptions = useMemo(() => [...new Set(allAppointments.map(a => a.dentist))], [allAppointments]);
 
@@ -86,6 +93,7 @@ export default function AppointmentsScreen() {
     setEndDate(filters.end);
     setSelectedDentists(filters.dentists);
     setSelectedSpecialties(filters.specialties);
+    setSelectedStatus(filters.status);
   };
   
   const handleNewAppointment = () => {
@@ -97,7 +105,7 @@ export default function AppointmentsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -126,8 +134,15 @@ export default function AppointmentsScreen() {
         onApply={handleApplyFilter}
         dentistOptions={dentistOptions}
         specialtyOptions={ALL_SPECIALTIES}
-        initialFilters={{ start: startDate, end: endDate, dentists: selectedDentists, specialties: selectedSpecialties }}
+        statusOptions={APPOINTMENT_STATUSES} 
+        initialFilters={{ 
+          start: startDate, 
+          end: endDate, 
+          dentists: selectedDentists, 
+          specialties: selectedSpecialties, 
+          status: selectedStatus 
+        }}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

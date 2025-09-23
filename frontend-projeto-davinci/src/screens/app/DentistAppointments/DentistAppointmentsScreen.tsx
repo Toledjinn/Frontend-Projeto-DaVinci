@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { SafeAreaView, useWindowDimensions, View, Text, FlatList } from 'react-native';
+import { useWindowDimensions, View, Text, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { styles } from './DentistAppointmentsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -10,6 +11,8 @@ import RecordFilterModal from '@/components/features/RecordFilterModal';
 import { findUserById, UserProfile } from '@/data/mockUsers'; 
 import { getAppointmentsByDentistName, Appointment } from '@/data/mockAppointments';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg'; 
+import { formatUserName } from '@/utils/nameUtils';
+
 
 export default function DentistAppointmentsScreen() {
   const { height } = useWindowDimensions();
@@ -22,8 +25,44 @@ export default function DentistAppointmentsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
-  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+
+  type Filters = {
+    start: Date | null;
+    end: Date | null;
+    dentists: string[];
+    specialties: string[];
+    status: string[];
+  };
+
+  type FilterItem = { label: string; value: string };
+
+  const specialtyOptions = useMemo(
+    () => [...new Set(allAppointments.map(a => a.specialty))],
+    [allAppointments]
+  );
+
+  const statusOptions: FilterItem[] = useMemo(() => {
+    const labelMap: Record<Appointment['status'], string> = {
+      agendada: 'Agendada',
+      pendente: 'Pendente',
+      realizada: 'Realizada',
+      cancelada: 'Cancelada',
+    };
+  
+  const order: Appointment['status'][] = ['agendada', 'pendente', 'realizada', 'cancelada'];
+
+  const present = new Set<Appointment['status']>(
+    allAppointments.map(a => a.status)
+  );
+
+  return order
+    .filter(s => present.has(s))
+    .map(s => ({ label: labelMap[s], value: s }));
+}, [allAppointments]);
+
 
   useEffect(() => {
     if (dentistId) {
@@ -36,19 +75,44 @@ export default function DentistAppointmentsScreen() {
     }
   }, [dentistId]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (dentist) { 
+        const formattedName = formatUserName(dentist.name);
+        setHeaderConfig({
+          layout: 'profile', 
+          showBackground: true, 
+          showPageHeaderElements: true,
+          pageTitle: `Consultas de ${formattedName}`,
+          UserImageSvg: dentist.image || UserPlaceholder,
+          showNotificationIcon: true,
+          userName: formattedName,
+          riskLevel: dentist.riskLevel, 
+        });
+      }
+    }, [dentist])
+  );
+  
   const filteredAppointments = useMemo(() => {
     let appointments = [...allAppointments];
 
     if (startDate) {
-        appointments = appointments.filter(appt => new Date(appt.date.split('/').reverse().join('-')) >= startDate);
+      appointments = appointments.filter(
+        appt => new Date(appt.date.split('/').reverse().join('-')) >= startDate
+      );
     }
     if (endDate) {
-        const inclusiveEndDate = new Date(endDate);
-        inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1);
-        appointments = appointments.filter(appt => new Date(appt.date.split('/').reverse().join('-')) < inclusiveEndDate);
+      const inclusiveEndDate = new Date(endDate);
+      inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1);
+      appointments = appointments.filter(
+        appt => new Date(appt.date.split('/').reverse().join('-')) < inclusiveEndDate
+      );
     }
     if (selectedSpecialties.length > 0) {
-        appointments = appointments.filter(appt => selectedSpecialties.includes(appt.specialty));
+      appointments = appointments.filter(appt => selectedSpecialties.includes(appt.specialty));
+    }
+    if (selectedStatuses.length > 0) {
+      appointments = appointments.filter(appt => selectedStatuses.includes(appt.status));
     }
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
@@ -58,9 +122,9 @@ export default function DentistAppointmentsScreen() {
     }
 
     return appointments;
-  }, [allAppointments, searchQuery, startDate, endDate, selectedSpecialties]);
 
-  const specialtyOptions = useMemo(() => [...new Set(allAppointments.map(a => a.specialty))], [allAppointments]);
+  }, [allAppointments, searchQuery, startDate, endDate, selectedSpecialties, selectedStatuses]);
+  
 
   useFocusEffect(
     useCallback(() => {
@@ -79,10 +143,11 @@ export default function DentistAppointmentsScreen() {
     }, [dentist])
   );
 
-  const handleApplyFilter = (filters: any) => {
+  const handleApplyFilter = (filters: Filters) => {
     setStartDate(filters.start);
     setEndDate(filters.end);
     setSelectedSpecialties(filters.specialties);
+    setSelectedStatuses(filters.status); 
   };
 
   if (!dentist) {
@@ -103,7 +168,10 @@ export default function DentistAppointmentsScreen() {
   };
 
   const handleAppointmentPress = (id: string) => {
-    router.push(`/(app)/appointment/${id}`);
+    router.push({
+      pathname: '/(app)/appointment/[appointmentId]',
+      params: { appointmentId: id, mode: 'review' },
+  });
   };
 
   return (
@@ -130,13 +198,21 @@ export default function DentistAppointmentsScreen() {
           onPrimaryButtonPress={handleNewAppointment}
         />
       </View>
+
       <RecordFilterModal
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApply={handleApplyFilter}
-        dentistOptions={[]}
+        dentistOptions={[] as string[]}
         specialtyOptions={specialtyOptions}
-        initialFilters={{ start: startDate, end: endDate, dentists: [], specialties: selectedSpecialties }}
+        statusOptions={statusOptions}           
+        initialFilters={{
+          start: startDate,
+          end: endDate,
+          dentists: [] as string[],
+          specialties: selectedSpecialties,
+          status: selectedStatuses,
+        }}
       />
     </SafeAreaView>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -329,37 +329,58 @@ export default function EditEducationalContentScreen() {
     setEditableSlides(newSlides);
   };
 
-  const handleImageChange = async (index: number, field: 'image' | 'before' | 'after' = 'image', imageIndex?: number) => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permissão necessária', 'Você precisa conceder permissão para aceder à galeria.');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 0.8,
-    });
-    if (!result.canceled) {
-      const newSlides = [...editableSlides];
-      const slideToUpdate = newSlides[index];
+const handleImageChange = async (
+  index: number,
+  field: 'image' | 'before' | 'after' = 'image',
+  imageIndex?: number
+) => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== 'granted') {
+    Alert.alert('Permissão necessária', 'Você precisa conceder permissão para aceder à galeria.');
+    return;
+  }
 
-      if (slideToUpdate.beforeAfterImages && (field === 'before' || field === 'after')) {
-        slideToUpdate.beforeAfterImages[field] = { uri: result.assets[0].uri };
-      } else if (slideToUpdate.imageGrid && imageIndex !== undefined) {
-        slideToUpdate.imageGrid[imageIndex] = { uri: result.assets[0].uri };
-      } else if (slideToUpdate.images && imageIndex !== undefined) {
-        slideToUpdate.images[imageIndex] = { uri: result.assets[0].uri };
-      } else if (slideToUpdate.collageImages && imageIndex !== undefined) {
-        slideToUpdate.collageImages[imageIndex] = { uri: result.assets[0].uri };
-      }
-       else {
-        (slideToUpdate as any)[field] = { uri: result.assets[0].uri };
-      }
-      setEditableSlides(newSlides);
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ['images'],        
+    allowsEditing: true,
+    aspect: [16, 9],
+    quality: 0.8,
+  });
+
+  if (result.canceled) return;
+
+  const uri = result.assets?.[0]?.uri;
+  if (!uri) return;
+
+  setEditableSlides(prev => {
+    const next = [...prev];
+    const current = next[index];
+    if (!current) return prev;
+
+    const updated = { ...current };
+
+    if (updated.beforeAfterImages && (field === 'before' || field === 'after')) {
+      updated.beforeAfterImages = { ...updated.beforeAfterImages, [field]: { uri } };
+    } else if (updated.imageGrid && imageIndex !== undefined) {
+      const grid = [...updated.imageGrid];
+      grid[imageIndex] = { uri };
+      updated.imageGrid = grid;
+    } else if (updated.images && imageIndex !== undefined) {
+      const imgs = [...updated.images];
+      imgs[imageIndex] = { uri };
+      updated.images = imgs;
+    } else if (updated.collageImages && imageIndex !== undefined) {
+      const collage = [...updated.collageImages];
+      collage[imageIndex] = { uri };
+      updated.collageImages = collage;
+    } else {
+      (updated as any)[field] = { uri };
     }
-  };
+
+    next[index] = updated;
+    return next;
+  });
+};
 
   const handleSaveChanges = () => {
     updatePage(page!, editableSlides);
@@ -389,16 +410,16 @@ export default function EditEducationalContentScreen() {
 
   if (!editableSlides || editableSlides.length === 0) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaProvider style={styles.safeArea}>
         <View style={styles.container}>
           <Text>Carregando conteúdo...</Text>
         </View>
-      </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
@@ -447,6 +468,6 @@ export default function EditEducationalContentScreen() {
         primaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

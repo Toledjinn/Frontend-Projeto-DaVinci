@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import {
-  SafeAreaView,
   FlatList,
   useWindowDimensions,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './NewsScreen.styles';
@@ -46,7 +46,7 @@ export default function NewsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <FlatList
         data={news}
         keyExtractor={(item) => item.id}
@@ -62,6 +62,6 @@ export default function NewsScreen() {
           <Feather name="plus" size={30} color={COLORS.white} />
         </TouchableOpacity>
       )}
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

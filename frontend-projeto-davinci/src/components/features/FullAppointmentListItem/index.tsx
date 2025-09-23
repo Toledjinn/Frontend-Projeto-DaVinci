@@ -42,10 +42,11 @@ const FullAppointmentListItem = React.memo(({ item, onPress }: FullAppointmentLi
         <Text style={styles.dentistName} numberOfLines={1}>{item.dentist}</Text>
         <Text style={styles.specialty} numberOfLines={1}>{item.specialty}</Text>
       </View>
-      
-      {item.hasAllergies && (
-        <Feather name="alert-triangle" size={24} color={COLORS.red} style={styles.alertIcon} />
-      )}
+
+      <View style={styles.dateTimeContainer}>
+        <Text style={styles.dateText}>{item.date}</Text>
+        <Text style={styles.timeText}>{item.time}</Text>
+      </View>
 
       {currentStatus && (
         <View style={styles.statusContainer}>

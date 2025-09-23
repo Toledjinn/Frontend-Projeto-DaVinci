@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -72,18 +72,28 @@ export default function EditSimpleContentScreen() {
       Alert.alert('Permissão necessária.');
       return;
     }
+
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.8,
     });
-    if (!result.canceled) {
-      const newBlocks = [...editableBlocks];
-      newBlocks[index].image = { uri: result.assets[0].uri };
-      setEditableBlocks(newBlocks);
-    }
+
+    if (result.canceled) return;
+
+    const uri = result.assets?.[0]?.uri;
+    if (!uri) return;
+
+    setEditableBlocks(prev => {
+      const next = [...prev];
+      const block = next[index];
+      if (!block) return prev;
+      next[index] = { ...block, image: { uri } };
+      return next;
+    });
   };
+
 
   const handleSaveChanges = () => {
     editableBlocks.forEach((block) => {
@@ -102,7 +112,7 @@ export default function EditSimpleContentScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {editableBlocks.map((block, index) => (
           <View key={block.id} style={styles.blockContainer}>
@@ -175,7 +185,7 @@ export default function EditSimpleContentScreen() {
         primaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

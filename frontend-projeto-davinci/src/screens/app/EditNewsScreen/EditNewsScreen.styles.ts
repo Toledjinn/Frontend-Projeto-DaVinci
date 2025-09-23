@@ -54,4 +54,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  fieldContainer: {
+    backgroundColor: '#fff',
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 12,
+  },
 });

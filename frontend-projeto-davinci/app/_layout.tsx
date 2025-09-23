@@ -1,8 +1,10 @@
 import { Stack, useSegments } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import Header from '@/components/common/Header';
+import * as NavigationBar from 'expo-navigation-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,6 +23,12 @@ export default function RootLayout() {
   const inAuthHeaderScreens = 
     segments[0] === '(auth)' && 
     ['forgot-password', 'change-password'].includes(segments[1]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setVisibilityAsync('hidden'); 
+    }
+  }, []);
 
   useEffect(() => {
     if (error) throw error;

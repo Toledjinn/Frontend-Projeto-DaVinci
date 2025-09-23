@@ -7,6 +7,9 @@
     "icon": "src/assets/images/adaptive-icon.png",
     "scheme": "frontendprojetodavinci",
     "userInterfaceStyle": "automatic",
+    "androidNavigationBar": {
+      "visible": "sticky-immersive"
+    },
     "newArchEnabled": true,
     "splash": {
       "image": "src/assets/images/splash-icon.png",

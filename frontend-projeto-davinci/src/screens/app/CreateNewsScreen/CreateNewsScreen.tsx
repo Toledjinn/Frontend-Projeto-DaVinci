@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -55,7 +55,7 @@ export default function CreateNewsScreen() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],     // <- aqui
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.8,
@@ -92,7 +92,7 @@ export default function CreateNewsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
@@ -108,8 +108,6 @@ export default function CreateNewsScreen() {
             </>
           )}
         </TouchableOpacity>
-
-
 
         <View style={styles.contentContainer}>
 
@@ -151,6 +149,6 @@ export default function CreateNewsScreen() {
         primaryButtonTitle="Publicar"
         onPrimaryButtonPress={handlePublish}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

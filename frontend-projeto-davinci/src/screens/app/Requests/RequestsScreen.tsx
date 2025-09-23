@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { SafeAreaView, useWindowDimensions, View, Text, FlatList } from 'react-native';
+import { useWindowDimensions, View, Text, FlatList } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './RequestsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -58,12 +59,14 @@ export default function RequestsScreen() {
 
   const handleRequestPress = (id: string) => {
     router.push({
-      pathname: `/(app)/appointment/${id}`,
-      params: { mode: 'review' },
+      pathname: '/(app)/appointment/[appointmentId]',
+      params: { appointmentId: id, mode: 'review' },
     });
   };
+
+
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -82,6 +85,6 @@ export default function RequestsScreen() {
           />
         </View>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   useWindowDimensions,
   ScrollView,
@@ -13,6 +12,7 @@ import { useUIStore } from '@/state/uiStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova2 from '@/assets/characters/escova2.svg';
 import Escova4 from '@/assets/characters/escova4.svg';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 const actionButtons = [
@@ -49,7 +49,7 @@ export default function SocialScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -82,6 +82,6 @@ export default function SocialScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

@@ -10,34 +10,50 @@ export const styles = StyleSheet.create({
   },
   modalView: {
     width: '85%',
-    maxHeight: '70%',
+    maxHeight: '80%',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 25,
-    alignItems: 'center',
+    paddingVertical: 0,
+    paddingHorizontal: 25,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
-  modalTitle: {
-    ...FONTS.body1,
-    color: COLORS.secondary,
-    marginBottom: 20,
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray_200,
   },
-  optionsContainer: {
+  modalTitle: {
+    ...FONTS.h2,
+    color: COLORS.secondary,
+  },
+  scrollContainer: {
     width: '100%',
+  },
+  sectionContainer: {
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  sectionSeparator: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray_100,
+    paddingBottom: 20,
+  },
+  sectionTitle: {
+    ...FONTS.body3,
+    color: COLORS.secondary,
+    marginBottom: 8,
   },
   optionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray_200,
+    paddingVertical: 8,
   },
   optionText: {
     ...FONTS.body10,
@@ -48,7 +64,9 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: 20,
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.gray_200,
   },
   button: {
     flex: 1,

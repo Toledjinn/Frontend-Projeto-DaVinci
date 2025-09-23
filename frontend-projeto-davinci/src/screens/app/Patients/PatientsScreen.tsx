@@ -1,17 +1,25 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions, View } from 'react-native';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './PatientsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Paciente from '@/assets/characters/chefinho.svg'; 
-import UserList, { User } from '@/components/features/UserList';
+import UserList from '@/components/features/UserList';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
-import FilterModal from '@/components/features/FilterModal';
-import FotoPerfil from '@/assets/images/FotoPerfil.svg'
-import { getUsers as getPatients } from '@/data/mockUsers';
+import { getUsers as getPatients, UserProfile } from '@/data/mockUsers';
+import { getAppointmentsByPatientId, getAllAppointments } from '@/data/mockAppointments';
+import PatientFilterModal from '@/components/features/PatientFilterModal';
+import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 
 const MOCK_PATIENTS = getPatients('patient');
+const ALL_APPOINTMENTS = getAllAppointments();
+
+const parseDate = (dateStr: string): Date => {
+  const [day, month, year] = dateStr.split('/');
+  return new Date(Number(year), Number(month) - 1, Number(day));
+};
 
 export default function PatientsScreen() {
   const router = useRouter();
@@ -20,6 +28,10 @@ export default function PatientsScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+  const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
+  const [allergyFilter, setAllergyFilter] = useState<'all' | 'yes' | 'no'>('all');
 
   useFocusEffect(
     useCallback(() => {
@@ -40,25 +52,77 @@ export default function PatientsScreen() {
     });
   };
 
-  const filteredPatients = useMemo(() => {
-    const patients = MOCK_PATIENTS.map(user => ({
-        ...user,
-        detailLine1: user.details.find(d => d.label === 'Última consulta')?.value || 'Nenhuma consulta'
-    }));
+  const handleApplyFilter = (filters: any) => {
+    setAllergyFilter(filters.allergy);
+    setSelectedGenders(filters.genders);
+    setSelectedSpecialties(filters.specialties);
+  };
 
-    return patients.filter((patient) => {
-      return patient.name.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredPatients = useMemo(() => {
+    const filtered = MOCK_PATIENTS
+      .filter(user => {
+        if (allergyFilter === 'yes') return user.allergies && user.allergies.length > 0;
+        if (allergyFilter === 'no') return !user.allergies || user.allergies.length === 0;
+        return true;
+      })
+      .filter(user => {
+        if (selectedGenders.length === 0) return true;
+        const genderDetail = user.details.find(d => d.label === 'Gênero');
+        return genderDetail && selectedGenders.includes(genderDetail.value);
+      })
+      .filter(user => {
+        if (selectedSpecialties.length === 0) return true;
+        const patientAppointments = ALL_APPOINTMENTS.filter(a => a.patientId === user.id);
+        const patientSpecialties = [...new Set(patientAppointments.map(a => a.specialty))];
+        return patientSpecialties.some(spec => selectedSpecialties.includes(spec));
+      })
+      .filter(user => {
+        return user.name.toLowerCase().includes(searchQuery.toLowerCase());
+      });
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); 
+    
+    return filtered.map(user => {
+      const appointments = getAppointmentsByPatientId(user.id);
+      let detailLabel: string | undefined = undefined;
+      let detailValue: string | undefined = 'Nenhuma consulta';
+
+      const futureAppointments = appointments
+        .filter(appt => appt.status === 'agendada' && parseDate(appt.date) >= now)
+        .sort((a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime());
+
+      if (futureAppointments.length > 0) {
+        detailLabel = 'Próxima consulta:';
+        detailValue = futureAppointments[0].date;
+      } else {
+        const pastAppointments = appointments
+          .filter(appt => appt.status === 'realizada')
+          .sort((a, b) => parseDate(b.date).getTime() - parseDate(a.date).getTime());
+        
+        if (pastAppointments.length > 0) {
+          detailLabel = 'Última consulta:';
+          detailValue = pastAppointments[0].date;
+        }
+      }
+
+      return {
+          ...user,
+          detailLabel: detailLabel,
+          detailValue: detailValue,
+          hasAllergies: user.allergies && user.allergies.length > 0,
+      };
     });
-  }, [searchQuery]);
+  }, [searchQuery, allergyFilter, selectedGenders, selectedSpecialties]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
             searchPlaceholder="Digite o nome do paciente"
             onSearchChange={setSearchQuery}
-            onFilterPress={() => {}}
+            onFilterPress={() => setFilterModalVisible(true)}
           />
           <ScrollView
             style={styles.scrollView}
@@ -73,6 +137,17 @@ export default function PatientsScreen() {
           onPrimaryButtonPress={handleRegisterPress}
         />
       </View>
-    </SafeAreaView>
+      <PatientFilterModal
+        visible={isFilterModalVisible}
+        onClose={() => setFilterModalVisible(false)}
+        onApply={handleApplyFilter}
+        specialtyOptions={ALL_SPECIALTIES}
+        initialFilters={{
+          genders: selectedGenders,
+          specialties: selectedSpecialties,
+          allergy: allergyFilter,
+        }}
+      />
+    </SafeAreaProvider>
   );
 }

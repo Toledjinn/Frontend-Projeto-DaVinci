@@ -3,13 +3,13 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView, 
   useWindowDimensions
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -96,7 +96,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
@@ -150,6 +150,6 @@ export default function LoginScreen() {
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

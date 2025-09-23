@@ -18,7 +18,7 @@ const ALL_APPOINTMENTS: Appointment[] = [
   },
   {
     id: 'appt-22', patientId: 'patient-6', date: '20/09/2025', time: '16:30', status: 'pendente',
-    dentist: 'Carlos Dias', procedures: ['Consulta de Rotina'], specialty: 'Primeira consulta',
+    dentist: 'Carlos Dias', procedures: ['Consulta de Rotina'], specialty: 'Primeira Consulta',
   },
   {
     id: 'appt-1', patientId: 'patient-2', date: '21/05/2025', time: '14:00', status: 'realizada',
@@ -142,3 +142,9 @@ export const updateAppointmentStatus = (
   }
   return false;
 };
+
+export const APPOINTMENT_STATUSES = [
+  { label: 'Agendada', value: 'agendada' },
+  { label: 'Realizada', value: 'realizada' },
+  { label: 'Cancelada', value: 'cancelada' },
+];

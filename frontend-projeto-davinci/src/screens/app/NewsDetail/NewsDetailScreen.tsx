@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
   Image,
   useWindowDimensions,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { styles } from './NewsDetailScreen.styles';
@@ -58,16 +58,16 @@ export default function NewsDetailScreen() {
 
   if (!newsItem) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaProvider style={styles.safeArea}>
         <View style={styles.notFoundContainer}>
           <Text style={styles.title}>Notícia não encontrada</Text>
         </View>
-      </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
@@ -96,7 +96,7 @@ export default function NewsDetailScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

@@ -124,7 +124,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalTitle: {
-    ...FONTS.h3,
+    ...FONTS.h2,
     color: COLORS.secondary,
     marginBottom: 24,
   },

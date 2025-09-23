@@ -7,7 +7,7 @@ export const getStyledDatePickerStyles = (height: number, width: number) => {
       width: '100%',
     },
     label: {
-      ...FONTS.body3,
+      ...FONTS.body7,
       color: COLORS.secondary,
       marginBottom: 8,
     },

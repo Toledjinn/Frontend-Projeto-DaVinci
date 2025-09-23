@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import {
-  SafeAreaView,
   FlatList,
   useWindowDimensions,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './NotificationsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -40,7 +40,7 @@ export default function NotificationsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}
@@ -53,7 +53,7 @@ export default function NotificationsScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

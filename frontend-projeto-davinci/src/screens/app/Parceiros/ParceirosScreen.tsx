@@ -2,13 +2,13 @@ import React, { useCallback, useState, useRef } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   Image,
   ScrollView,
   useWindowDimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { WebView } from 'react-native-webview'; 
 import { styles } from './ParceirosScreen.styles';
@@ -63,7 +63,7 @@ export default function ParceirosScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={styles.container}>
         <ScrollView
           ref={scrollViewRef}
@@ -116,6 +116,6 @@ export default function ParceirosScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

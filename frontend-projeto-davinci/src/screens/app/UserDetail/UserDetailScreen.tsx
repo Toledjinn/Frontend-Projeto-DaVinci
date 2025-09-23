@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions, Text, View } from 'react-native';
+import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './UserDetailScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -9,6 +10,7 @@ import { findUserById, UserProfile } from '@/data/mockUsers';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import AllergyWarning from '@/components/features/AllergyWarning';
 import StyledButton from '@/components/common/StyledButton';
+import { formatUserName } from '@/utils/nameUtils';
 
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
@@ -36,7 +38,7 @@ export default function UserDetailScreen() {
           layout: 'profile',
           showBackground: true,
           showNotificationIcon: false,
-          userName: user.name, 
+          userName: formatUserName(user.name),
           UserImageSvg: user.image || UserPlaceholder,
           riskLevel: user.riskLevel,
         });
@@ -76,16 +78,16 @@ export default function UserDetailScreen() {
 
   if (!user) {
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaProvider style={styles.safeArea}>
             <View style={styles.centered}>
                 <Text>Usuário não encontrado.</Text>
             </View>
-        </SafeAreaView>
+        </SafeAreaProvider>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
@@ -94,7 +96,7 @@ export default function UserDetailScreen() {
         {isPatient && (
           <View style={styles.buttonActionsContainer}>
             <StyledButton
-              title="Diagnóstico"
+              title="Diagnósticos"
               variant="secondary" 
               onPress={() => router.push({ 
               pathname: '/(app)/diagnostico', 
@@ -116,6 +118,6 @@ export default function UserDetailScreen() {
         secondaryButtonTitle={!isDentist ? "Editar Dados" : undefined}
         onSecondaryButtonPress={!isDentist ? handleEditData : undefined}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

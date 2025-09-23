@@ -1,14 +1,15 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions, View } from 'react-native';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './DentistsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Dentista from '@/assets/characters/chefinho.svg';
-import UserList, { User } from '@/components/features/UserList';
+import UserList from '@/components/features/UserList';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
-import FilterModal from '@/components/features/FilterModal';
-import { getUsers } from '@/data/mockUsers'; 
+import DentistFilterModal from '@/components/features/DentistFilterModal';
+import { getUsers } from '@/data/mockUsers';
 
 const MOCK_DENTISTS = getUsers('dentist');
 
@@ -25,6 +26,8 @@ export default function DentistsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
+  const [selectedGenders, setSelectedGenders] = useState<string[]>([]); 
+
 
   useFocusEffect(
     useCallback(() => {
@@ -38,8 +41,9 @@ export default function DentistsScreen() {
     }, [])
   );
 
-  const handleApplyFilter = (specialties: string[]) => {
-    setSelectedSpecialties(specialties);
+  const handleApplyFilter = (filters: { genders: string[]; specialties: string[] }) => {
+    setSelectedGenders(filters.genders);
+    setSelectedSpecialties(filters.specialties);
     setFilterModalVisible(false);
   };
   
@@ -51,24 +55,37 @@ export default function DentistsScreen() {
   };
 
   const filteredDentists = useMemo(() => {
-    const dentists = MOCK_DENTISTS.map(user => ({
+    const filtered = MOCK_DENTISTS
+      .filter(user => {
+        if (selectedGenders.length === 0) return true;
+        const genderDetail = user.details.find(d => d.label === 'Gênero');
+        return genderDetail && selectedGenders.includes(genderDetail.value);
+      })
+      .filter(user => {
+        if (selectedSpecialties.length === 0) return true;
+        return user.specialties && selectedSpecialties.some(spec => user.specialties!.includes(spec));
+      })
+      .filter(user => {
+        const fullNameWithPrefix = `Dr. ${user.name}`.toLowerCase(); 
+        return user.name.toLowerCase().includes(searchQuery.toLowerCase()) || fullNameWithPrefix.includes(searchQuery.toLowerCase());
+      });
+
+    return filtered.map(user => {
+      let prefix = 'Dr.';
+      const genderDetail = user.details.find(detail => detail.label === 'Gênero');
+      if (genderDetail?.value === 'Feminino') {
+        prefix = 'Dra.';
+      }
+      return {
         ...user,
+        name: `${prefix} ${user.name}`,
         detailLine1: user.specialties?.join(' | ') || 'Clínica Geral'
-    }));
-
-    return dentists.filter((dentist) => {
-      const nameMatch = dentist.name.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const specialtyMatch =
-        selectedSpecialties.length === 0 ||
-        (dentist.specialties && selectedSpecialties.some((spec) => dentist.specialties!.includes(spec)));
-
-      return nameMatch && specialtyMatch;
+      };
     });
-  }, [searchQuery, selectedSpecialties]);
+  }, [searchQuery, selectedSpecialties, selectedGenders]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -89,14 +106,16 @@ export default function DentistsScreen() {
           onPrimaryButtonPress={handleRegisterPress}
         />
       </View>
-      <FilterModal
-        title="Filtrar por Especialidade"
+      <DentistFilterModal
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApply={handleApplyFilter}
-        options={availableSpecialties}
-        initialSelectedOptions={selectedSpecialties}
+        specialtyOptions={availableSpecialties}
+        initialFilters={{
+          genders: selectedGenders,
+          specialties: selectedSpecialties,
+        }}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

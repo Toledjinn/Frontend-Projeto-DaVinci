@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
-import { View, SafeAreaView, ScrollView, useWindowDimensions } from 'react-native';
+import { View, ScrollView, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { styles } from './RegisterUserScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import Administrador from '@/assets/characters/chefinho.svg';
 import RegisterForm from '@/components/features/RegisterForm';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const getTitle = (userType?: string, isEditing?: boolean) => {
   const action = isEditing ? 'Editar' : 'Cadastrar';
@@ -51,7 +52,7 @@ export default function RegisterUserScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.scrollView}
@@ -67,6 +68,6 @@ export default function RegisterUserScreen() {
           onPrimaryButtonPress={handleSave}
         />
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
