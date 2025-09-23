@@ -13,12 +13,14 @@ import { useUIStore } from '@/state/uiStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova2 from '@/assets/characters/escova2.svg';
 import Escova4 from '@/assets/characters/escova4.svg';
+import Escova3 from '@/assets/characters/escova3.svg';
+
 
 
 const actionButtons = [
   { id: '1', title: 'O que é?', SvgComponent: Escova4, route: '/(app)/o-que-e' },
   { id: '2', title: 'Como Participar', SvgComponent: Escova2, route: '/(app)/como-participar' },
-  { id: '3', title: 'Depoimentos', SvgComponent: Chefinho, route: '/(app)/depoimentos' },
+  { id: '3', title: 'Depoimentos', SvgComponent: Escova3, route: '/(app)/depoimentos' },
 ]; 
 
 export default function SocialScreen() {
