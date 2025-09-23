@@ -61,12 +61,12 @@ export default function HomeScreen() {
     }, [])
   );
 
-const handleButtonPress = (sectionId: string, buttonId: string) => {
+  const handleButtonPress = (sectionId: string, buttonId: string) => {
     if (buttonId === 'consultas') {
       router.push('/(app)/consultas');
     } else if (buttonId === 'agendar') {
       router.push('/(app)/schedule-appointment');
-    } else if (buttonId === 'solicitacoes') { 
+    } else if (buttonId === 'solicitacoes') {
       router.push('/(app)/solicitacoes');
     } else if (buttonId === 'dentistas') {
       router.push('/(app)/dentists');
@@ -75,15 +75,18 @@ const handleButtonPress = (sectionId: string, buttonId: string) => {
     } else if (buttonId === 'administradores') {
       router.push('/(app)/admins');
     } else if (buttonId === 'social') {
-      router.push('/(app)/social');  
-    }else if (buttonId === 'educacional') { 
-        router.push('/(app)/educational');
-    } else if (buttonId === 'novidades') { 
-        router.push('/(app)/novidades');
-    } else if (buttonId === 'laboratorio') { 
-        router.push('/(app)/laboratorio');          
+      router.push('/(app)/social');
+    } else if (buttonId === 'educacional') {
+      router.push('/(app)/educational');
+    } else if (buttonId === 'novidades') {
+      router.push('/(app)/novidades');
+    } else if (buttonId === 'laboratorio') {
+      router.push('/(app)/laboratorio');
+    } else if (buttonId === 'estoque') {
+      router.push('/(app)/estoque');
+    } else if (buttonId === 'pedidos') {
+      router.push('/(app)/pedidos');  
     } else {
-      
       console.log(`Botão pressionado: ${sectionId} - ${buttonId}`);
     }
   };
