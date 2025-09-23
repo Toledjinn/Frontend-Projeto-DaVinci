@@ -45,7 +45,7 @@ export default function DetalhesProdutoScreen() {
 
   const handleAddToCart = () => {
     if (product) {
-      addWithQuantity(product, quantity); // Usa a nova função
+      addWithQuantity(product, quantity); 
       Alert.alert('Sucesso!', `${quantity} ${product.name} foi adicionado(s) ao carrinho.`);
       router.push('/(app)/carrinho');
     }
