@@ -9,7 +9,7 @@ import {
   ScrollView, 
   useWindowDimensions
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -96,7 +96,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
@@ -137,7 +137,7 @@ export default function LoginScreen() {
                 onPress={() => router.push('/forgot-password')}
               >
                 <Text style={styles.forgotPasswordText}>
-                  ESQUECI MINHA SENHA
+                  RECUPERAR SENHA
                 </Text>
               </TouchableOpacity>
 
@@ -150,6 +150,6 @@ export default function LoginScreen() {
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

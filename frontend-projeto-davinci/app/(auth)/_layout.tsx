@@ -9,11 +9,13 @@ import Animated, {
 import { useEffect } from 'react';
 import LogoCentral from '../../src/assets/images/logo-central.svg';
 import LogoInferior from '../../src/assets/images/logo-inferior.svg';
+import { useImmersiveBars } from '@/hooks/useImmersiveBars';
 
 const AnimatedLogoInferiorView = Animated.createAnimatedComponent(View);
 const AnimatedLogoCentralView = Animated.createAnimatedComponent(View);
 
 export default function AuthLayout() {
+  useImmersiveBars();
   const { height } = useWindowDimensions();
 
   const logoCentralPosition = useSharedValue(height); 

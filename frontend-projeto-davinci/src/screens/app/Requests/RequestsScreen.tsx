@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useWindowDimensions, View, Text, FlatList } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './RequestsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -12,7 +12,7 @@ import { getPendingAppointments, Appointment } from '@/data/mockAppointments';
 
 export default function RequestsScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.208;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
 
@@ -66,7 +66,7 @@ export default function RequestsScreen() {
 
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -85,6 +85,6 @@ export default function RequestsScreen() {
           />
         </View>
       </View>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

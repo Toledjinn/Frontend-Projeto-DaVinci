@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    ...FONTS.body1,
+    ...FONTS.h2,
     color: COLORS.secondary,
     marginBottom: 16,
     borderBottomWidth: 1,

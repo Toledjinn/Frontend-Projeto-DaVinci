@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   useWindowDimensions,
   ScrollView,
@@ -11,7 +10,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import styles from './LojaScreen.styles'; 
 import { useUIStore } from '@/state/uiStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
-
+import { SafeAreaView } from 'react-native-safe-area-context';  
 import ToothbrushIcon from '@/assets/icons/toothbrush.svg';
 import ToothpasteIcon from '@/assets/icons/toothpaste.svg';
 import DentalFlossIcon from '@/assets/icons/dental-floss.svg';
@@ -31,7 +30,7 @@ const categories = [
 export default function LojaScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.360;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   useFocusEffect(

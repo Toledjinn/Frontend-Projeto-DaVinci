@@ -6,7 +6,7 @@ import {
   Image,
   useWindowDimensions,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { styles } from './NewsDetailScreen.styles';
@@ -23,7 +23,7 @@ export default function NewsDetailScreen() {
   const newsList = useNewsStore((state) => state.news);
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.192;
 
   const newsItem = useMemo(() => {
     return newsList.find((item) => item.id === id);
@@ -35,7 +35,7 @@ export default function NewsDetailScreen() {
         visible: true,
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'NOVIDADE',
+        pageTitle: 'Novidade',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -58,16 +58,16 @@ export default function NewsDetailScreen() {
 
   if (!newsItem) {
     return (
-      <SafeAreaProvider style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.notFoundContainer}>
           <Text style={styles.title}>Notícia não encontrada</Text>
         </View>
-      </SafeAreaProvider>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
@@ -96,7 +96,7 @@ export default function NewsDetailScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
 

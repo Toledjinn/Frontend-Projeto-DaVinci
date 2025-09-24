@@ -21,7 +21,7 @@ const availableRoles = Array.from(
 export default function AdminsScreen() { 
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.244;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const [searchQuery, setSearchQuery] = useState('');

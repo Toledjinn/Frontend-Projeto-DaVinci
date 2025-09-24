@@ -16,6 +16,8 @@ export const getStyledButtonStyles = (height: number) => {
     secondaryText: {
       ...FONTS.body2,
       color: COLORS.primary,
+      width: '100%',
+      textAlign: 'center',
     },
     primaryContainer: {
       backgroundColor: COLORS.primary,
@@ -23,6 +25,8 @@ export const getStyledButtonStyles = (height: number) => {
     primaryText: {
       ...FONTS.body2,
       color: COLORS.secondary,
+      width: '100%',
+      textAlign: 'center',
     },
   });
 };

@@ -37,6 +37,11 @@ export default function Header() {
 
   const headerHeight = layout === 'home' ? height * 0.226 : height * 0.29;
 
+  const notificationCircle = height * 0.09;
+  const border = 3;                      
+  const iconPadding = Math.round(height * 0.008); 
+  const iconSize = notificationCircle - (border * 2) - (iconPadding * 2);
+
   if (!visible) {
     return null;
   }
@@ -81,7 +86,7 @@ export default function Header() {
           {layout === 'home' && (
             <TouchableOpacity onPress={() => router.push('/(app)/profile')} activeOpacity={1}>
               <View style={styles.profileImageContainer}>
-                <FotoPerfil width={height * 0.1} height={height * 0.1} />
+                <FotoPerfil width="100%" height="100%" />
               </View>
             </TouchableOpacity>
           )}
@@ -102,8 +107,12 @@ export default function Header() {
 
         <View style={styles.rightSection}>
           {showNotificationIcon && layout !== 'loja' && (
-            <TouchableOpacity style={styles.notificationContainer} onPress={() => router.push('/(app)/notifications')} activeOpacity={1}>
-              <NotificacaoIcon height={height * 0.042} />
+            <TouchableOpacity style={[styles.notificationContainer, { padding: iconPadding }]} onPress={() => router.push('/(app)/notifications')} activeOpacity={1}>
+              <NotificacaoIcon
+              width={iconSize}
+              height={iconSize} 
+              preserveAspectRatio="xMidYMid meet"
+              />
               <View style={styles.notificationDot} />
             </TouchableOpacity>
           )}

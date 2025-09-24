@@ -2,7 +2,6 @@ import React, { useCallback, useState, useMemo } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   useWindowDimensions,
   TextInput,
@@ -15,6 +14,7 @@ import { usePedidosStore, OrderStatus } from '@/state/pedidosStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import { Feather } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const userType = 'admin';
 
@@ -37,7 +37,7 @@ const getStatusColor = (status: OrderStatus) => {
 export default function PedidosScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.216;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   
   const allOrders = usePedidosStore((state) => state.orders);
@@ -58,9 +58,9 @@ export default function PedidosScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'PEDIDOS',
+        pageTitle: 'Pedidos',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -106,7 +106,7 @@ export default function PedidosScreen() {
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Produtos</Text>
-                <Text style={styles.value}>{order.productCount}</Text>
+                <Text style={styles.value}>{order.products.join(', ')}</Text>
               </View>
             </View>
             <View style={styles.chevronContainer}>

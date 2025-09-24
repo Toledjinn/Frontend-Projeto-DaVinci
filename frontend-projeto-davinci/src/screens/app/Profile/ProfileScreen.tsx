@@ -7,11 +7,9 @@ import ProfileDataList from '@/components/features/ProfileDataList';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import { findUserById } from '@/data/mockUsers';
 import { formatUserName } from '@/utils/nameUtils';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
-  const { height } = useWindowDimensions();
-  const headerHeight = height * 0.275;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
 
@@ -48,10 +46,10 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: 160}]}
         showsVerticalScrollIndicator={false}
       >
         <ProfileDataList data={user.details} />
@@ -63,6 +61,6 @@ export default function ProfileScreen() {
         primaryButtonTitle="Sair"
         onPrimaryButtonPress={handleLogout}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

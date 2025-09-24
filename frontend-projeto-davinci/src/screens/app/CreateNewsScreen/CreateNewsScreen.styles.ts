@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-    paddingBottom: 120, 
+    paddingBottom: 20, 
   },
   blockContainer: {
     marginBottom: 24,
@@ -45,7 +45,6 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.gray_200,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
     overflow: 'hidden',
   },
   imagePickerText: {

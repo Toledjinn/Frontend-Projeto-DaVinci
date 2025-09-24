@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, useWindowDimensions } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './HomeScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -9,7 +9,7 @@ import HomeSection from '@/components/features/HomeSection';
 const SECTIONS = [
   {
     id: 'principais',
-    title: 'PRINCIPAIS',
+    title: 'Principais',
     buttons: [
       { id: 'pacientes', title: 'Pacientes' },
       { id: 'dentistas', title: 'Dentistas' },
@@ -18,7 +18,7 @@ const SECTIONS = [
   },
   {
     id: 'agendamentos',
-    title: 'AGENDAMENTOS',
+    title: 'Agendamentos',
     buttons: [
       { id: 'agendar', title: 'Agendar Consulta' },
       { id: 'consultas', title: 'Consultas' },
@@ -27,7 +27,7 @@ const SECTIONS = [
   },
   {
     id: 'conteudos',
-    title: 'CONTEÚDOS',
+    title: 'Conteúdos',
     buttons: [
       { id: 'social', title: 'DaVinci Social' },
       { id: 'educacional', title: 'DaVinci Educacional' },
@@ -37,7 +37,7 @@ const SECTIONS = [
   },
   {
     id: 'loja',
-    title: 'LOJA',
+    title: 'Loja',
     buttons: [
       { id: 'pedidos', title: 'Pedidos' },
       { id: 'estoque', title: 'Estoque' },
@@ -50,7 +50,7 @@ export default function HomeScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { height } = useWindowDimensions();
   const router = useRouter();
-  const headerHeight = height * 0.24; 
+  const headerHeight = height * 0.15; 
 
   useFocusEffect(
     React.useCallback(() => {
@@ -96,7 +96,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -113,6 +113,6 @@ export default function HomeScreen() {
           />
         ))}
       </ScrollView>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

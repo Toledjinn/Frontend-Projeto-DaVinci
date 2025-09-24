@@ -14,20 +14,20 @@ export const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   paragraph: {
-    ...FONTS.body10,
+    ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'center',
     lineHeight: 22,
     marginTop: 20,
   },
   quote: {
-    ...FONTS.body7,
+    ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'center',
     marginVertical: 20,
   },
   salutation: {
-    ...FONTS.body10,
+    ...FONTS.body9,
     fontStyle: 'italic',
     color: COLORS.secondary,
     textAlign: 'center',
@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     elevation: 3,
   },
   itemText: {
-    ...FONTS.body10,
+    ...FONTS.body7,
     color: COLORS.secondary,
     textAlign: 'center',
   },

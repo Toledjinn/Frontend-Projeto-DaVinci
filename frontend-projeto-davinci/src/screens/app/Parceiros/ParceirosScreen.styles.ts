@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 250,
+    paddingTop: "44%",
     alignItems: 'center',
   },
   carousel: {

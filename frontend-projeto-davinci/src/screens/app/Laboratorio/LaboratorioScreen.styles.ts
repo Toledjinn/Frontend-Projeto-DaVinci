@@ -14,11 +14,11 @@ export const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   paragraph: {
-    ...FONTS.body10,
+    ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'center',
     lineHeight: 22,
     marginTop: 20,
-    marginBottom: 40,
+    marginBottom: 24,
   },
 });

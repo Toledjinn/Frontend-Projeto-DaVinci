@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
@@ -16,6 +15,8 @@ import { useLojaStore, CartItem } from '@/state/lojaStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import { Feather } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import StyledButton from '@/components/common/StyledButton';
 
 export default function CarrinhoScreen() {
   const router = useRouter();
@@ -29,7 +30,7 @@ export default function CarrinhoScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'loja',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'Carrinho',
         CharacterSvg: Chefinho,
@@ -76,7 +77,7 @@ export default function CarrinhoScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: height * 0.29 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: height * 0.216 }]}
       >
         {cart.length === 0 ? (
           <View style={styles.emptyCartContainer}>
@@ -117,9 +118,7 @@ export default function CarrinhoScreen() {
               <Text style={styles.totalValue}>R$ {getCartTotal().toFixed(2).replace('.', ',')}</Text>
             </View>
 
-            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-              <Text style={styles.checkoutButtonText}>Finalizar Compra</Text>
-            </TouchableOpacity>
+            <StyledButton title="Finalizar Compra" onPress={handleCheckout} />
           </>
         )}
       </ScrollView>

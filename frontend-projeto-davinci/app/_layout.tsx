@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import Header from '@/components/common/Header';
 import * as NavigationBar from 'expo-navigation-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,13 +46,13 @@ export default function RootLayout() {
   }
 
  return (
-  <>
+  <SafeAreaProvider>
     <Stack>
       <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'fade' }} />
       <Stack.Screen name="(app)" options={{ headerShown: false, animation: 'fade' }} />
     </Stack>
     {(inAppLayout || inAuthHeaderScreens) && <Header />}
-  </>
-
+  
+  </SafeAreaProvider>
   );
 }

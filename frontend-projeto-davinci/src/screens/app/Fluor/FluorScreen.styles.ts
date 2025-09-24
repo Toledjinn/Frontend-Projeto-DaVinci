@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 260,
+    paddingTop: '44%',
   },
   carousel: {
     flexGrow: 0,

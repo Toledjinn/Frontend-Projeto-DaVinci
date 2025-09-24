@@ -5,7 +5,7 @@ import { SvgProps } from 'react-native-svg';
 import { getStyledUserPickerStyles } from './styles';
 import { COLORS } from '@/constants/theme';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export interface UserPickerItem {
   id: string;
@@ -88,7 +88,7 @@ export default function StyledUserPicker({
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <SafeAreaProvider style={styles.modalContent}>
+          <SafeAreaView style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{label}</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -123,7 +123,7 @@ export default function StyledUserPicker({
                 )
               }}
             />
-          </SafeAreaProvider>
+          </SafeAreaView>
         </View>
       </Modal>
     </View>

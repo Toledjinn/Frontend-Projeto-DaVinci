@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './UserDetailScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -14,7 +14,7 @@ import { formatUserName } from '@/utils/nameUtils';
 
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.31;
+  const headerHeight = height * 0.240;
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -78,19 +78,19 @@ export default function UserDetailScreen() {
 
   if (!user) {
     return (
-        <SafeAreaProvider style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea}>
             <View style={styles.centered}>
                 <Text>Usuário não encontrado.</Text>
             </View>
-        </SafeAreaProvider>
+        </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView 
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight  }]}
         showsVerticalScrollIndicator={false}
       >
         {isPatient && (
@@ -118,6 +118,6 @@ export default function UserDetailScreen() {
         secondaryButtonTitle={!isDentist ? "Editar Dados" : undefined}
         onSecondaryButtonPress={!isDentist ? handleEditData : undefined}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

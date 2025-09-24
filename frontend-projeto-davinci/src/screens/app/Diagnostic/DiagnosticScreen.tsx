@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './DiagnosticScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -12,7 +12,7 @@ import { formatUserName } from '@/utils/nameUtils';
 
 export default function DiagnosticScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.208;
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -35,7 +35,6 @@ export default function DiagnosticScreen() {
           showNotificationIcon: false,
           userName: `Diagnóstico de ${formatUserName(patient.name)}`, 
           UserImageSvg: patient.image || UserPlaceholder,
-          riskLevel: patient.riskLevel,
         });
       }
     }, [patient])
@@ -62,24 +61,24 @@ export default function DiagnosticScreen() {
 
   if (!patient) {
     return (
-      <SafeAreaProvider style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text>Carregando...</Text>
         </View>
-      </SafeAreaProvider>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        <HomeSection title="HISTÓRICOS" buttons={historyButtons} />
-        <HomeSection title="PREVENÇÃO" buttons={preventionButtons} />
-        <HomeSection title="ESPECIALIDADES" buttons={specialtyButtons} />
+        <HomeSection title="Históricos" buttons={historyButtons} />
+        <HomeSection title="Prevenção" buttons={preventionButtons} />
+        <HomeSection title="Especialidades" buttons={specialtyButtons} />
       </ScrollView>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

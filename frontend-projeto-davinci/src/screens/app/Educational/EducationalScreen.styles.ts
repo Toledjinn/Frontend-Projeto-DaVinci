@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   description: {
-    ...FONTS.body10,
+    ...FONTS.body9,
     color: COLORS.gray_400,
     textAlign: 'center',
     lineHeight: 22,
@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
     elevation: 3,
   },
   itemText: {
-    ...FONTS.body10,
+    ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'center',
   },

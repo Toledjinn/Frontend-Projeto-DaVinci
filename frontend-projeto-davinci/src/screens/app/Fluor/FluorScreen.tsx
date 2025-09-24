@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -68,7 +68,7 @@ export default function FluorScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <ScrollView
           ref={scrollViewRef}
@@ -221,6 +221,6 @@ export default function FluorScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

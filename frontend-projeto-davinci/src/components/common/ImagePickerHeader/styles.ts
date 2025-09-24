@@ -2,7 +2,10 @@ import { StyleSheet } from 'react-native';
 import { FONTS, COLORS } from '@/constants/theme';
 
 export const getImagePickerHeaderStyles = (screenWidth: number, screenHeight: number) => {
-  const circleDiameter = screenWidth * 0.2273;
+  const photoTopPosition = screenHeight * 0.0700;
+  const circleDiameter = screenWidth * 0.3073;
+  const userNameTopPosition = photoTopPosition + circleDiameter + 8;
+
   return StyleSheet.create({
     container: {
       ...StyleSheet.absoluteFillObject,
@@ -12,7 +15,7 @@ export const getImagePickerHeaderStyles = (screenWidth: number, screenHeight: nu
     },
     touchableWrapper: {
       position: 'absolute',
-      top: screenHeight * 0.0889,
+      top: screenHeight * 0.0689,
       width: circleDiameter,
       height: circleDiameter,
     },
@@ -44,8 +47,8 @@ export const getImagePickerHeaderStyles = (screenWidth: number, screenHeight: nu
       position: 'absolute',
       width: '100%',
       textAlign: 'center',
-      top: screenHeight * 0.21,
-      ...FONTS.h2,
+      top: userNameTopPosition,
+      ...FONTS.h1,
       color: COLORS.secondary,
     },
     image: {

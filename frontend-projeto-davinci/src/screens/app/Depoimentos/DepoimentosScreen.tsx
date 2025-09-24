@@ -12,14 +12,14 @@ import { useUIStore } from '@/state/uiStore';
 import { useDepoimentosStore } from '@/state/depoimentosStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const userType = 'admin';
 
 export default function DepoimentosScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.224;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const depoimentos = useDepoimentosStore((state) => state.depoimentos);
 
@@ -27,9 +27,9 @@ export default function DepoimentosScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'DEPOIMENTOS',
+        pageTitle: 'Depoimentos',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -52,7 +52,7 @@ export default function DepoimentosScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -81,7 +81,7 @@ export default function DepoimentosScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
 

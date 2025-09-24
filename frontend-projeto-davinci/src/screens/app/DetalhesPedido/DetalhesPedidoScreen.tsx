@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   useWindowDimensions,
   Image,
@@ -16,6 +15,7 @@ import { usePedidosStore, OrderStatus } from '@/state/pedidosStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import { Feather } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const userType = 'admin';
 
@@ -25,7 +25,7 @@ const getStatusColor = (status: OrderStatus) => {
     case 'Entregue':
       return COLORS.green;
     case 'Pendente':
-      return COLORS.yellow;
+      return COLORS.primary;
     case 'Enviado':
       return COLORS.blue;
     case 'Cancelado':
@@ -39,7 +39,7 @@ export default function DetalhesPedidoScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.216;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   
   const { getOrderById, updateOrderStatus } = usePedidosStore();
@@ -51,9 +51,9 @@ export default function DetalhesPedidoScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'DETALHES DO PEDIDO',
+        pageTitle: 'Detalhes do Pedido',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });

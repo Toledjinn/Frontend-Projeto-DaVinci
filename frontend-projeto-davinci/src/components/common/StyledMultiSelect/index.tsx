@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { getStyledMultiSelectStyles } from './styles';
 import { COLORS } from '@/constants/theme';
@@ -107,7 +107,7 @@ export default function StyledMultiSelect({
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <SafeAreaProvider style={styles.modalContent}>
+          <SafeAreaView style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{label}</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -135,7 +135,7 @@ export default function StyledMultiSelect({
             <View style={styles.modalFooter}>
                 <StyledButton title="Aplicar" onPress={handleApply} />
             </View>
-          </SafeAreaProvider>
+          </SafeAreaView>
         </View>
       </Modal>
     </View>

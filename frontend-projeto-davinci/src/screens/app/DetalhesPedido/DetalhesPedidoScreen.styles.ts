@@ -22,7 +22,7 @@ export default StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    ...FONTS.h4,
+    ...FONTS.h2,
     color: COLORS.secondary,
     marginBottom: 12,
     borderBottomWidth: 1,
@@ -75,7 +75,7 @@ export default StyleSheet.create({
     color: COLORS.gray_400,
   },
   summaryValue: {
-    ...FONTS.h4,
+    ...FONTS.h2,
     color: COLORS.secondary,
   },
   statusContainer: {

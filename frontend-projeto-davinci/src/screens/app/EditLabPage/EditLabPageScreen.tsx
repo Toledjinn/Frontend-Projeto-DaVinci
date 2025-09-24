@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ScrollView,
   View,
@@ -47,9 +47,9 @@ export default function EditLabPageScreen() {
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: `EDITAR ${pageContent?.title.toUpperCase() || ''}`,
+        pageTitle: `Editar ${pageContent?.title}`,
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -117,16 +117,16 @@ export default function EditLabPageScreen() {
 
   if (!pageContent) {
     return (
-      <SafeAreaProvider style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <Text>Página não encontrada.</Text>
         </View>
-      </SafeAreaProvider>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
@@ -227,12 +227,12 @@ export default function EditLabPageScreen() {
       </Modal>
 
       <ScreenFooter
-        secondaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
-        primaryButtonTitle="Salvar"
+        secondaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
+        primaryButtonTitle="Cancelar"
+        onSecondaryButtonPress={() => router.back()}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
 

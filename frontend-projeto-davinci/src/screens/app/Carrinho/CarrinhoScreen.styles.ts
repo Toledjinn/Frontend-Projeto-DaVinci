@@ -65,7 +65,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.gray_300,
+    borderColor: COLORS.gray_400,
   },
   decrementButton: {
     backgroundColor: COLORS.red,
@@ -97,11 +97,11 @@ export default StyleSheet.create({
     marginTop: 16,
   },
   totalText: {
-    ...FONTS.h4,
+    ...FONTS.h2,
     color: COLORS.secondary,
   },
   totalValue: {
-    ...FONTS.h4,
+    ...FONTS.h2,
     color: COLORS.primary,
     fontWeight: 'bold',
   },
@@ -117,7 +117,7 @@ export default StyleSheet.create({
     shadowRadius: 5,
   },
   checkoutButtonText: {
-    ...FONTS.h4,
+    ...FONTS.h2,
     color: COLORS.white,
     fontWeight: 'bold',
   },

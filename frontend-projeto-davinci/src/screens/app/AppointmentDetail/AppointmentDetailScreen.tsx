@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, useWindowDimensions, Text, View, Alert, StyleProp, ViewStyle } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -21,7 +21,7 @@ const MOCK_DENTISTS = getUsers('dentist');
 
 export default function AppointmentDetailScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.208;
   const { appointmentId, mode } = useLocalSearchParams<{ appointmentId: string, mode?: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -159,11 +159,11 @@ export default function AppointmentDetailScreen() {
 
   if (!appointment || !patient) {
     return (
-        <SafeAreaProvider style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea}>
             <View style={styles.centered}>
                 <Text>Carregando agendamento...</Text>
             </View>
-        </SafeAreaProvider>
+        </SafeAreaView>
     );
   }
   
@@ -250,10 +250,10 @@ export default function AppointmentDetailScreen() {
   );
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
         {hasAllergies && <AllergyWarning allergies={patient.allergies!} />}
         {isRealizada ? <RenderRealizadaView /> : <RenderDefaultView />}
@@ -279,20 +279,20 @@ export default function AppointmentDetailScreen() {
       {!isRealizada && (
         isReviewMode ? (
           <ScreenFooter
-            secondaryButtonTitle="Reprovar"
-            onSecondaryButtonPress={handleRejectRequest}
-            primaryButtonTitle="Aprovar"
-            onPrimaryButtonPress={handleApproveRequest}
+            secondaryButtonTitle="Aprovar"
+            onSecondaryButtonPress={handleApproveRequest}
+            primaryButtonTitle="Reprovar"
+            onPrimaryButtonPress={handleRejectRequest}
           />
         ) : !isCancelled ? (
           <ScreenFooter
-            secondaryButtonTitle="Cancelar"
-            onSecondaryButtonPress={handleCancelAppointment}
-            primaryButtonTitle="Reagendar"
-            onPrimaryButtonPress={handleReschedule}
+            secondaryButtonTitle="Reagendar"
+            onSecondaryButtonPress={handleReschedule}
+            primaryButtonTitle="Cancelar"
+            onPrimaryButtonPress={handleCancelAppointment}
           />
         ) : null
       )}
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

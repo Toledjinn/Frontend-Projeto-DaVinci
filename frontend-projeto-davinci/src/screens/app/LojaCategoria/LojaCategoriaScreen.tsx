@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   useWindowDimensions,
   Image,
@@ -16,8 +15,61 @@ import { useLojaStore, ProductItem } from '@/state/lojaStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import { COLORS } from '@/constants/theme';
 import { Feather } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const ProductCard = ({ product, handleProductPress, handleAddToCart }) => {
+import ToothbrushIcon from '@/assets/icons/toothbrush.svg';
+import ToothpasteIcon from '@/assets/icons/toothpaste.svg';
+import DentalFlossIcon from '@/assets/icons/dental-floss.svg';
+import FluorIcon from '@/assets/icons/mouthwash1.svg';
+import ReveladorIcon from '@/assets/icons/dropper.svg';
+import EnxaguanteIcon from '@/assets/icons/mouthwash2.svg';
+
+const CATEGORY_ICON_MAP: Record<string, React.ComponentType<any>> = {
+  'Escovas': ToothbrushIcon,
+  'Pastas de Dente': ToothpasteIcon,
+  'Fio Dental': DentalFlossIcon,
+  'Flúor': FluorIcon,
+  'Revelador de Placa': ReveladorIcon,
+  'Enxaguante Bucal': EnxaguanteIcon,
+};
+
+const ICON_SCALE: Partial<Record<string, number>> = {
+  'Escovas': 0.74,
+  'Pastas de Dente': 0.72,
+  'Fio Dental': 0.72,
+  'Flúor': 0.70,
+  'Revelador de Placa': 0.72,
+  'Enxaguante Bucal': 0.72,
+};
+
+const fitIconForHeader = (
+  Svg: React.ComponentType<any>,
+  scalePct = 0.72
+) => {
+  const pct = `${Math.round(scalePct * 100)}%`;
+  const Fitted = () => (
+    <View
+      style={{
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}
+    >
+      <Svg width={pct} height={pct} preserveAspectRatio="xMidYMid meet" />
+    </View>
+  );
+  return Fitted;
+};
+
+interface ProductCardProps {
+  product: ProductItem;
+  handleProductPress: (productId: string) => void;
+  handleAddToCart: (product: ProductItem, quantity: number) => void;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product, handleProductPress, handleAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
 
   return (
@@ -71,25 +123,29 @@ export default function LojaCategoriaScreen() {
   const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleCartPress = () => {
-      router.push('/(app)/carrinho');
+    router.push('/(app)/carrinho');
   };
 
   useFocusEffect(
     useCallback(() => {
+      const BaseIcon = category ? CATEGORY_ICON_MAP[category] : undefined;
+      const CharacterSvg = BaseIcon
+        ? fitIconForHeader(BaseIcon, ICON_SCALE[category as string] ?? 0.72)
+        : Chefinho;
+
       setHeaderConfig({
         visible: true,
-        layout: 'loja',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: category?.toUpperCase() || 'PRODUTOS',
-        CharacterSvg: Chefinho,
-        notificationBadge: totalCartItems,
-        onNotificationPress: handleCartPress,
+        CharacterSvg,          
+        showNotificationIcon: false,
       });
-    }, [category, totalCartItems])
+    }, [category, totalCartItems, setHeaderConfig])
   );
 
   const handleProductPress = (productId: string) => {
-      router.push({ pathname: '/(app)/detalhes-produto', params: { id: productId } });
+    router.push({ pathname: '/(app)/detalhes-produto', params: { id: productId } });
   };
 
   const handleAddToCart = (product: ProductItem, quantity: number) => {
@@ -101,7 +157,7 @@ export default function LojaCategoriaScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: height * 0.29 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: height * 0.216 }]}
       >
         {products.length === 0 ? (
           <View style={styles.noProductsContainer}>

@@ -33,7 +33,7 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
       "package": "com.toled1nn.frontendprojetodavinci"
     },
     "primaryColor": "#FFC045",

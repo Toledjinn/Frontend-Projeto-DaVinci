@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './PatientsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -24,7 +24,7 @@ const parseDate = (dateStr: string): Date => {
 export default function PatientsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.204;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -116,7 +116,7 @@ export default function PatientsScreen() {
   }, [searchQuery, allergyFilter, selectedGenders, selectedSpecialties]);
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -148,6 +148,6 @@ export default function PatientsScreen() {
           allergy: allergyFilter,
         }}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

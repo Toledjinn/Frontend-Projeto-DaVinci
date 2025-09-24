@@ -26,10 +26,14 @@ export const styles = StyleSheet.create({
   forgotPasswordButton: {
     alignSelf: 'center',
     marginTop: 16,
+    width: '100%',
   },
   forgotPasswordText: {
-    ...FONTS.body1,
+    ...FONTS.h3,
     color: COLORS.secondary,
     textDecorationLine: 'underline',
+    alignSelf: 'center',
+    width: '100%',
+    textAlign: 'center',
   },
 });

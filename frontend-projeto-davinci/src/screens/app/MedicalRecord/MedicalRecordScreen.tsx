@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useWindowDimensions, View, Text, FlatList } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { styles } from './MedicalRecordScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -15,7 +15,7 @@ import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 
 export default function MedicalRecordScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.208;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const MOCK_DENTISTS = getUsers('dentist');
@@ -153,7 +153,7 @@ export default function MedicalRecordScreen() {
   };
   
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -191,6 +191,6 @@ export default function MedicalRecordScreen() {
           status: selectedStatuses, 
         }}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   useWindowDimensions,
   Image,
@@ -16,6 +15,7 @@ import { useLojaStore } from '@/state/lojaStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import { Feather } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function DetalhesProdutoScreen() {
   const router = useRouter();
@@ -36,10 +36,9 @@ export default function DetalhesProdutoScreen() {
         visible: true,
         layout: 'loja',
         showPageHeaderElements: true,
-        pageTitle: product?.name.toUpperCase() || 'DETALHES',
+        pageTitle: product?.name,
         CharacterSvg: Chefinho,
-        notificationBadge: totalCartItems,
-      });
+        });
     }, [product, totalCartItems])
   );
 

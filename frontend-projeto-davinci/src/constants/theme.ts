@@ -22,8 +22,12 @@ export const SIZES = {
 export const FONTS = {
   h1: { fontFamily: 'trajan-pro-3-bold', fontSize: 20, lineHeight: 24 },
   h2: { fontFamily: 'trajan-pro-3-bold', fontSize: 18, lineHeight: 22 },
+  h3: { fontFamily: 'trajan-pro-3-bold', fontSize: 13, lineHeight: 20 },  
+  h4: { fontFamily: 'trajan-pro-3-bold', fontSize: 15, lineHeight: 20 },  
+  h5: { fontFamily: 'trajan-pro-3-bold', fontSize: 24, lineHeight: 28 },  
+  
   body1: { fontFamily: 'trajan-pro-3-bold', fontSize: 15, lineHeight: 22 },
-  body2: { fontFamily: 'TrajanPro3Semibold', fontSize: 17, lineHeight: 24 },
+  body2: { fontFamily: 'TrajanPro3Semibold', fontSize: 15, lineHeight: 24 },
 
   body3: { fontFamily: 'Poppins-Bold', fontSize: 16, lineHeight: 22 },
   body4: { fontFamily: 'Poppins-Bold', fontSize: 14, lineHeight: 20 },

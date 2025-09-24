@@ -42,7 +42,7 @@ export default StyleSheet.create({
     color: COLORS.secondary,
   },
   productPrice: {
-    ...FONTS.h4,
+    ...FONTS.h2,
     color: COLORS.primary,
     fontWeight: 'bold',
   },

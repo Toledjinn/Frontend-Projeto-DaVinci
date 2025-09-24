@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './NewsScreen.styles';
@@ -20,7 +20,7 @@ const userType = 'admin';
 export default function NewsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.192;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const news = useNewsStore((state) => state.news);
 
@@ -28,9 +28,9 @@ export default function NewsScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'NOVIDADES',
+        pageTitle: 'Novidades',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -46,7 +46,7 @@ export default function NewsScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <FlatList
         data={news}
         keyExtractor={(item) => item.id}
@@ -62,6 +62,6 @@ export default function NewsScreen() {
           <Feather name="plus" size={30} color={COLORS.white} />
         </TouchableOpacity>
       )}
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

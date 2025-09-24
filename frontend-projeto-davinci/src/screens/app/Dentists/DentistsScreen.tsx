@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './DentistsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -20,7 +20,7 @@ const availableSpecialties = Array.from(
 export default function DentistsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.204;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,7 +85,7 @@ export default function DentistsScreen() {
   }, [searchQuery, selectedSpecialties, selectedGenders]);
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={{flex: 1}}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -116,6 +116,6 @@ export default function DentistsScreen() {
           specialties: selectedSpecialties,
         }}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

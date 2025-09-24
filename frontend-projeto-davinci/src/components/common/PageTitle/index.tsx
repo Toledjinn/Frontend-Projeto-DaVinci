@@ -11,6 +11,11 @@ type PageHeaderProps = {
 export default function PageHeader({ CharacterSvg, title }: PageHeaderProps) {
   const { width, height } = useWindowDimensions(); 
   const styles = getPageHeaderStyles(width, height); 
+  
+  const notificationCircle = height * 0.09;
+  const border = 3;                      
+  const iconPadding = Math.round(height * 0.008); 
+  const iconSize = notificationCircle - (border * 2) - (iconPadding * 2)
 
   return (
     <View style={styles.container}>

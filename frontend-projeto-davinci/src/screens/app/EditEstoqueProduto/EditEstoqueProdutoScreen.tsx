@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -18,6 +17,14 @@ import { useEstoqueStore, CategoryName, ProductItem, ProductStatus } from '@/sta
 import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import { COLORS } from '@/constants/theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import ToothbrushIcon from '@/assets/icons/toothbrush.svg';
+import ToothpasteIcon from '@/assets/icons/toothpaste.svg';
+import DentalFlossIcon from '@/assets/icons/dental-floss.svg';
+import FluorIcon from '@/assets/icons/mouthwash1.svg';
+import ReveladorIcon from '@/assets/icons/dropper.svg';
+import EnxaguanteIcon from '@/assets/icons/mouthwash2.svg';
 
 const getStatusColor = (status: ProductStatus) => {
   switch (status) {
@@ -32,22 +39,63 @@ const getStatusColor = (status: ProductStatus) => {
   }
 };
 
+const fitIconForHeader = (
+  Svg: React.ComponentType<any>,
+  scalePct = 0.72 
+) => {
+  const pct = `${Math.round(scalePct * 100)}%`;
+  const Fitted = () => (
+    <View
+      style={{
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}
+    >
+      <Svg width={pct} height={pct} preserveAspectRatio="xMidYMid meet" />
+    </View>
+  );
+  return Fitted;
+};
+
+const CATEGORY_ICON_MAP: Record<CategoryName, React.ComponentType<any>> = {
+  'Escovas': ToothbrushIcon,
+  'Pastas de Dente': ToothpasteIcon,
+  'Fio Dental': DentalFlossIcon,
+  'Flúor': FluorIcon,
+  'Revelador de Placa': ReveladorIcon,
+  'Enxaguante Bucal': EnxaguanteIcon,
+};
+
+const ICON_SCALE: Partial<Record<CategoryName, number>> = {
+  'Escovas': 0.74,
+  'Pastas de Dente': 0.72,
+  'Fio Dental': 0.72,
+  'Flúor': 0.70,
+  'Revelador de Placa': 0.72,
+  'Enxaguante Bucal': 0.72,
+};
+
 export default function EditEstoqueProdutoScreen() {
   const router = useRouter();
-  const { category, productId } = useLocalSearchParams<{ category: CategoryName, productId?: string }>();
+  const { category, productId } = useLocalSearchParams<{ category: CategoryName; productId?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const { categories, addProduct, updateProduct } = useEstoqueStore();
-  
   const isEditMode = !!productId;
 
-  const productToEdit = useMemo(() => 
-    isEditMode ? categories[category!]?.find(p => p.id === productId) : null
-  , [categories, category, productId, isEditMode]);
+  const productToEdit = useMemo(
+    () => (isEditMode ? categories[category!]?.find((p) => p.id === productId) : null),
+    [categories, category, productId, isEditMode]
+  );
 
-  const [formData, setFormData] = useState<Omit<ProductItem, 'id' | 'image'> & { imageUri: string | null }>({
+  const [formData, setFormData] = useState<
+    Omit<ProductItem, 'id' | 'image'> & { imageUri: string | null }
+  >({
     name: '',
-    brand: '', 
+    brand: '',
     description: '',
     price: 0,
     quantity: 0,
@@ -68,42 +116,45 @@ export default function EditEstoqueProdutoScreen() {
       });
     }
   }, [productToEdit, isEditMode]);
-  
+
   useEffect(() => {
     const quantity = Number(formData.quantity) || 0;
     let newStatus: ProductStatus = 'Em falta';
-
-    if (quantity > 10) {
-      newStatus = 'Em estoque';
-    } else if (quantity > 0) {
-      newStatus = 'Poucas unidades';
-    }
-    
+    if (quantity > 10) newStatus = 'Em estoque';
+    else if (quantity > 0) newStatus = 'Poucas unidades';
     if (formData.status !== newStatus) {
-      setFormData(prev => ({ ...prev, status: newStatus }));
+      setFormData((prev) => ({ ...prev, status: newStatus }));
     }
   }, [formData.quantity]);
 
   useFocusEffect(
     useCallback(() => {
+      const BaseIcon = category ? CATEGORY_ICON_MAP[category] : undefined;
+      const CharacterSvg = BaseIcon
+        ? fitIconForHeader(BaseIcon, ICON_SCALE[category as CategoryName] ?? 0.72)
+        : Chefinho;
+
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: isEditMode ? 'EDITAR PRODUTO' : 'CADASTRAR PRODUTO',
-        CharacterSvg: Chefinho,
+        pageTitle: isEditMode
+          ? ('Editar Produto')
+          : 'Cadastrar Produto',
+        CharacterSvg,
         showNotificationIcon: true,
+        visible: true,
       });
-    }, [isEditMode])
+    }, [category, isEditMode, productToEdit?.name, setHeaderConfig])
   );
-  
+
   const handleInputChange = (field: keyof typeof formData, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleImagePick = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permissão necessária.');
+      Alert.alert('Permissão necessária.', 'Conceda acesso à galeria para selecionar a imagem.');
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -118,7 +169,7 @@ export default function EditEstoqueProdutoScreen() {
   };
 
   const handleSaveChanges = () => {
-    if (!formData.name || !formData.imageUri) {
+    if (!formData.name || !(formData.imageUri || productToEdit?.image)) {
       Alert.alert('Campos em falta', 'O nome e a imagem do produto são obrigatórios.');
       return;
     }
@@ -130,7 +181,7 @@ export default function EditEstoqueProdutoScreen() {
       price: Number(formData.price) || 0,
       quantity: Number(formData.quantity) || 0,
       status: formData.status,
-      image: { uri: formData.imageUri },
+      image: formData.imageUri ? { uri: formData.imageUri } : (productToEdit?.image as any),
     };
 
     if (isEditMode) {
@@ -138,17 +189,19 @@ export default function EditEstoqueProdutoScreen() {
     } else {
       addProduct(category!, productData);
     }
-    
+
     Alert.alert('Sucesso!', `Produto ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso.`);
     router.back();
   };
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
           {formData.imageUri ? (
             <Image source={{ uri: formData.imageUri }} style={styles.imagePreview} />
+          ) : productToEdit?.image ? (
+            <Image source={productToEdit.image as any} style={styles.imagePreview} />
           ) : (
             <Feather name="image" size={40} color={COLORS.gray_400} />
           )}
@@ -173,7 +226,7 @@ export default function EditEstoqueProdutoScreen() {
             placeholder="Ex: Colgate"
           />
         </View>
-        
+
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Descrição</Text>
           <TextInput
@@ -215,16 +268,14 @@ export default function EditEstoqueProdutoScreen() {
             </Text>
           </View>
         </View>
-
       </ScrollView>
 
       <ScreenFooter
-        secondaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
-        primaryButtonTitle="Salvar"
+        secondaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
+        primaryButtonTitle="Cancelar"
+        onSecondaryButtonPress={() => router.back()}
       />
     </SafeAreaView>
   );
 }
-

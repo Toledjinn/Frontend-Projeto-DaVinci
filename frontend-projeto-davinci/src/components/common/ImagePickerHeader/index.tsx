@@ -54,7 +54,7 @@ export default function ImagePickerHeader({ title }: ImagePickerHeaderProps) {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
@@ -86,14 +86,14 @@ export default function ImagePickerHeader({ title }: ImagePickerHeaderProps) {
             <Image source={{ uri: imageUri }} style={styles.image} />
           ) : (
             <View style={styles.cameraIconWrapper}>
-              <Feather name="camera" size={width * 0.1} color={COLORS.secondary} />
+              <Feather name="camera" size={width * 0.16} color={COLORS.secondary} />
             </View>
           )}
         </View>
         
         {!imageUri && (
             <View style={styles.plusIconWrapper}>
-                <Feather name="plus" size={width * 0.05} color={COLORS.white} />
+                <Feather name="plus" size={width * 0.08} color={COLORS.white} />
             </View>
         )}
       </TouchableOpacity>
@@ -101,4 +101,3 @@ export default function ImagePickerHeader({ title }: ImagePickerHeaderProps) {
     </View>
   );
 }
-

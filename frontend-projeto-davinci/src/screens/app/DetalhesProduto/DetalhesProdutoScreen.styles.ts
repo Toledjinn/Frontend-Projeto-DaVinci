@@ -35,7 +35,7 @@ export default StyleSheet.create({
     borderColor: COLORS.gray_200,
   },
   productName: {
-    ...FONTS.h3,
+    ...FONTS.h2,
     color: COLORS.secondary,
     textAlign: 'center',
     marginBottom: 8,
@@ -74,7 +74,7 @@ export default StyleSheet.create({
     marginTop: 24, 
   },
   addToCartText: {
-    ...FONTS.h4,
+    ...FONTS.h2,
     color: COLORS.white,
     fontWeight: 'bold',
     marginLeft: 8,
@@ -92,7 +92,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.gray_300,
+    borderColor: COLORS.gray_400,
   },
   decrementButton: {
     backgroundColor: COLORS.red,
@@ -103,7 +103,7 @@ export default StyleSheet.create({
     borderColor: COLORS.green,
   },
   itemQuantityText: {
-    ...FONTS.h3,
+    ...FONTS.h2,
     color: COLORS.secondary,
     marginHorizontal: 24,
   },

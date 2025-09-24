@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ScrollView,
   View,
@@ -39,7 +39,7 @@ export default function EditDepoimentosScreen() {
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: `EDITAR DEPOIMENTOS`,
+        pageTitle: `Editar Depoimentos`,
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -85,7 +85,7 @@ export default function EditDepoimentosScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
@@ -151,6 +151,6 @@ export default function EditDepoimentosScreen() {
         primaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

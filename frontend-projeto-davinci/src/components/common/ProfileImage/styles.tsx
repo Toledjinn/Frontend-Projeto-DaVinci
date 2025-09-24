@@ -3,7 +3,10 @@ import { FONTS, COLORS } from '@/constants/theme';
 
 export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number, hasRiskLevel: boolean) => {
   const singleLineHeight = FONTS.body1.lineHeight || 22;
-  const userNameTopPosition = screenHeight *  0.21; 
+  const photoTopPosition = screenHeight * 0.0700;
+  const circleDiameter = screenWidth * 0.3073;
+  const userNameTopPosition = photoTopPosition + circleDiameter + 8;
+  const riskContainerTopPosition = userNameTopPosition + 24;
 
   return StyleSheet.create({
     container: {
@@ -12,17 +15,17 @@ export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number
     },
     backgroundCircle: {
       position: 'absolute',
-      width: screenWidth * 0.2273,
-      height: screenWidth * 0.2273,
-      left: screenWidth * 0.3841,
-      top: screenHeight * 0.0889, 
-      borderRadius: (screenWidth * 0.2273) / 2,
+      width: circleDiameter,
+      height: circleDiameter,
+      top: photoTopPosition, 
+      borderRadius: circleDiameter / 2,
       backgroundColor: COLORS.primary,
       borderWidth: 3,
       borderColor: COLORS.secondary,
       justifyContent: 'center',
       alignItems: 'center',
       overflow: 'hidden',
+      alignSelf: 'center',
     },
     imageWrapper: {
       width: '100%',
@@ -30,10 +33,10 @@ export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number
     },
     userName: {
       position: 'absolute',
-      width: '75%',
+      width: '100%',
       alignSelf: 'center',
       top: userNameTopPosition,
-      ...FONTS.body1,
+      ...FONTS.h2,
       color: COLORS.secondary,
       textAlign: 'center',
       lineHeight: singleLineHeight,
@@ -42,7 +45,7 @@ export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number
         position: 'absolute',
         width: '100%',
         alignItems: 'center',
-        top: userNameTopPosition + singleLineHeight * 1.3,
+        top: riskContainerTopPosition
     }
   });
 };

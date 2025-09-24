@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   useWindowDimensions,
   ScrollView,
@@ -18,6 +17,7 @@ import DentalFlossIcon from '@/assets/icons/dental-floss.svg';
 import FluorIcon from '@/assets/icons/mouthwash1.svg';
 import ReveladorIcon from '@/assets/icons/dropper.svg';
 import EnxaguanteIcon from '@/assets/icons/mouthwash2.svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const categories = [
   { id: '1', title: 'Escovas', SvgComponent: ToothbrushIcon },
@@ -31,7 +31,7 @@ const categories = [
 export default function EstoqueScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.360;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   useFocusEffect(
@@ -40,7 +40,7 @@ export default function EstoqueScreen() {
         visible: true,
         layout: 'page-large',
         showPageHeaderElements: true,
-        pageTitle: 'ESTOQUE',
+        pageTitle: 'Estoque',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
