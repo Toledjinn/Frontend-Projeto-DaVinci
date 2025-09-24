@@ -100,7 +100,7 @@ export default function AppointmentDetailScreen() {
           onPress: () => {
             if (appointmentId) {
               updateAppointmentStatus(appointmentId, 'cancelada');
-              router.back();
+              router.push('/(app)/consultas');
             }
           },
           style: 'destructive'
@@ -136,7 +136,7 @@ export default function AppointmentDetailScreen() {
     if (!appointmentId) return;
     updateAppointmentStatus(appointmentId, 'agendada');
     Alert.alert('Sucesso!', 'Solicitação aprovada e agendamento confirmado.');
-    router.back();
+    router.push('/(app)/solicitacoes');
   };
   
   const handleRejectRequest = () => {
