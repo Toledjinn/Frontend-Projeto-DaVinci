@@ -1,4 +1,3 @@
-// src/app/(app)/editar-educacional/EditEducationalContentScreen.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -21,7 +20,6 @@ import StyledInput from '@/components/common/StyledInput';
 import AddSlideModal from '@/components/features/AddSlideModal';
 import { COLORS } from '@/constants/theme';
 
-// ===== Personagens (iguais aos da tela principal) =====
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova from '@/assets/characters/escova1.svg';
 import Pasta from '@/assets/characters/pasta.svg';
@@ -29,13 +27,11 @@ import FioDental from '@/assets/characters/fio.svg';
 import Fluor from '@/assets/characters/fluor.svg';
 import Revelador from '@/assets/characters/revelador.svg';
 
-// ===== Tipos =====
 type PageName = 'chefinho' | 'escova' | 'pasta' | 'fio' | 'fluor' | 'revelador';
 
-// ===== Helper: centraliza e “encaixa” o SVG em 0.90× do círculo =====
 const fitIconForHeader = (
   Svg: React.ComponentType<any>,
-  scalePct = 0.90 // PADRÃO: 90% do diâmetro do círculo
+  scalePct = 0.90 
 ) => {
   const pct = `${Math.round(scalePct * 100)}%`;
   const Fitted = () => (
@@ -54,7 +50,6 @@ const fitIconForHeader = (
   return Fitted;
 };
 
-// ===== Mapa page -> personagem (SVG) =====
 const CHARACTER_MAP: Record<PageName, React.ComponentType<any>> = {
   chefinho: Chefinho,
   escova: Escova,
@@ -64,7 +59,6 @@ const CHARACTER_MAP: Record<PageName, React.ComponentType<any>> = {
   revelador: Revelador,
 };
 
-// ===== Nomes bonitos para o título =====
 const TITLE_MAP: Record<PageName, string> = {
   chefinho: 'Chefinho',
   escova: 'Escova',
@@ -74,7 +68,6 @@ const TITLE_MAP: Record<PageName, string> = {
   revelador: 'Revelador de Placa',
 };
 
-// ===== Normaliza a origem (param/rota) para PageName =====
 function resolvePageName(paramPage?: string, segments?: string[]): PageName {
   if (paramPage) {
     const p = paramPage.toLowerCase();
@@ -90,7 +83,6 @@ function resolvePageName(paramPage?: string, segments?: string[]): PageName {
   return 'chefinho';
 }
 
-// =================== Editor por tipo de slide ===================
 const SlideContentEditor = ({
   slide,
   index,
@@ -441,7 +433,6 @@ export default function EditEducationalContentScreen() {
   const { page: pageParam } = useLocalSearchParams<{ page?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  // Resolve a seção atual (param ou rota)
   const page = resolvePageName(pageParam, segments);
 
   const pageContent = useEducationalContentStore((state) => state.pages[page]);
@@ -453,7 +444,6 @@ export default function EditEducationalContentScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [expandedSlideId, setExpandedSlideId] = useState<string | null>(null);
 
-  // Carrega os slides editáveis
   useEffect(() => {
     if (pageContent) {
       const slides = JSON.parse(JSON.stringify(pageContent)) as CarouselSlide[];
@@ -462,7 +452,6 @@ export default function EditEducationalContentScreen() {
     }
   }, [pageContent]);
 
-  // Header com o personagem da seção — agora sempre 0.90× do círculo
   useFocusEffect(
     useCallback(() => {
       const BaseIcon = CHARACTER_MAP[page] ?? Chefinho;
