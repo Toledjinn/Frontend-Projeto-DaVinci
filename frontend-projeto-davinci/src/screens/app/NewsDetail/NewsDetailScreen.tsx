@@ -92,8 +92,13 @@ export default function NewsDetailScreen() {
 
       {(userType === 'admin') && (
         <ScreenFooter
-          primaryButtonTitle="Editar Novidade"
-          onPrimaryButtonPress={handleEditPress}
+          buttons={[
+            {
+              title: "Editar Novidade",
+              onPress: handleEditPress,
+              variant: 'secondary',  
+            }
+          ]}
         />
       )}
     </SafeAreaView>

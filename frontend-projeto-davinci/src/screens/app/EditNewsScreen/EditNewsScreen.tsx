@@ -131,12 +131,19 @@ export default function EditNewsScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
       <ScreenFooter
-        secondaryButtonTitle="Salvar"
-        onPrimaryButtonPress={handleSaveChanges}
-        primaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
+        buttons={[
+          {
+            title: "Salvar",
+            onPress: handleSaveChanges,
+            variant: 'primary',  
+          },
+          {
+            title: "Cancelar",
+            onPress: () => router.back(),
+            variant: 'secondary',  
+          }
+        ]}
       />
     </SafeAreaView>
   );

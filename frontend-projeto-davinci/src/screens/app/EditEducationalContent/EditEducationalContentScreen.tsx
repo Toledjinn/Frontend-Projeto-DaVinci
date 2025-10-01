@@ -617,10 +617,18 @@ export default function EditEducationalContentScreen() {
       />
 
       <ScreenFooter
-        secondaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
-        primaryButtonTitle="Salvar"
-        onPrimaryButtonPress={handleSaveChanges}
+        buttons={[
+          {
+            title: "Salvar",
+            onPress: handleSaveChanges,
+            variant: 'primary',  
+          },
+          {
+            title: "Cancelar",
+            onPress: () => router.back(),
+            variant: 'secondary',  
+          }
+        ]}
       />
     </SafeAreaView>
   );

@@ -12,11 +12,13 @@ import AllergyWarning from '@/components/features/AllergyWarning';
 import StyledButton from '@/components/common/StyledButton';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import ProcedureInputList from '@/components/features/ProcedureInputList';
-import ExamRequestInput from '@/components/features/ExamRequestInput';
+import DynamicInputList from '@/components/features/DynamicInputList';
+import RiskAssessmentCard from '@/components/features/RiskAssessmentCard';
+import TreatmentPlanForm from '@/components/features/TreatmentPlanForm';
 
 export default function ConsultationScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.216;
+  const headerHeight = height * 0.30;
   const { appointmentId } = useLocalSearchParams<{ appointmentId: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -24,20 +26,14 @@ export default function ConsultationScreen() {
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [patient, setPatient] = useState<UserProfile | null>(null);
   const [images, setImages] = useState<string[]>([]);
-  const [xrays, setXrays] = useState<string[]>([]);
-
+  
   const specialty = appointment?.specialty;
-  const normalizedSpecialty = (specialty ?? '').toLowerCase();
-  const isPrimeiraConsulta = normalizedSpecialty === 'primeira consulta';
-  const isSegundaConsulta  = normalizedSpecialty === 'segunda consulta';
-  const isPeriodontia      = normalizedSpecialty === 'periodontia';
+  const isPrimeiraConsulta = specialty === 'Primeira Consulta';
+  const isSegundaConsulta  = specialty === 'Segunda Consulta';
+  const isPeriodontia      = specialty === 'Periodontia';
 
   useEffect(() => {
-    if (!appointmentId) {
-      setAppointment(null);
-      setPatient(null);
-      return;
-    }
+    if (!appointmentId) return;
 
     const foundAppointment = getAppointmentById(appointmentId) ?? null;
     setAppointment(foundAppointment);
@@ -78,10 +74,7 @@ export default function ConsultationScreen() {
         onPress: async () => {
           const result = await ImagePicker.launchCameraAsync({ quality: 0.5 });
           if (!result.canceled) {
-            const uri = result.assets[0].uri;
-            type === 'image'
-              ? setImages(prev => [...prev, uri])
-              : setXrays(prev => [...prev, uri]);
+            setImages(prev => [...prev, result.assets[0].uri]);
           }
         },
       },
@@ -90,17 +83,13 @@ export default function ConsultationScreen() {
         onPress: async () => {
           const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.5 });
           if (!result.canceled) {
-            const uri = result.assets[0].uri;
-            type === 'image'
-              ? setImages(prev => [...prev, uri])
-              : setXrays(prev => [...prev, uri]);
+            setImages(prev => [...prev, result.assets[0].uri]);
           }
         },
       },
       { text: 'Cancelar', style: 'cancel' },
     ]);
   };
-
 
   if (!appointment || !patient) {
     return <SafeAreaView style={styles.safeArea}><Text>Carregando...</Text></SafeAreaView>;
@@ -112,60 +101,86 @@ export default function ConsultationScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-
-        <View style={styles.topButtonContainer}>
-          {isPrimeiraConsulta ? (
-            <View style={styles.buttonRow}>
-              <StyledButton title="Saúde Geral" variant="secondary" style={[styles.buttonInRow, { marginRight: 8 }]} />
-              <StyledButton title="Saúde Bucal" variant="secondary" style={[styles.buttonInRow, { marginLeft: 8 }]} />
-            </View>
-          ) : isPeriodontia ? (
-            <View style={styles.buttonRow}>
-              <StyledButton
-                title="Diagnósticos"
-                variant="secondary"
+        {isPrimeiraConsulta ? (
+          <>
+          {patient.allergies?.length ? <AllergyWarning allergies={patient.allergies} /> : null}
+            <View style={[styles.topButtonContainer, styles.buttonRow]}>
+              <StyledButton 
+                title="Saúde Geral" 
+                variant="secondary" 
                 style={[styles.buttonInRow, { marginRight: 8 }]}
-                onPress={() => router.push({ pathname: '/(app)/diagnostico', params: { patientId: patient.id } })}
+                onPress={() => router.push({ pathname: '/(app)/saude-geral', params: { patientId: patient.id } })}
               />
-              <StyledButton title="Periograma" variant="secondary" style={[styles.buttonInRow, { marginLeft: 8 }]} />
+              <StyledButton 
+                title="Saúde Bucal" 
+                variant="secondary" 
+                style={[styles.buttonInRow, { marginLeft: 8 }]}
+                onPress={() => router.push({ pathname: '/(app)/saude-bucal', params: { patientId: patient.id } })}
+              />
             </View>
-          ) : (
+            
+
+            <DynamicInputList 
+              title="Exames Solicitados" 
+              inputIcon="file-text"
+              placeholder="Digite o exame"
+              addMoreText="Adicionar Exame"
+            />
+            
+            <View style={{marginTop: 24, marginBottom: 24}}>
+              <RiskAssessmentCard />
+            </View>
+
             <StyledButton
-              title="Diagnósticos"
+              title="Imagens"
               variant="secondary"
-              onPress={() => router.push({ pathname: '/(app)/diagnostico', params: { patientId: patient.id } })}
+              onPress={() => handleImagePick('image')}
+              style={styles.mediaButton}
             />
-          )}
-        </View>
+          </>
+        ) : (
+          <>
+            {patient.allergies?.length ? <AllergyWarning allergies={patient.allergies} /> : null}
+            <View style={styles.topButtonContainer}>
+              {isPeriodontia ? (
+                <View style={styles.buttonRow}>
+                  <StyledButton title="Diagnósticos" variant="secondary" style={[styles.buttonInRow, { marginRight: 8 }]} onPress={() => router.push({ pathname: '/(app)/diagnostico', params: { patientId: patient.id } })} />
+                  <StyledButton 
+                    title="Periograma" 
+                    variant="primary" 
+                    style={[styles.buttonInRow, { marginLeft: 8 }]} 
+                    onPress={() => router.push({
+                    pathname: '/(app)/periogramas',
+                    params: { patientId: patient.id }
+                  })}
+                  />
+                </View>
+              ) : (
+                <StyledButton title="Diagnósticos" variant="secondary" onPress={() => router.push({ pathname: '/(app)/diagnostico', params: { patientId: patient.id } })} />
+              )}
+            </View>
+            
 
-        {patient.allergies?.length ? <AllergyWarning allergies={patient.allergies} /> : null}
+            {isSegundaConsulta ? <TreatmentPlanForm  /> : <ProcedureInputList />}
 
-        {(isPrimeiraConsulta || isSegundaConsulta) ? <ExamRequestInput /> : <ProcedureInputList />}
-
-        <View style={styles.mediaButtonsContainer}>
-          <StyledButton
-            title="Imagens"
-            variant="secondary"
-            onPress={() => handleImagePick('image')}
-            style={[styles.mediaButton, !isPrimeiraConsulta && { marginRight: 8 }]}
-          />
-          {!isPrimeiraConsulta && (
-            <StyledButton
-              title="Raios-X"
-              variant="primary"
-              onPress={() => handleImagePick('xray')}
-              style={[styles.mediaButton, { marginLeft: 8 }]}
-            />
-          )}
-        </View>
+            <View style={styles.mediaButtonsContainer}>
+              <StyledButton title="Imagens" variant="secondary" onPress={() => handleImagePick('image')} style={[styles.mediaButton, { marginRight: 8 }]} />
+              <StyledButton title="Raios-X" variant="primary" onPress={() => handleImagePick('xray')} style={[styles.mediaButton, { marginLeft: 8 }]} />
+            </View>
+          </>
+        )}
       </ScrollView>
-
       <ScreenFooter
-        primaryButtonTitle="Finalizar Atendimento"
-        onPrimaryButtonPress={() => {
-          Alert.alert('Atendimento Finalizado', 'Os dados foram salvos com sucesso (simulação).');
-          router.back();
-        }}
+        buttons={[
+          {
+            title: "Finalizar Atendimento",
+            onPress: () => {
+              Alert.alert('Atendimento Finalizado', 'Os dados foram salvos com sucesso (simulação).');
+              router.back();
+            },
+            variant: 'secondary',
+          }
+        ]}
       />
     </SafeAreaView>
   );

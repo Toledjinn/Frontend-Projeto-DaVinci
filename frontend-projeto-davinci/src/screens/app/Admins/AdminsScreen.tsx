@@ -93,8 +93,13 @@ export default function AdminsScreen() {
           </ScrollView>
         </View>
         <ScreenFooter
-          primaryButtonTitle="Cadastrar Administrador"
-          onPrimaryButtonPress={handleRegisterPress}
+          buttons={[
+            {
+              title: "Cadastrar Administrador",
+              onPress: handleRegisterPress,
+              variant: 'secondary',
+            }
+          ]}
         />
       </View>
       <AdminFilterModal

@@ -194,8 +194,13 @@ export default function DentistAppointmentsScreen() {
           />
         </View>
         <ScreenFooter
-          primaryButtonTitle="Nova Consulta"
-          onPrimaryButtonPress={handleNewAppointment}
+          buttons={[
+            {
+              title: "Nova Consulta",
+              onPress: handleNewAppointment,
+              variant: 'secondary',
+            }
+          ]}
         />
       </View>
 

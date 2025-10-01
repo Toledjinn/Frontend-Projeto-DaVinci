@@ -56,11 +56,20 @@ export default function ProfileScreen() {
       </ScrollView>
 
       <ScreenFooter
-        secondaryButtonTitle="Editar Dados"
-        onSecondaryButtonPress={handleEditData}
-        primaryButtonTitle="Sair"
-        onPrimaryButtonPress={handleLogout}
+        buttons={[
+          {
+            title: "Editar Dados",
+            onPress: handleEditData,
+            variant: 'primary',  
+          },
+          {
+            title: "Sair",
+            onPress: handleLogout,
+            variant: 'secondary',  
+          }
+        ]}
       />
+      
     </SafeAreaView>
   );
 }

@@ -14,7 +14,7 @@ import { formatUserName } from '@/utils/nameUtils';
 
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.240;
+  const headerHeight = height * 0.32;
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -111,13 +111,21 @@ export default function UserDetailScreen() {
             <ProfileDataList data={user.details} />
         </View>
       </ScrollView>
-
       <ScreenFooter
-        primaryButtonTitle={isPatient ? "Prontuário" : "Ver Agendamentos"}
-        onPrimaryButtonPress={isPatient ? handleViewRecord : (isDentist ? handleViewAppointments : () => {})}
-        secondaryButtonTitle={!isDentist ? "Editar Dados" : undefined}
-        onSecondaryButtonPress={!isDentist ? handleEditData : undefined}
+        buttons={[
+          {
+            title: isPatient ? "Prontuário" : "Ver Agendamentos",
+            onPress: isPatient ? handleViewRecord : (isDentist ? handleViewAppointments : () => {}),
+            variant: 'primary', 
+          },
+          {
+            title: !isDentist ? "Editar Dados" : undefined,
+            onPress: handleEditData,
+            variant: 'secondary',  
+          }
+        ]}
       />
+
     </SafeAreaView>
   );
 }

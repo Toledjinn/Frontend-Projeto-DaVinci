@@ -258,43 +258,6 @@ export default function SaudeBucalForm() {
         <ToggleButtonGroup label="" value={formData.q26.value} onSelect={val => handleValueChange('q26', 'value', val)} />
         {formData.q26.value === 'sim' && <View style={styles.conditionalInput}><StyledInput label="Qual?" iconName="info" value={formData.q26.qual} onChangeText={text => handleValueChange('q26', 'qual', text)} /></View>}
       </QuestionCard>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Exames Solicitados</Text>
-        {formData.examesSolicitados.map((exame: any, index: number) => (
-          <View key={exame.id} style={styles.inputRow}>
-            <View style={{ flex: 1 }}>
-              <StyledInput
-                label={index === 0 ? '' : ''} 
-                iconName="file-text"
-                placeholder="Digite o exame solicitado"
-                value={exame.value}
-                onChangeText={(text) => handleExameChange(text, exame.id)}
-              />
-            </View>
-            {formData.examesSolicitados.length > 1 && (
-              <TouchableOpacity onPress={() => removeExameInput(exame.id)} style={styles.removeButton}>
-                <Feather name="x-circle" size={24} color={COLORS.red} />
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
-        <TouchableOpacity onPress={addExameInput} style={styles.addButton}>
-          <Feather name="plus" size={20} color={COLORS.secondary} />
-          <Text style={styles.addButtonText}>Adicionar Exame</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Observações</Text>
-        <StyledInput label="" iconName="file-text" multiline numberOfLines={5} value={formData.observacoes} onChangeText={text => setFormData({...formData, observacoes: text})} />
-      </View>
-      <QuestionCard title="Avaliação de Risco">
-        <View style={styles.checkboxContainer}>
-          <Checkbox label="Baixo" checked={formData.avaliacaoRisco.nivel === 'Baixo'} onPress={() => handleRadioCheckboxChange('avaliacaoRisco', 'nivel', 'Baixo')} />
-          <Checkbox label="Médio" checked={formData.avaliacaoRisco.nivel === 'Médio'} onPress={() => handleRadioCheckboxChange('avaliacaoRisco', 'nivel', 'Médio')} />
-          <Checkbox label="Alto" checked={formData.avaliacaoRisco.nivel === 'Alto'} onPress={() => handleRadioCheckboxChange('avaliacaoRisco', 'nivel', 'Alto')} />
-        </View>
-      </QuestionCard>
     </View>
   );
 }

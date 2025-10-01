@@ -142,12 +142,19 @@ export default function CreateNewsScreen() {
         </View>
 
       </ScrollView>
-
       <ScreenFooter
-        secondaryButtonTitle="Publicar"
-        onPrimaryButtonPress={handlePublish}
-        primaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
+        buttons={[
+          {
+            title: "Publicar",
+            onPress: handlePublish,
+            variant: 'primary',
+          },
+          {
+            title: "Cancelar",
+            onPress: () => router.back(),
+            variant: 'secondary',
+          }
+        ]}
       />
     </SafeAreaView>
   );

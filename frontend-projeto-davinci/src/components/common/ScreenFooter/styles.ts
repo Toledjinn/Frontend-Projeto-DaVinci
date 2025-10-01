@@ -19,12 +19,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   buttonFlex: {
     flex: 1,
   },
   buttonSingle: {
-    width: '80%',
+    width: '100%',
   },
   primaryButton: {
     backgroundColor: COLORS.secondary,
@@ -40,10 +39,10 @@ export const styles = StyleSheet.create({
     ...FONTS.body2,
     color: COLORS.secondary,
   },
-  primaryMargin: {
-    marginLeft: 8,
+  leftButtonMargin: {
+    marginRight: 8, 
   },
-  secondaryMargin: {
-    marginRight: 8,
+  rightButtonMargin: {
+    marginLeft: 8, 
   },
 });

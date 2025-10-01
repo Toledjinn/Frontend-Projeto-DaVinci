@@ -7,11 +7,17 @@ type CheckboxProps = {
   label: string;
   checked: boolean;
   onPress: () => void;
+  disabled?: boolean; 
 };
 
-export default function Checkbox({ label, checked, onPress }: CheckboxProps) {
+export default function Checkbox({ label, checked, onPress, disabled = false }: CheckboxProps) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity 
+      style={[styles.container, disabled && styles.disabled]} 
+      onPress={onPress}
+      disabled={disabled}
+      activeOpacity={0.7}
+    >
       <Feather name={checked ? "check-square" : "square"} size={24} color={COLORS.secondary} />
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
@@ -23,11 +29,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
-    marginRight: 16,
+    width: '50%',
   },
   label: {
     ...FONTS.body10,
     color: COLORS.secondary,
-    marginLeft: 4,
+    marginLeft: 12,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });

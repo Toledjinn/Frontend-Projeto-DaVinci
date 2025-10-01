@@ -124,9 +124,14 @@ export default function AppointmentsScreen() {
           />
         </View>
         <ScreenFooter
-          primaryButtonTitle="Agendar Consulta"
-          onPrimaryButtonPress={handleNewAppointment}
-        />
+            buttons={[
+              {
+                title: "Agendar Consulta",
+                onPress: handleNewAppointment,
+                variant: 'secondary',
+              }
+            ]}
+          />
       </View>
       <RecordFilterModal
         visible={isFilterModalVisible}

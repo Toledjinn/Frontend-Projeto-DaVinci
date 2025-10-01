@@ -180,10 +180,18 @@ export default function ScheduleAppointmentScreen() {
                     </View>
                 </ScrollView>
                 <ScreenFooter
-                    secondaryButtonTitle={primaryButtonTitle()}
-                    onSecondaryButtonPress={handleSchedule}
-                    primaryButtonTitle="Cancelar"
-                    onPrimaryButtonPress={handleCancel}
+                    buttons={[
+                    {
+                        title: primaryButtonTitle(),
+                        onPress: handleSchedule,
+                        variant: 'primary',  
+                    },
+                    {
+                        title: "Cancelar",
+                        onPress: () => router.back(),
+                        variant: 'secondary',  
+                    }
+                    ]}
                 />
             </View>
         </SafeAreaView>

@@ -4,12 +4,11 @@ export const formatUserName = (fullName: string | undefined): string => {
   }
 
   const names = fullName.trim().split(' ');
-  if (names.length <= 2) {
+  if (names.length <= 1) {
     return fullName;
   }
 
   const firstName = names[0];
-  const lastName = names[names.length - 1];
 
-  return `${firstName} ${lastName}`;
+  return `${firstName}`;
 };

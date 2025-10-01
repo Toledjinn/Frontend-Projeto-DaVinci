@@ -9,6 +9,7 @@ import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import HomeSection from '@/components/features/HomeSection';
 import { SPECIALTIES } from '@/data/mockSpecialties';
 import { formatUserName } from '@/utils/nameUtils';
+import RiskAssessmentCard from '@/components/features/RiskAssessmentCard';
 
 export default function DiagnosticScreen() {
   const { height } = useWindowDimensions();
@@ -115,7 +116,14 @@ const preventionButtons = [
   },
     { id: 'imagens', title: 'Imagens', onPress: () => console.log('Imagens') },
     { id: 'raio_x', title: 'Raio-X', onPress: () => console.log('Raio-X') },
-    { id: 'plano_de_tratamento', title: 'Plano de Tratamento', onPress: () => console.log('Plano de Tratamento') },
+    { id: 'plano_de_tratamento', title: 'Plano de Tratamento', onPress: () => {
+      if (patient) {
+        router.push({
+          pathname: '/(app)/plano-de-tratamento',
+          params: { patientId: patient.id }
+        });
+      }
+    } },
 ];
 
   const specialtyButtons = SPECIALTIES.map(specialty => ({
@@ -144,6 +152,10 @@ const preventionButtons = [
         <HomeSection title="Históricos" buttons={historyButtons} />
         <HomeSection title="Diagnóstico Primário" buttons={preventionButtons} />
         <HomeSection title="Especialidades" buttons={specialtyButtons} />
+        <View style={{marginTop: 24}}>
+          <RiskAssessmentCard initialRiskLevel={patient?.riskLevel} />
+        </View>
+
       </ScrollView>
     </SafeAreaView>
   );

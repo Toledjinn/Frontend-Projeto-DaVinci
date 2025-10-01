@@ -26,8 +26,8 @@ const ALL_APPOINTMENTS: Appointment[] = [
     observations: 'Paciente relatou sensibilidade no dente 24. Aplicado verniz.'
   },
   {
-    id: 'appt-2', patientId: 'patient-2', date: '15/09/2025', time: '10:30', status: 'agendada',
-    dentist: 'José Maria Gratone', procedures: ['Avaliação para Prótese'], specialty: 'Prótese',
+    id: 'appt-2', patientId: 'patient-2', date: '15/12/2025', time: '10:30', status: 'agendada',
+    dentist: 'José Maria Gratone', procedures: [''], specialty: 'Periodontia',
     observations: 'Moldagem para prótese superior.'
   },
   {
@@ -60,8 +60,8 @@ const ALL_APPOINTMENTS: Appointment[] = [
     dentist: 'Mariana Lima', procedures: ['Avaliação para Prótese'], specialty: 'Implantodontia',
   },
   {
-    id: 'appt-10', patientId: 'patient-3', date: '12/10/2025', time: '08:00', status: 'agendada',
-    dentist: 'Mariana Lima', procedures: ['Cirurgia de Implante Dentário'], specialty: 'Implantodontia',
+    id: 'appt-10', patientId: 'patient-2', date: '12/10/2025', time: '08:00', status: 'agendada',
+    dentist: 'Mariana Lima', procedures: [''], specialty: 'Segunda Consulta',
     observations: 'Cirurgia para instalação de implante no dente 25. Medicação pré-operatória administrada.'
   },
   {
@@ -81,8 +81,8 @@ const ALL_APPOINTMENTS: Appointment[] = [
     dentist: 'Juliana Santos', procedures: ['Restauração Dentária'], specialty: 'Clínica Geral',
   },
   {
-    id: 'appt-15', patientId: 'patient-5', date: '05/12/2025', time: '16:30', status: 'agendada',
-    dentist: 'Pedro Alves', procedures: ['Aplicação de Selante'], specialty: 'Odontopediatria',
+    id: 'appt-15', patientId: 'patient-1', date: '05/12/2025', time: '16:30', status: 'agendada',
+    dentist: 'Pedro Alves', procedures: [''], specialty: 'Primeira Consulta',
   },
   {
     id: 'appt-16', patientId: 'patient-2', date: '18/11/2024', time: '11:00', status: 'realizada',

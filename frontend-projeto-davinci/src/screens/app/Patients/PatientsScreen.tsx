@@ -133,8 +133,13 @@ export default function PatientsScreen() {
           </ScrollView>
         </View>
         <ScreenFooter
-          primaryButtonTitle="Cadastrar Paciente"
-          onPrimaryButtonPress={handleRegisterPress}
+          buttons={[
+            {
+              title: "Cadastrar Paciente",
+              onPress: handleRegisterPress,
+              variant: 'secondary',  
+            }
+          ]}
         />
       </View>
       <PatientFilterModal

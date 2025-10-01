@@ -236,6 +236,7 @@ export default function AppointmentDetailScreen() {
 
   const RenderDefaultView = () => (
     <>
+      {appointment?.specialty !== 'Primeira Consulta' && (
       <View style={styles.buttonContainer}>
         <StyledButton
           title="Diagnósticos"
@@ -243,9 +244,12 @@ export default function AppointmentDetailScreen() {
           onPress={handleGoToDiagnostic}
         />
       </View>
-      {appointmentDetails.map(detail => (
-        <ProfileDataItem key={detail.id} label={detail.label} value={detail.value} />
-      ))}
+    )}
+    
+    {hasAllergies && <AllergyWarning allergies={patient.allergies!} />}
+    {appointmentDetails.map(detail => (
+      <ProfileDataItem key={detail.id} label={detail.label} value={detail.value} />
+    ))}
     </>
   );
 
@@ -255,7 +259,6 @@ export default function AppointmentDetailScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        {hasAllergies && <AllergyWarning allergies={patient.allergies!} />}
         {isRealizada ? <RenderRealizadaView /> : <RenderDefaultView />}
       </ScrollView>
 
@@ -279,17 +282,33 @@ export default function AppointmentDetailScreen() {
       {!isRealizada && (
         isReviewMode ? (
           <ScreenFooter
-            secondaryButtonTitle="Aprovar"
-            onSecondaryButtonPress={handleApproveRequest}
-            primaryButtonTitle="Reprovar"
-            onPrimaryButtonPress={handleRejectRequest}
+            buttons={[
+              {
+                title: "Aprovar",
+                onPress: handleApproveRequest,
+                variant: 'primary',
+              },
+              {
+                title: "Reprovar",
+                onPress: handleRejectRequest,
+                variant: 'secondary', 
+              }
+            ]}
           />
         ) : !isCancelled ? (
           <ScreenFooter
-            secondaryButtonTitle="Reagendar"
-            onSecondaryButtonPress={handleReschedule}
-            primaryButtonTitle="Cancelar"
-            onPrimaryButtonPress={handleCancelAppointment}
+            buttons={[
+              {
+                title: "Reagendar",
+                onPress: handleReschedule,
+                variant: 'primary',
+              },
+              {
+                title: "Cancelar",
+                onPress: handleCancelAppointment,
+                variant: 'secondary', 
+              }
+            ]}
           />
         ) : null
       )}

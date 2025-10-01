@@ -102,8 +102,13 @@ export default function DentistsScreen() {
           </ScrollView>
         </View>
         <ScreenFooter
-          primaryButtonTitle="Cadastrar Dentista"
-          onPrimaryButtonPress={handleRegisterPress}
+          buttons={[
+            {
+              title: "Cadastrar Dentista",
+              onPress: handleRegisterPress,
+              variant: 'secondary',
+            }
+          ]}
         />
       </View>
       <DentistFilterModal

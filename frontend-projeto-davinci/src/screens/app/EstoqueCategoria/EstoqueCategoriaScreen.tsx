@@ -194,8 +194,13 @@ export default function EstoqueCategoriaScreen() {
 
       {userType === 'admin' && (
         <ScreenFooter
-          primaryButtonTitle="Cadastrar Produto"
-          onPrimaryButtonPress={handleAddPress}
+          buttons={[
+            {
+              title: "Adicionar Produto",
+              onPress: handleAddPress,
+              variant: 'secondary',  
+            }
+          ]}
         />
       )}
     </SafeAreaView>

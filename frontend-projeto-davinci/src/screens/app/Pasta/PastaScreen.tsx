@@ -215,10 +215,20 @@ export default function PastaScreen() {
       </View>
 
       {(userType === 'admin' || userType === 'dentista') && (
-        <ScreenFooter
-          primaryButtonTitle="Editar Conteúdo"
-          onPrimaryButtonPress={handleEditPress}
-        />
+      <ScreenFooter
+        buttons={[
+          {
+            title: "Salvar",
+            onPress: handleSave,
+            variant: 'primary',  
+          },
+          {
+            title: "Cancelar",
+            onPress: () => router.back(),
+            variant: 'secondary',  
+          }
+        ]}
+      />
       )}
     </SafeAreaView>
   );

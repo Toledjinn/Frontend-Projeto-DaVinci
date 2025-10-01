@@ -171,10 +171,15 @@ export default function MedicalRecordScreen() {
             ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
           />
         </View>
-        <ScreenFooter
-          primaryButtonTitle="Nova Consulta"
-          onPrimaryButtonPress={handleNewAppointment}
-        />
+      <ScreenFooter
+        buttons={[
+          {
+            title: "Nova Consulta",
+            onPress: handleNewAppointment,
+            variant: 'secondary',  
+          }
+        ]}
+      />
       </View>
       <RecordFilterModal
         visible={isFilterModalVisible}

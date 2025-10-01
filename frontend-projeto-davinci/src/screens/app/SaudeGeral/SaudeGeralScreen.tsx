@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './SaudeGeralScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -31,7 +32,7 @@ export default function SaudeGeralScreen() {
         setHeaderConfig({
           layout: 'profile',
           showBackground: true,
-          userName: `Saúde Bucal de ${formatUserName(patient.name)}`,
+          userName: `Saúde Geral de ${formatUserName(patient.name)}`,
           UserImageSvg: patient.image || UserPlaceholder,
           showNotificationIcon: true,
           riskLevel: patient.riskLevel,

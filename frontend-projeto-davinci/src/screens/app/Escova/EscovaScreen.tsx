@@ -216,8 +216,13 @@ export default function EscovaScreen() {
 
       {(userType === 'admin' || userType === 'dentista') && (
         <ScreenFooter
-          primaryButtonTitle="Editar Conteúdo"
-          onPrimaryButtonPress={handleEditPress}
+          buttons={[
+            {
+              title: "Editar Conteúdo",
+              onPress: handleEditPress,
+              variant: 'secondary',  
+            }
+          ]}
         />
       )}
     </SafeAreaView>

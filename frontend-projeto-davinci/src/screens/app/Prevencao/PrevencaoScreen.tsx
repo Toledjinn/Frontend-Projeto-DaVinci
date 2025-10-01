@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaView, ScrollView, useWindowDimensions, Text, View, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import { styles } from './PrevencaoScreen.styles'; 
+import { styles } from './PrevencaoScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { findUserById, UserProfile } from '@/data/mockUsers';
 import { formatUserName } from '@/utils/nameUtils';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
-import StyledInput from '@/components/common/StyledInput';
-import { COLORS } from '@/constants/theme';
+import DynamicInputList from '@/components/features/DynamicInputList';
 
 const preventionTitles: { [key: string]: string } = {
   primaria: 'Prevenção Primária',
@@ -27,7 +26,6 @@ export default function PrevencaoScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const [patient, setPatient] = useState<UserProfile | null>(null);
-  const [items, setItems] = useState([{ id: Date.now(), value: '' }]);
 
   useEffect(() => {
     console.log(`Carregando dados para: ${type}`);
@@ -56,24 +54,8 @@ export default function PrevencaoScreen() {
     }, [patient, type])
   );
   
-  const handleItemChange = (text: string, id: number) => {
-    setItems(currentItems =>
-      currentItems.map(item => (item.id === id ? { ...item, value: text } : item))
-    );
-  };
-
-  const addItemInput = () => {
-    setItems([...items, { id: Date.now(), value: '' }]);
-  };
-
-  const removeItemInput = (id: number) => {
-    if (items.length > 1) {
-      setItems(currentItems => currentItems.filter(item => item.id !== id));
-    }
-  };
-
   const handleSave = () => {
-    console.log("Salvando dados de Prevenção Primária:", items);
+    console.log("Salvando dados de Prevenção:", {type});
     router.back();
   };
 
@@ -93,38 +75,27 @@ export default function PrevencaoScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        <View style={styles.card}>
-            <Text style={styles.title}>Diagnóstico</Text>
-            {items.map((item, index) => (
-            <View key={item.id} style={styles.inputRow}>
-                <View style={{ flex: 1 }}>
-                <StyledInput
-                    label=""
-                    iconName="check-square"
-                    placeholder={`Diagnóstico ${index + 1}`}
-                    value={item.value}
-                    onChangeText={(text) => handleItemChange(text, item.id)}
-                />
-                </View>
-                {items.length > 1 && (
-                <TouchableOpacity onPress={() => removeItemInput(item.id)} style={styles.removeButton}>
-                    <Feather name="x-circle" size={24} color={COLORS.red} />
-                </TouchableOpacity>
-                )}
-            </View>
-            ))}
-            <TouchableOpacity onPress={addItemInput} style={styles.addButton}>
-            <Feather name="plus" size={20} color={COLORS.secondary} />
-            <Text style={styles.addButtonText}>Adicionar item</Text>
-            </TouchableOpacity>
-        </View>
+        <DynamicInputList
+            title="Diagnóstico"
+            inputIcon="check-square"
+            placeholder="Diagnóstico"
+            addMoreText="Adicionar Item"
+        />
       </ScrollView>
 
       <ScreenFooter
-        secondaryButtonTitle="Salvar"
-        onSecondaryButtonPress={handleSave}
-        primaryButtonTitle="Cancelar"
-        onPrimaryButtonPress={() => router.back()}
+        buttons={[
+          {
+            title: "Cancelar",
+            onPress: () => router.back(),
+            variant: 'secondary',  
+          },
+          {
+            title: "Salvar",
+            onPress: handleSave,
+            variant: 'primary',  
+          },
+        ]}
       />
     </SafeAreaView>
   );

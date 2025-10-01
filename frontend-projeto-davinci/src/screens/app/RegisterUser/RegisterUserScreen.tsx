@@ -60,10 +60,18 @@ export default function RegisterUserScreen() {
           <RegisterForm />
         </ScrollView>
         <ScreenFooter
-          secondaryButtonTitle={isEditing ? "Salvar" : "Cadastrar"}
-          onSecondaryButtonPress={handleSave}
-          primaryButtonTitle="Cancelar"
-          onPrimaryButtonPress={handleCancel}
+          buttons={[
+            {
+              title: isEditing ? "Salvar" : "Cadastrar",
+              onPress: handleSave,
+              variant: 'primary',
+            },
+            {
+              title: "Cancelar",
+              onPress: handleCancel,
+              variant: 'secondary',
+            }
+          ]}
         />
       </View>
     </SafeAreaView>

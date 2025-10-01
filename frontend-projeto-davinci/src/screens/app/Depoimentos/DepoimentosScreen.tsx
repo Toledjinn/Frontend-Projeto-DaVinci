@@ -77,8 +77,13 @@ export default function DepoimentosScreen() {
 
       {(userType === 'admin') && (
         <ScreenFooter
-          primaryButtonTitle="Editar Depoimentos"
-          onPrimaryButtonPress={handleEditPress}
+          buttons={[
+            {
+              title: "Editar Depoimentos",
+              onPress: handleEditPress,
+              variant: 'secondary',
+            }
+          ]}
         />
       )}
     </SafeAreaView>
