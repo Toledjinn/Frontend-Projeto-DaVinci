@@ -71,11 +71,11 @@ export default function HomeScreen() {
     } else if (buttonId === 'solicitacoes') {
       router.push('/(app)/solicitacoes');
     } else if (buttonId === 'dentistas') {
-      router.push('/(app)/dentists');
+      router.push({pathname: '/(app)/users/[userType]', params: { userType: 'dentist'}});
     } else if (buttonId === 'pacientes') {
-      router.push('/(app)/patients');
+      router.push({pathname: '/(app)/users/[userType]', params: { userType: 'patient' }});
     } else if (buttonId === 'administradores') {
-      router.push('/(app)/admins');
+      router.push({pathname: '/(app)/users/[userType]', params: { userType: 'admin'}});
     } else if (buttonId === 'social') {
       router.push('/(app)/social');
     } else if (buttonId === 'educacional') {
