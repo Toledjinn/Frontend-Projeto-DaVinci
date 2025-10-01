@@ -8,9 +8,10 @@ export const getStyledInputStyles = (height: number, width: number) => {
       marginBottom: 0,
     },
     label: {
-      ...FONTS.body3,
+      ...FONTS.body4,
       color: COLORS.secondary,
       marginBottom: 8,
+      marginTop: 8
     },
     container: {
       height: height * 0.055, 
@@ -21,6 +22,12 @@ export const getStyledInputStyles = (height: number, width: number) => {
       borderWidth: 1,
       borderColor: COLORS.gray_200,
       paddingHorizontal: width * 0.04, 
+    },
+    multilineContainer: {
+      height: undefined,
+      minHeight: 120,   
+      alignItems: 'flex-start', 
+      paddingTop: 12,     
     },
     disabledContainer: {
       backgroundColor: COLORS.gray_100,
@@ -36,6 +43,10 @@ export const getStyledInputStyles = (height: number, width: number) => {
       textAlignVertical: 'center',
       paddingVertical: 0,
       textAlign: 'left',
+    },
+    multilineInput: {
+      height: 'auto', 
+      textAlignVertical: 'top', 
     },
     errorText: {
       color: COLORS.red,

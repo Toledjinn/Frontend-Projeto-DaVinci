@@ -55,7 +55,7 @@ export default function CreateNewsScreen() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],     // <- aqui
+      mediaTypes: ['images'],    
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.8,

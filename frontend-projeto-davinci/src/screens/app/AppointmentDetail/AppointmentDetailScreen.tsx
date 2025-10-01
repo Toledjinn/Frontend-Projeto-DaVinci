@@ -238,7 +238,7 @@ export default function AppointmentDetailScreen() {
     <>
       <View style={styles.buttonContainer}>
         <StyledButton
-          title="Diagnóstico"
+          title="Diagnósticos"
           variant="secondary"
           onPress={handleGoToDiagnostic}
         />

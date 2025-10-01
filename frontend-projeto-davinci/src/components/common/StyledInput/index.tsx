@@ -17,6 +17,8 @@ const StyledInput = React.forwardRef<TextInput, StyledInputProps>(({
   error,
   reserveErrorSpace,
   style,
+  multiline, 
+  numberOfLines, 
   ...rest
 }, ref) => { 
   const { height, width } = useWindowDimensions();
@@ -26,8 +28,13 @@ const StyledInput = React.forwardRef<TextInput, StyledInputProps>(({
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{label}</Text>
-      <View style={[styles.container, { borderColor }, !isEditable && styles.disabledContainer]}>
+      {label ? <Text style={styles.label}>{label}</Text> : null}
+      <View style={[
+        styles.container, 
+        multiline && styles.multilineContainer, 
+        !isEditable && styles.disabledContainer,
+        { borderColor }
+      ]}>
         <Icon
           name={iconName}
           size={24}
@@ -36,8 +43,10 @@ const StyledInput = React.forwardRef<TextInput, StyledInputProps>(({
         />
         <TextInput
           ref={ref}
-          style={[styles.input, style]}
+          style={[styles.input, multiline && styles.multilineInput, style]}
           placeholderTextColor={COLORS.gray_400}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
           {...rest}
         />
       </View>

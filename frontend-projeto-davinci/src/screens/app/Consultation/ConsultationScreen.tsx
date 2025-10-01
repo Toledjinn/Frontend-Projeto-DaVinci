@@ -122,7 +122,7 @@ export default function ConsultationScreen() {
           ) : isPeriodontia ? (
             <View style={styles.buttonRow}>
               <StyledButton
-                title="Diagnóstico"
+                title="Diagnósticos"
                 variant="secondary"
                 style={[styles.buttonInRow, { marginRight: 8 }]}
                 onPress={() => router.push({ pathname: '/(app)/diagnostico', params: { patientId: patient.id } })}
@@ -131,7 +131,7 @@ export default function ConsultationScreen() {
             </View>
           ) : (
             <StyledButton
-              title="Diagnóstico"
+              title="Diagnósticos"
               variant="secondary"
               onPress={() => router.push({ pathname: '/(app)/diagnostico', params: { patientId: patient.id } })}
             />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './DiagnosticScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { findUserById, UserProfile } from '@/data/mockUsers';
@@ -41,17 +41,83 @@ export default function DiagnosticScreen() {
     }, [patient])
   );
 
-  const historyButtons = [
-    { id: 'saude_bucal', title: 'Saúde Bucal', onPress: () => console.log('Saúde Bucal') },
-    { id: 'saude_geral', title: 'Saúde Geral', onPress: () => console.log('Saúde Geral') },
-  ];
+ const historyButtons = [
+  { 
+    id: 'saude_bucal', 
+    title: 'Saúde Bucal', 
+    onPress: () => {
+      if (patient) {
+        router.push({ 
+          pathname: '/(app)/saude-bucal',
+          params: { patientId: patient.id }
+        });
+      }
+    }
+  },
+    { id: 'saude_geral', title: 'Saúde Geral', onPress: () => {
+      if (patient) {
+        router.push({
+          pathname: '/(app)/saude-geral',
+          params: { patientId: patient.id },
+        });
+      }
+    }
+  },
+];
 
-  const preventionButtons = [
-    { id: 'primaria', title: 'Primária', onPress: () => console.log('Prevenção Primária') },
-    { id: 'secundaria', title: 'Secundária', onPress: () => console.log('Prevenção Secundária') },
-    { id: 'terciaria', title: 'Terciária', onPress: () => console.log('Prevenção Terciária') },
-    { id: 'quaternaria', title: 'Quaternária', onPress: () => console.log('Prevenção Quaternária') },
-  ];
+const preventionButtons = [
+  { 
+    id: 'primaria', 
+    title: 'Primária', 
+    onPress: () => {
+      if (patient) {
+        router.push({
+          pathname: '/(app)/prevencao/[type]',
+          params: { patientId: patient.id, type: 'primaria' }
+        });
+      }
+    }
+  },
+  { 
+    id: 'secundaria', 
+    title: 'Secundária', 
+    onPress: () => {
+      if (patient) {
+        router.push({
+          pathname: '/(app)/prevencao/[type]',
+          params: { patientId: patient.id, type: 'secundaria' }
+        });
+      }
+    }
+  },
+  { 
+    id: 'terciaria', 
+    title: 'Terciária', 
+    onPress: () => {
+      if (patient) {
+        router.push({
+          pathname: '/(app)/prevencao/[type]',
+          params: { patientId: patient.id, type: 'terciaria' }
+        });
+      }
+    }
+  },
+  { 
+    id: 'quaternaria', 
+    title: 'Quaternária', 
+    onPress: () => {
+      if (patient) {
+        router.push({
+          pathname: '/(app)/prevencao/[type]',
+          params: { patientId: patient.id, type: 'quaternaria' }
+        });
+      }
+    }
+  },
+    { id: 'imagens', title: 'Imagens', onPress: () => console.log('Imagens') },
+    { id: 'raio_x', title: 'Raio-X', onPress: () => console.log('Raio-X') },
+    { id: 'plano_de_tratamento', title: 'Plano de Tratamento', onPress: () => console.log('Plano de Tratamento') },
+];
 
   const specialtyButtons = SPECIALTIES.map(specialty => ({
     id: specialty.toLowerCase().replace(/\s/g, '_'),
@@ -76,9 +142,9 @@ export default function DiagnosticScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        <HomeSection title="HISTÓRICOS" buttons={historyButtons} />
-        <HomeSection title="PREVENÇÃO" buttons={preventionButtons} />
-        <HomeSection title="ESPECIALIDADES" buttons={specialtyButtons} />
+        <HomeSection title="Históricos" buttons={historyButtons} />
+        <HomeSection title="Diagnóstico Primário" buttons={preventionButtons} />
+        <HomeSection title="Especialidades" buttons={specialtyButtons} />
       </ScrollView>
     </SafeAreaProvider>
   );
