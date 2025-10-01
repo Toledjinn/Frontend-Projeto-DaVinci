@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ScrollView,
   View,
@@ -32,7 +32,7 @@ export default function CreateNewsScreen() {
   const [content, setContent] = useState('');
   const [videoUrl, setVideoUrl] = useState(''); 
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.216;
 
   useFocusEffect(
     useCallback(() => {
@@ -40,7 +40,7 @@ export default function CreateNewsScreen() {
         visible: true,
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'CRIAR NOVIDADE',
+        pageTitle: 'Criar Novidade',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -92,10 +92,10 @@ export default function CreateNewsScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
         keyboardShouldPersistTaps="handled"
       >
         <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
@@ -144,11 +144,11 @@ export default function CreateNewsScreen() {
       </ScrollView>
 
       <ScreenFooter
-        secondaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
-        primaryButtonTitle="Publicar"
+        secondaryButtonTitle="Publicar"
         onPrimaryButtonPress={handlePublish}
+        primaryButtonTitle="Cancelar"
+        onSecondaryButtonPress={() => router.back()}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

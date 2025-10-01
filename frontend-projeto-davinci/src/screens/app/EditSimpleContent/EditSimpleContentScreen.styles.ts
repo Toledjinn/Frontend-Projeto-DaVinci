@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-    paddingTop: 180,
+    paddingTop: "44%",
   },
   blockContainer: {
     backgroundColor: COLORS.white,

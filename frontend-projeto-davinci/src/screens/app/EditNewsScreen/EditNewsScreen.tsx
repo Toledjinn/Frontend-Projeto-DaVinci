@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ScrollView,
   View,
@@ -37,9 +37,9 @@ export default function EditNewsScreen() {
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'EDITAR NOTÍCIA',
+        pageTitle: 'Editar Novidade',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -78,16 +78,16 @@ export default function EditNewsScreen() {
 
   if (!editableNews.id) {
     return (
-      <SafeAreaProvider style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
           <Text>Carregando notícia...</Text>
         </View>
-      </SafeAreaProvider>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Título</Text>
@@ -133,11 +133,11 @@ export default function EditNewsScreen() {
       </ScrollView>
 
       <ScreenFooter
-        secondaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
-        primaryButtonTitle="Salvar Alterações"
+        secondaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
+        primaryButtonTitle="Cancelar"
+        onSecondaryButtonPress={() => router.back()}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

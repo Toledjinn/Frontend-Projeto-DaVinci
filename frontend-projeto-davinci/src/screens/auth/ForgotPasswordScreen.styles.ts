@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
   },
   recoverButton: {
     marginTop: 16,
+    width: '100%',
   },
   icon: {
     marginRight: 20,

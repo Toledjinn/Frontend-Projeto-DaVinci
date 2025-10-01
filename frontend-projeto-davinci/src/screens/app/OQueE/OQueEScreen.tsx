@@ -6,7 +6,7 @@ import {
   useWindowDimensions,
   Image,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { styles } from './OQueEScreen.styles';
@@ -20,16 +20,16 @@ const userType = 'admin';
 export default function OQueEScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.224;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const contentBlocks = useSocialStore((state) => state.pages.oQueE);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'O QUE É?',
+        pageTitle: 'O que é?',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -50,7 +50,7 @@ export default function OQueEScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -85,7 +85,7 @@ export default function OQueEScreen() {
           onPrimaryButtonPress={handleEditPress}
         />
       )}
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
 

@@ -10,12 +10,17 @@ type ProfileDataItemProps = {
 export default function ProfileDataItem({ label, value }: ProfileDataItemProps) {
   return (
     <View style={styles.itemContainer}>
-      <Text style={styles.itemLabel}>{label}</Text>
-      {typeof value === 'string' ? (
-        <Text style={styles.itemValue}>{value}</Text>
-      ) : (
-        <View style={styles.itemContainer}>{value}</View>
-      )}
+      <View style={styles.itemRow}>
+        <Text style={styles.itemLabel}>{label}</Text>
+
+        {typeof value === 'string' ? (
+          <Text style={styles.itemValue} numberOfLines={2}>
+            {value}
+          </Text>
+        ) : (
+          <View style={styles.valueWrapper}>{value}</View>
+        )}
+      </View>
     </View>
   );
 }

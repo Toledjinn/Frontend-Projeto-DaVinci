@@ -2,6 +2,10 @@ import { StyleSheet } from 'react-native';
 import { FONTS, COLORS } from '@/constants/theme';
 
 export const getPageHeaderStyles = (screenWidth: number, screenHeight: number) => {
+  const chefinhoTopPosition = screenHeight * 0.0700;
+  const circleDiameter = screenWidth * 0.3073;
+  const titleTopPosition = chefinhoTopPosition + circleDiameter + 8;
+  
   return StyleSheet.create({
     container: {
       ...StyleSheet.absoluteFillObject,
@@ -10,27 +14,27 @@ export const getPageHeaderStyles = (screenWidth: number, screenHeight: number) =
     },
     backgroundCircle: {
       position: 'absolute',
-      width: screenWidth * 0.2273,
-      height: screenWidth * 0.2273,
-      left: screenWidth * 0.3841,
-      top: screenHeight * 0.0889,
-      borderRadius: (screenWidth * 0.2273) / 2,
+      width: circleDiameter,
+      height: circleDiameter,
+      top: chefinhoTopPosition,
+      borderRadius: circleDiameter / 2,
       backgroundColor: COLORS.primary,
       borderWidth: 3,
       borderColor: COLORS.secondary,
       justifyContent: 'center',
       alignItems: 'center',
+      alignSelf: 'center',    
     },
     characterWrapper: {
-      width: screenWidth * 0.1568,
-      height: screenHeight * 0.0994,
+      width: circleDiameter,
+      height: circleDiameter,
     },
     title: {
       position: 'absolute',
       width: '100%',
       textAlign: 'center',
-      top: screenHeight * 0.21,
-      ...FONTS.h2,
+      top: titleTopPosition,
+      ...FONTS.h1,
       color:  COLORS.secondary
     },
   });

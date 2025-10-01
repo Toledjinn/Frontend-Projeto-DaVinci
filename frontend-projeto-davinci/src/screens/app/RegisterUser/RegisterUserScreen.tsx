@@ -6,7 +6,7 @@ import { useUIStore } from '@/state/uiStore';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import Administrador from '@/assets/characters/chefinho.svg';
 import RegisterForm from '@/components/features/RegisterForm';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const getTitle = (userType?: string, isEditing?: boolean) => {
   const action = isEditing ? 'Editar' : 'Cadastrar';
@@ -24,8 +24,6 @@ const getTitle = (userType?: string, isEditing?: boolean) => {
 
 export default function RegisterUserScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
   const router = useRouter();
   const { userType, userId } = useLocalSearchParams<{ userType: string, userId?: string }>();
   
@@ -52,22 +50,22 @@ export default function RegisterUserScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: headerHeight }]}
+          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: 160 }]}
           keyboardShouldPersistTaps="handled"
         >
           <RegisterForm />
         </ScrollView>
         <ScreenFooter
-          secondaryButtonTitle="Cancelar"
-          onSecondaryButtonPress={handleCancel}
-          primaryButtonTitle={isEditing ? "Salvar" : "Cadastrar"}
-          onPrimaryButtonPress={handleSave}
+          secondaryButtonTitle={isEditing ? "Salvar" : "Cadastrar"}
+          onSecondaryButtonPress={handleSave}
+          primaryButtonTitle="Cancelar"
+          onPrimaryButtonPress={handleCancel}
         />
       </View>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

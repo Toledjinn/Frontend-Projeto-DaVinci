@@ -4,7 +4,7 @@ import React from 'react';
 
 type HeaderConfig = {
   visible: boolean;
-  layout: 'home' | 'page' | 'profile' | 'register' | 'page-large'; 
+  layout: 'home' | 'page' | 'profile' | 'register' | 'page-large' | 'loja'; 
   showPageHeaderElements: boolean;
   pageTitle: string;
   CharacterSvg: React.FC<SvgProps> | null;

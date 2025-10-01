@@ -11,6 +11,7 @@ import PageHeader from '@/components/common/PageTitle';
 import ProfileHeader from '@/components/common/ProfileImage';
 import ImagePickerHeader from '@/components/common/ImagePickerHeader';
 import LargePageHeader from '@/components/common/LargePageHeader';
+import ShoppingCartIcon from '@/assets/icons/shoppingcart.svg'; 
 
 import { COLORS } from '@/constants/theme';
 import { useUIStore as useUIStoreHeader } from '@/state/uiStore';
@@ -35,6 +36,11 @@ export default function Header() {
   } = headerConfig;
 
   const headerHeight = layout === 'home' ? height * 0.226 : height * 0.29;
+
+  const notificationCircle = height * 0.09;
+  const border = 3;                      
+  const iconPadding = Math.round(height * 0.008); 
+  const iconSize = notificationCircle - (border * 2) - (iconPadding * 2);
 
   if (!visible) {
     return null;
@@ -64,9 +70,10 @@ export default function Header() {
       {layout === 'page' && showPageHeaderElements && CharacterSvg && (
         <PageHeader CharacterSvg={CharacterSvg} title={pageTitle} />
       )}
-      {layout === 'page-large' && showPageHeaderElements && CharacterSvg && (
+      {(layout === 'page-large' || layout === 'loja') && showPageHeaderElements && CharacterSvg && (
         <LargePageHeader CharacterSvg={CharacterSvg} title={pageTitle} />
       )}
+
       {layout === 'profile' && UserImageSvg && userName && (
         <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} riskLevel={riskLevel} />
       )}
@@ -79,11 +86,11 @@ export default function Header() {
           {layout === 'home' && (
             <TouchableOpacity onPress={() => router.push('/(app)/profile')} activeOpacity={1}>
               <View style={styles.profileImageContainer}>
-                <FotoPerfil width={height * 0.1} height={height * 0.1} />
+                <FotoPerfil width="100%" height="100%" />
               </View>
             </TouchableOpacity>
           )}
-          {(layout === 'page' || layout === 'profile' || layout === 'page-large' || layout === 'register') && (
+          {(layout === 'page' || layout === 'profile' || layout === 'page-large' || layout === 'register' || layout === 'loja') && (
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton} activeOpacity={1}>
               <Feather name="chevron-left" size={40} color={COLORS.secondary} />
             </TouchableOpacity>
@@ -99,10 +106,19 @@ export default function Header() {
         </View>
 
         <View style={styles.rightSection}>
-          {showNotificationIcon && (
-            <TouchableOpacity style={styles.notificationContainer} onPress={() => router.push('/(app)/notifications')} activeOpacity={1}>
-              <NotificacaoIcon height={height * 0.042} />
+          {showNotificationIcon && layout !== 'loja' && (
+            <TouchableOpacity style={[styles.notificationContainer, { padding: iconPadding }]} onPress={() => router.push('/(app)/notifications')} activeOpacity={1}>
+              <NotificacaoIcon
+              width={iconSize}
+              height={iconSize} 
+              preserveAspectRatio="xMidYMid meet"
+              />
               <View style={styles.notificationDot} />
+            </TouchableOpacity>
+          )}
+          {layout === 'loja' && (
+            <TouchableOpacity style={styles.notificationContainer} onPress={() => router.push('/(app)/carrinho')} activeOpacity={1}>
+              <ShoppingCartIcon height={height * 0.042} />
             </TouchableOpacity>
           )}
         </View>

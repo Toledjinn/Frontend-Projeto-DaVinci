@@ -12,19 +12,21 @@ import { useUIStore } from '@/state/uiStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova2 from '@/assets/characters/escova2.svg';
 import Escova4 from '@/assets/characters/escova4.svg';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Escova3 from '@/assets/characters/escova3.svg';
+
 
 
 const actionButtons = [
   { id: '1', title: 'O que é?', SvgComponent: Escova4, route: '/(app)/o-que-e' },
   { id: '2', title: 'Como Participar', SvgComponent: Escova2, route: '/(app)/como-participar' },
-  { id: '3', title: 'Depoimentos', SvgComponent: Chefinho, route: '/(app)/depoimentos' },
+  { id: '3', title: 'Depoimentos', SvgComponent: Escova3, route: '/(app)/depoimentos' },
 ]; 
 
 export default function SocialScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.320;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   useFocusEffect(
@@ -33,7 +35,7 @@ export default function SocialScreen() {
         visible: true,
         layout: 'page-large',
         showPageHeaderElements: true,
-        pageTitle: 'DAVINCI SOCIAL',
+        pageTitle: 'DaVinci Social',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -49,7 +51,7 @@ export default function SocialScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -82,6 +84,6 @@ export default function SocialScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

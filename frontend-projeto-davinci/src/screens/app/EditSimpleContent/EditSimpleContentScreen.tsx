@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ScrollView,
   View,
@@ -38,16 +38,16 @@ export default function EditSimpleContentScreen() {
   }, [pageContent]);
 
   const pageTitles = {
-    oQueE: 'O QUE É?',
-    comoParticipar: 'COMO PARTICIPAR?',
+    oQueE: 'O que é?',
+    comoParticipar: 'Como participar?',
   }
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: `EDITAR "${pageTitles[page!]}"`,
+        pageTitle: `Editar "${pageTitles[page!]}"`,
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -112,7 +112,7 @@ export default function EditSimpleContentScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {editableBlocks.map((block, index) => (
           <View key={block.id} style={styles.blockContainer}>
@@ -180,12 +180,12 @@ export default function EditSimpleContentScreen() {
       </ScrollView>
 
       <ScreenFooter
-        secondaryButtonTitle="Cancelar"
-        onSecondaryButtonPress={() => router.back()}
-        primaryButtonTitle="Salvar"
+        secondaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
+        primaryButtonTitle="Cancelar"
+        onSecondaryButtonPress={() => router.back()}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
 

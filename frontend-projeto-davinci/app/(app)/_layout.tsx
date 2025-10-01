@@ -1,13 +1,15 @@
 import { Stack } from 'expo-router';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from '@/constants/theme';
 import Header from '@/components/common/Header';
+import { useImmersiveBars } from '@/hooks/useImmersiveBars';
 
 export default function AppLayout() {
+  useImmersiveBars();
   
   return (
-    <SafeAreaProvider style={{ flex: 1, backgroundColor: COLORS.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', }} />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

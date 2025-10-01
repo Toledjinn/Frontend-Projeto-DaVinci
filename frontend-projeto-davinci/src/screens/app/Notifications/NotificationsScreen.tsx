@@ -3,7 +3,7 @@ import {
   FlatList,
   useWindowDimensions,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './NotificationsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -14,7 +14,7 @@ import { useNotificationStore, Notification } from '@/state/notificationStore';
 export default function NotificationsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.216;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const notifications = useNotificationStore((state) => state.notifications);
 
@@ -24,7 +24,7 @@ export default function NotificationsScreen() {
         visible: true,
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'NOTIFICAÇÕES',
+        pageTitle: 'Notificações',
         CharacterSvg: Chefinho,
         showNotificationIcon: false,
       });
@@ -40,7 +40,7 @@ export default function NotificationsScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}
@@ -51,9 +51,9 @@ export default function NotificationsScreen() {
           />
         )}
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
 

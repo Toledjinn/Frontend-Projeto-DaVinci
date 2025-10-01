@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './EducationalScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -31,7 +31,7 @@ const educationalItems = [
 export default function EducationalScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29; 
+  const headerHeight = height * 0.296; 
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   useFocusEffect(
@@ -40,7 +40,7 @@ export default function EducationalScreen() {
         visible: true,
         layout: 'page-large',
         showPageHeaderElements: true,
-        pageTitle: 'DAVINCI EDUCACIONAL',
+        pageTitle: 'DaVinci Educacional',
         CharacterSvg: Chefinho, 
         showNotificationIcon: true,
       });
@@ -58,7 +58,7 @@ export default function EducationalScreen() {
 
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={[styles.container, { paddingTop: headerHeight }]}>
         <Text style={styles.description}>
           Nós somos promotores da saúde, na verdade manejadores de
@@ -83,6 +83,6 @@ export default function EducationalScreen() {
           ))}
         </View>
       </View>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

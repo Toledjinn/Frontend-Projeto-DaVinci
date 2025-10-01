@@ -2,6 +2,10 @@ import { StyleSheet } from 'react-native';
 import { FONTS, COLORS } from '@/constants/theme';
 
 export const getHeaderStyles = (height: number) => {
+  const circleDiameter = height * 0.115;
+  const notificationCircle = height * 0.085;
+
+
   return StyleSheet.create({
     wrapper: {
       position: 'absolute',
@@ -44,9 +48,9 @@ export const getHeaderStyles = (height: number) => {
       justifyContent: 'flex-end',
     },
     profileImageContainer: {
-      width: height * 0.1,
-      height: height * 0.1,
-      borderRadius: (height * 0.1) / 2,
+      width: circleDiameter,
+      height: circleDiameter,
+      borderRadius: circleDiameter / 2,
       overflow: 'hidden',
       justifyContent: 'center',
       alignItems: 'center',
@@ -65,22 +69,27 @@ export const getHeaderStyles = (height: number) => {
       padding: 5,
     },
     notificationContainer: {
-      width: height * 0.07,
-      height: height * 0.07,
-      borderRadius: (height * 0.07) / 2,
+      width: notificationCircle,
+      height: notificationCircle,
+      borderRadius: notificationCircle / 2,
       backgroundColor: COLORS.primary,
       borderWidth: 3,
       borderColor: COLORS.secondary,
       justifyContent: 'center',
       alignItems: 'center',
     },
+    notificationIcon: {
+      width: notificationCircle,
+      height: notificationCircle,
+    },
+
     notificationDot: {
       position: 'absolute',
       bottom: -5,
       right: -3,
-      width: height * 0.0209,
-      height: height * 0.0209,
-      borderRadius: 10,
+      width: height * 0.025,
+      height: height * 0.025,
+      borderRadius: height * 0.015,
       backgroundColor: COLORS.red,
       borderWidth: 2,
       borderColor: COLORS.secondary,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useWindowDimensions, View, Text, FlatList } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './AppointmentsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -15,7 +15,7 @@ import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 
 export default function AppointmentsScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.208;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
 
@@ -105,7 +105,7 @@ export default function AppointmentsScreen() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
@@ -143,6 +143,6 @@ export default function AppointmentsScreen() {
           status: selectedStatus 
         }}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

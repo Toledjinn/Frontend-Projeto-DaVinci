@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-    paddingTop: 250, 
+    paddingTop: "44%", 
   },
   slideEditor: {
     backgroundColor: COLORS.white,

@@ -11,17 +11,24 @@ export const styles = StyleSheet.create({
   itemRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'center',     
+    width: '100%',
+    gap: 12,               
   },
   itemLabel: {
     ...FONTS.body4,
     color: COLORS.gray_400,
-    width: '50%', 
+    flex: 1,                 
   },
   itemValue: {
     ...FONTS.body10,
     color: COLORS.secondary,
-    width: '50%', 
     textAlign: 'right',
+    flexShrink: 1,            
+  },
+  valueWrapper: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',  
+    flexShrink: 1,
   },
 });

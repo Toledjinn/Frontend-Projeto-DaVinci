@@ -28,7 +28,7 @@ const NewsListItem = React.memo(({ item, onPress }: Props) => {
         <Text style={styles.snippetText} numberOfLines={2}>{item.snippet}</Text>
       </View>
       <View style={styles.iconContainer}>
-        <Feather name="chevron-right" size={28} color={COLORS.gray_200} />
+        <Feather name="chevron-right" size={28} color={COLORS.gray_400} />
       </View>
     </TouchableOpacity>
   );

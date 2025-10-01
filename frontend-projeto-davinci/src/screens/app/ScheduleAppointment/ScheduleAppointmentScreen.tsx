@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, ScrollView, useWindowDimensions, TextInput, Text } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './ScheduleAppointmentScreen.styles';
@@ -21,7 +21,7 @@ const MOCK_DENTISTS = getUsers('dentist');
 
 export default function ScheduleAppointmentScreen() {
     const { height } = useWindowDimensions();
-    const headerHeight = height * 0.29;
+    const headerHeight = height * 0.216;
     const router = useRouter();
     const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
     
@@ -121,11 +121,11 @@ export default function ScheduleAppointmentScreen() {
     };
 
     return (
-        <SafeAreaProvider style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea}>
             <View style={styles.outerContainer}>
                 <ScrollView
                     style={styles.scrollView}
-                    contentContainerStyle={[styles.scrollContentContainer, { paddingTop: headerHeight + 20 }]}
+                    contentContainerStyle={[styles.scrollContentContainer, { paddingTop: headerHeight }]}
                     keyboardShouldPersistTaps="handled"
                 >
                     <View style={styles.inputWrapper}>
@@ -135,7 +135,7 @@ export default function ScheduleAppointmentScreen() {
                             items={MOCK_PATIENTS}
                             selectedValue={selectedPatientId}
                             onValueChange={setSelectedPatientId}
-                            placeholder="Pesquisar e selecionar paciente"
+                            placeholder="Selecionar paciente"
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -145,7 +145,7 @@ export default function ScheduleAppointmentScreen() {
                             items={MOCK_DENTISTS}
                             selectedValue={selectedDentistId}
                             onValueChange={setSelectedDentistId}
-                            placeholder="Pesquisar e selecionar dentista"
+                            placeholder="Selecionar dentista"
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -186,6 +186,6 @@ export default function ScheduleAppointmentScreen() {
                     onPrimaryButtonPress={handleCancel}
                 />
             </View>
-        </SafeAreaProvider>
+        </SafeAreaView>
     );
 }

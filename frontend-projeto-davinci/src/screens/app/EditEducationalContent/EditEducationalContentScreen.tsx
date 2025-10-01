@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ScrollView,
   View,
@@ -9,21 +9,95 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
-import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, useRouter, useFocusEffect, useSegments } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './EditEducationalContentScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useEducationalContentStore, CarouselSlide } from '@/state/educationalContentStore';
-import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import StyledInput from '@/components/common/StyledInput';
 import AddSlideModal from '@/components/features/AddSlideModal';
 import { COLORS } from '@/constants/theme';
 
-type PageName = 'chefinho' | 'escova' | 'pasta' | 'fioDental' | 'fluor' | 'revelador';
+import Chefinho from '@/assets/characters/chefinho.svg';
+import Escova from '@/assets/characters/escova1.svg';
+import Pasta from '@/assets/characters/pasta.svg';
+import FioDental from '@/assets/characters/fio.svg';
+import Fluor from '@/assets/characters/fluor.svg';
+import Revelador from '@/assets/characters/revelador.svg';
 
-const SlideContentEditor = ({ slide, index, handleSlideChange, handleImageChange }: { slide: CarouselSlide, index: number, handleSlideChange: Function, handleImageChange: Function }) => {
+type PageName = 'chefinho' | 'escova' | 'pasta' | 'fio' | 'fluor' | 'revelador';
+
+const fitIconForHeader = (
+  Svg: React.ComponentType<any>,
+  scalePct = 0.90 
+) => {
+  const pct = `${Math.round(scalePct * 100)}%`;
+  const Fitted = () => (
+    <View
+      style={{
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}
+    >
+      <Svg width={pct} height={pct} preserveAspectRatio="xMidYMid meet" />
+    </View>
+  );
+  return Fitted;
+};
+
+const CHARACTER_MAP: Record<PageName, React.ComponentType<any>> = {
+  chefinho: Chefinho,
+  escova: Escova,
+  pasta: Pasta,
+  fio: FioDental,
+  fluor: Fluor,
+  revelador: Revelador,
+};
+
+const TITLE_MAP: Record<PageName, string> = {
+  chefinho: 'Chefinho',
+  escova: 'Escova',
+  pasta: 'Pasta',
+  fio: 'Fio Dental',
+  fluor: 'Flúor',
+  revelador: 'Revelador de Placa',
+};
+
+function resolvePageName(paramPage?: string, segments?: string[]): PageName {
+  if (paramPage) {
+    const p = paramPage.toLowerCase();
+    if (p in CHARACTER_MAP) return p as PageName;
+  }
+  const last = (segments?.[segments.length - 1] || '').toLowerCase();
+  if (last.includes('chefinho')) return 'chefinho';
+  if (last.includes('escova')) return 'escova';
+  if (last.includes('pasta')) return 'pasta';
+  if (last.includes('fio')) return 'fio';
+  if (last.includes('fluor') || last.includes('flúor')) return 'fluor';
+  if (last.includes('revelador')) return 'revelador';
+  return 'chefinho';
+}
+
+const SlideContentEditor = ({
+  slide,
+  index,
+  handleSlideChange,
+  handleImageChange,
+}: {
+  slide: CarouselSlide;
+  index: number;
+  handleSlideChange: (index: number, field: keyof CarouselSlide, value: any) => void;
+  handleImageChange: (
+    index: number,
+    field?: 'image' | 'before' | 'after',
+    imageIndex?: number
+  ) => Promise<void>;
+}) => {
   if (slide.videoUrl !== undefined) {
     return (
       <>
@@ -57,35 +131,72 @@ const SlideContentEditor = ({ slide, index, handleSlideChange, handleImageChange
         </View>
       </>
     );
-  }
-  
-  else if (slide.collageImages !== undefined) {
+  } else if (slide.collageImages !== undefined) {
     return (
-       <>
-        {slide.text1 !== undefined && <View style={styles.manualInputContainer}><Text style={styles.label}>Texto Superior</Text><View style={styles.manualTextInputWrapper}><TextInput value={slide.text1 || ''} onChangeText={(text) => handleSlideChange(index, 'text1', text)} multiline style={[styles.manualTextInput, {height: 100}]} /></View></View>}
+      <>
+        {slide.text1 !== undefined && (
+          <View style={styles.manualInputContainer}>
+            <Text style={styles.label}>Texto Superior</Text>
+            <View style={styles.manualTextInputWrapper}>
+              <TextInput
+                value={slide.text1 || ''}
+                onChangeText={(text) => handleSlideChange(index, 'text1', text)}
+                multiline
+                style={[styles.manualTextInput, { height: 100 }]}
+              />
+            </View>
+          </View>
+        )}
+
         <Text style={styles.label}>Imagens da Colagem</Text>
         <View style={styles.collageContainerEditor}>
-          <TouchableOpacity style={styles.collageMainImageContainer} onPress={() => handleImageChange(index, 'image', 0)}>
-              <Image source={slide.collageImages[0]} style={styles.imagePreview} />
-              <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
+          <TouchableOpacity
+            style={styles.collageMainImageContainer}
+            onPress={() => handleImageChange(index, 'image', 0)}
+          >
+            <Image source={slide.collageImages[0]} style={styles.imagePreview} />
+            <View style={styles.imageOverlay}>
+              <Feather name="edit-2" size={24} color={COLORS.white} />
+            </View>
           </TouchableOpacity>
           <View style={styles.collageSideContainerEditor}>
-            <TouchableOpacity style={styles.collageSideImageContainer} onPress={() => handleImageChange(index, 'image', 1)}>
+            <TouchableOpacity
+              style={styles.collageSideImageContainer}
+              onPress={() => handleImageChange(index, 'image', 1)}
+            >
               <Image source={slide.collageImages[1]} style={styles.imagePreview} />
-              <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.collageSideImageContainer} onPress={() => handleImageChange(index, 'image', 2)}>
+            <TouchableOpacity
+              style={styles.collageSideImageContainer}
+              onPress={() => handleImageChange(index, 'image', 2)}
+            >
               <Image source={slide.collageImages[2]} style={styles.imagePreview} />
-              <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
             </TouchableOpacity>
           </View>
         </View>
-        {slide.text2 !== undefined && <View style={styles.manualInputContainer}><Text style={styles.label}>Texto Inferior</Text><View style={styles.manualTextInputWrapper}><TextInput value={slide.text2 || ''} onChangeText={(text) => handleSlideChange(index, 'text2', text)} multiline style={[styles.manualTextInput, {height: 100}]} /></View></View>}
+
+        {slide.text2 !== undefined && (
+          <View style={styles.manualInputContainer}>
+            <Text style={styles.label}>Texto Inferior</Text>
+            <View style={styles.manualTextInputWrapper}>
+              <TextInput
+                value={slide.text2 || ''}
+                onChangeText={(text) => handleSlideChange(index, 'text2', text)}
+                multiline
+                style={[styles.manualTextInput, { height: 100 }]}
+              />
+            </View>
+          </View>
+        )}
       </>
     );
-  }
-  
-  else if (slide.quote !== undefined) {
+  } else if (slide.quote !== undefined) {
     return (
       <>
         <View style={styles.manualInputContainer}>
@@ -110,17 +221,17 @@ const SlideContentEditor = ({ slide, index, handleSlideChange, handleImageChange
             <Text style={styles.label}>Imagem</Text>
             <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(index)}>
               <Image source={slide.image} style={styles.imagePreview} />
-              <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
             </TouchableOpacity>
           </View>
         )}
       </>
     );
-  }
-  
-  else if (slide.text1 !== undefined) {
+  } else if (slide.text1 !== undefined) {
     return (
-       <>
+      <>
         <View style={styles.manualInputContainer}>
           <Text style={styles.label}>Texto 1</Text>
           <View style={styles.manualTextInputWrapper}>
@@ -148,15 +259,15 @@ const SlideContentEditor = ({ slide, index, handleSlideChange, handleImageChange
             <Text style={styles.label}>Imagem</Text>
             <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(index)}>
               <Image source={slide.image} style={styles.imagePreview} />
-              <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
             </TouchableOpacity>
           </View>
         )}
       </>
     );
-  }
-
-  else if (slide.listTitle !== undefined) {
+  } else if (slide.listTitle !== undefined) {
     return (
       <>
         <StyledInput
@@ -178,117 +289,153 @@ const SlideContentEditor = ({ slide, index, handleSlideChange, handleImageChange
         </View>
       </>
     );
-  }
-
-  else if (slide.beforeAfterImages) {
+  } else if (slide.beforeAfterImages) {
     return (
       <>
         {slide.text && (
-            <View style={styles.manualInputContainer}>
+          <View style={styles.manualInputContainer}>
             <Text style={styles.label}>Texto</Text>
             <View style={styles.manualTextInputWrapper}>
-                <TextInput
+              <TextInput
                 value={slide.text.join('\n') || ''}
                 onChangeText={(text) => handleSlideChange(index, 'text', text.split('\n'))}
                 multiline
                 style={styles.manualTextInput}
-                />
+              />
             </View>
-            </View>
+          </View>
         )}
         <Text style={styles.label}>Imagens Antes/Depois</Text>
         <View style={styles.imageRowEditor}>
-          <TouchableOpacity style={styles.imageContainerEditor} onPress={() => handleImageChange(index, 'before')}>
+          <TouchableOpacity
+            style={styles.imageContainerEditor}
+            onPress={() => handleImageChange(index, 'before')}
+          >
             <Image source={slide.beforeAfterImages.before} style={styles.imagePreview} />
             <Text style={styles.imageLabelEditor}>Antes</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.imageContainerEditor} onPress={() => handleImageChange(index, 'after')}>
+          <TouchableOpacity
+            style={styles.imageContainerEditor}
+            onPress={() => handleImageChange(index, 'after')}
+          >
             <Image source={slide.beforeAfterImages.after} style={styles.imagePreview} />
             <Text style={styles.imageLabelEditor}>Depois</Text>
           </TouchableOpacity>
         </View>
       </>
     );
-  }
-
-  else if (slide.images) {
-    return (
-        <>
-            {slide.title && <StyledInput label="Título" iconName="type" value={slide.title || ''} onChangeText={(text) => handleSlideChange(index, 'title', text)} />}
-            {slide.text && <View style={styles.manualInputContainer}><Text style={styles.label}>Texto</Text><View style={styles.manualTextInputWrapper}><TextInput value={slide.text.join('\n') || ''} onChangeText={(text) => handleSlideChange(index, 'text', text.split('\n'))} multiline style={styles.manualTextInput} /></View></View>}
-            <Text style={styles.label}>Imagens da Grelha</Text>
-            <View style={styles.imageGridEditor}>
-            {slide.images.map((img, imgIndex) => (
-                <TouchableOpacity key={imgIndex} style={styles.gridImageContainer} onPress={() => handleImageChange(index, 'image', imgIndex)}>
-                <Image source={img} style={styles.imagePreview} />
-                <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
-                </TouchableOpacity>
-            ))}
-            </View>
-        </>
-    );
-  }
-
-  else if (slide.imageGrid) {
+  } else if (slide.images) {
     return (
       <>
-        <Text style={styles.label}>Grelha de Imagens</Text>
-        <View style={styles.gridContainerEditor}>
-          {slide.imageGrid.map((img, imgIndex) => (
-            <TouchableOpacity key={imgIndex} style={styles.gridImageContainerEditor} onPress={() => handleImageChange(index, 'image', imgIndex)}>
+        {slide.title && (
+          <StyledInput
+            label="Título"
+            iconName="type"
+            value={slide.title || ''}
+            onChangeText={(text) => handleSlideChange(index, 'title', text)}
+          />
+        )}
+        {slide.text && (
+          <View style={styles.manualInputContainer}>
+            <Text style={styles.label}>Texto</Text>
+            <View style={styles.manualTextInputWrapper}>
+              <TextInput
+                value={slide.text.join('\n') || ''}
+                onChangeText={(text) => handleSlideChange(index, 'text', text.split('\n'))}
+                multiline
+                style={styles.manualTextInput}
+              />
+            </View>
+          </View>
+        )}
+        <Text style={styles.label}>Imagens da Grelha</Text>
+        <View style={styles.imageGridEditor}>
+          {slide.images.map((img, imgIndex) => (
+            <TouchableOpacity
+              key={imgIndex}
+              style={styles.gridImageContainer}
+              onPress={() => handleImageChange(index, 'image', imgIndex)}
+            >
               <Image source={img} style={styles.imagePreview} />
-              <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
             </TouchableOpacity>
           ))}
         </View>
       </>
     );
-  }
-  else {
+  } else if (slide.imageGrid) {
+    return (
+      <>
+        <Text style={styles.label}>Grelha de Imagens</Text>
+        <View style={styles.gridContainerEditor}>
+          {slide.imageGrid.map((img, imgIndex) => (
+            <TouchableOpacity
+              key={imgIndex}
+              style={styles.gridImageContainerEditor}
+              onPress={() => handleImageChange(index, 'image', imgIndex)}
+            >
+              <Image source={img} style={styles.imagePreview} />
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </>
+    );
+  } else {
     return (
       <>
         {slide.title !== undefined && (
-            <StyledInput
-              label="Título"
-              iconName="type"
-              value={slide.title || ''}
-              onChangeText={(text) => handleSlideChange(index, 'title', text)}
-            />
+          <StyledInput
+            label="Título"
+            iconName="type"
+            value={slide.title || ''}
+            onChangeText={(text) => handleSlideChange(index, 'title', text)}
+          />
         )}
+
         {slide.text !== undefined && (
-            <View style={styles.manualInputContainer}>
+          <View style={styles.manualInputContainer}>
             <Text style={styles.label}>Texto</Text>
             <View style={styles.manualTextInputWrapper}>
-                <TextInput
+              <TextInput
                 value={slide.text.join('\n') || ''}
                 onChangeText={(text) => handleSlideChange(index, 'text', text.split('\n'))}
                 multiline
                 style={styles.manualTextInput}
-                />
+              />
             </View>
-            </View>
+          </View>
         )}
+
         {slide.image && (
-            <View>
-              <Text style={styles.label}>Imagem</Text>
-              <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(index)}>
-                  <Image source={slide.image} style={styles.imagePreview} />
-                  <View style={styles.imageOverlay}><Feather name="edit-2" size={24} color={COLORS.white} /></View>
-              </TouchableOpacity>
-            </View>
+          <View>
+            <Text style={styles.label}>Imagem</Text>
+            <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(index)}>
+              <Image source={slide.image} style={styles.imagePreview} />
+              <View style={styles.imageOverlay}>
+                <Feather name="edit-2" size={24} color={COLORS.white} />
+              </View>
+            </TouchableOpacity>
+          </View>
         )}
       </>
     );
   }
 };
 
-
 export default function EditEducationalContentScreen() {
   const router = useRouter();
-  const { page } = useLocalSearchParams<{ page: PageName }>();
+  const segments = useSegments();
+  const { page: pageParam } = useLocalSearchParams<{ page?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const pageContent = useEducationalContentStore((state) => state.pages[page!]);
+  const page = resolvePageName(pageParam, segments);
+
+  const pageContent = useEducationalContentStore((state) => state.pages[page]);
   const updatePage = useEducationalContentStore((state) => state.updatePage);
   const addSlide = useEducationalContentStore((state) => state.addSlide);
   const removeSlide = useEducationalContentStore((state) => state.removeSlide);
@@ -299,147 +446,154 @@ export default function EditEducationalContentScreen() {
 
   useEffect(() => {
     if (pageContent) {
-      const slides = JSON.parse(JSON.stringify(pageContent));
+      const slides = JSON.parse(JSON.stringify(pageContent)) as CarouselSlide[];
       setEditableSlides(slides);
-      if (slides.length > 0) {
-        setExpandedSlideId(slides[0].id);
-      }
+      if (slides.length > 0) setExpandedSlideId(slides[0].id);
     }
   }, [pageContent]);
 
   useFocusEffect(
     useCallback(() => {
+      const BaseIcon = CHARACTER_MAP[page] ?? Chefinho;
+      const CharacterSvg = fitIconForHeader(BaseIcon, 0.90);
+
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: `EDITAR ${page?.toUpperCase() || ''}`,
-        CharacterSvg: Chefinho,
+        pageTitle: `Editar ${TITLE_MAP[page] ?? page}`,
+        CharacterSvg,
         showNotificationIcon: true,
+        visible: true,
       });
-    }, [page])
+
+      return () => {
+        setHeaderConfig((prev) => ({ ...prev, showPageHeaderElements: false }));
+      };
+    }, [page, setHeaderConfig])
   );
 
   const handleToggleSlide = (slideId: string) => {
-    setExpandedSlideId(currentId => currentId === slideId ? null : slideId);
+    setExpandedSlideId((currentId) => (currentId === slideId ? null : slideId));
   };
 
   const handleSlideChange = (index: number, field: keyof CarouselSlide, value: any) => {
-    const newSlides = [...editableSlides];
-    (newSlides[index] as any)[field] = value;
-    setEditableSlides(newSlides);
+    setEditableSlides((prev) => {
+      const next = [...prev];
+      (next[index] as any)[field] = value;
+      return next;
+    });
   };
 
-const handleImageChange = async (
-  index: number,
-  field: 'image' | 'before' | 'after' = 'image',
-  imageIndex?: number
-) => {
-  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== 'granted') {
-    Alert.alert('Permissão necessária', 'Você precisa conceder permissão para aceder à galeria.');
-    return;
-  }
-
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ['images'],        
-    allowsEditing: true,
-    aspect: [16, 9],
-    quality: 0.8,
-  });
-
-  if (result.canceled) return;
-
-  const uri = result.assets?.[0]?.uri;
-  if (!uri) return;
-
-  setEditableSlides(prev => {
-    const next = [...prev];
-    const current = next[index];
-    if (!current) return prev;
-
-    const updated = { ...current };
-
-    if (updated.beforeAfterImages && (field === 'before' || field === 'after')) {
-      updated.beforeAfterImages = { ...updated.beforeAfterImages, [field]: { uri } };
-    } else if (updated.imageGrid && imageIndex !== undefined) {
-      const grid = [...updated.imageGrid];
-      grid[imageIndex] = { uri };
-      updated.imageGrid = grid;
-    } else if (updated.images && imageIndex !== undefined) {
-      const imgs = [...updated.images];
-      imgs[imageIndex] = { uri };
-      updated.images = imgs;
-    } else if (updated.collageImages && imageIndex !== undefined) {
-      const collage = [...updated.collageImages];
-      collage[imageIndex] = { uri };
-      updated.collageImages = collage;
-    } else {
-      (updated as any)[field] = { uri };
+  const handleImageChange = async (
+    index: number,
+    field: 'image' | 'before' | 'after' = 'image',
+    imageIndex?: number
+  ) => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão necessária', 'Conceda acesso à galeria para selecionar a imagem.');
+      return;
     }
 
-    next[index] = updated;
-    return next;
-  });
-};
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.8,
+    });
+
+    if (result.canceled) return;
+
+    const uri = result.assets?.[0]?.uri;
+    if (!uri) return;
+
+    setEditableSlides((prev) => {
+      const next = [...prev];
+      const current = next[index];
+      if (!current) return prev;
+
+      const updated: CarouselSlide = { ...current };
+
+      if (updated.beforeAfterImages && (field === 'before' || field === 'after')) {
+        updated.beforeAfterImages = { ...updated.beforeAfterImages, [field]: { uri } };
+      } else if (updated.imageGrid && imageIndex !== undefined) {
+        const grid = [...updated.imageGrid];
+        grid[imageIndex] = { uri };
+        updated.imageGrid = grid;
+      } else if (updated.images && imageIndex !== undefined) {
+        const imgs = [...updated.images];
+        imgs[imageIndex] = { uri };
+        updated.images = imgs;
+      } else if (updated.collageImages && imageIndex !== undefined) {
+        const collage = [...updated.collageImages];
+        collage[imageIndex] = { uri };
+        updated.collageImages = collage;
+      } else {
+        (updated as any)[field] = { uri };
+      }
+
+      next[index] = updated;
+      return next;
+    });
+  };
 
   const handleSaveChanges = () => {
-    updatePage(page!, editableSlides);
+    updatePage(page, editableSlides);
     Alert.alert('Sucesso!', 'As alterações foram salvas.');
     router.back();
   };
-  
-  const handleAddSlide = () => {
-    setIsModalVisible(true);
-  };
-  
+
+  const handleAddSlide = () => setIsModalVisible(true);
+
   const handleLayoutSelect = (layoutKey: string) => {
-    addSlide(page!, layoutKey);
+    addSlide(page, layoutKey);
     setIsModalVisible(false);
   };
 
   const handleRemoveSlide = (slideId: string) => {
-    Alert.alert(
-      "Remover Slide",
-      "Tem certeza que deseja remover este slide?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Remover", style: "destructive", onPress: () => removeSlide(page!, slideId) }
-      ]
-    );
+    Alert.alert('Remover Slide', 'Tem certeza que deseja remover este slide?', [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Remover', style: 'destructive', onPress: () => removeSlide(page, slideId) },
+    ]);
   };
 
   if (!editableSlides || editableSlides.length === 0) {
     return (
-      <SafeAreaProvider style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <Text>Carregando conteúdo...</Text>
         </View>
-      </SafeAreaProvider>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
-      >
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         {editableSlides.map((slide, index) => (
           <View key={slide.id} style={styles.slideEditor}>
             <TouchableOpacity onPress={() => handleToggleSlide(slide.id)}>
               <View style={styles.slideHeader}>
                 <Text style={styles.slideTitle}>Slide {index + 1}</Text>
                 <View style={styles.headerActions}>
-                  <TouchableOpacity style={styles.removeSlideButton} onPress={() => handleRemoveSlide(slide.id)}>
+                  <TouchableOpacity
+                    style={styles.removeSlideButton}
+                    onPress={() => handleRemoveSlide(slide.id)}
+                  >
                     <Feather name="trash-2" size={20} color={COLORS.red} />
                   </TouchableOpacity>
-                  <Feather name={expandedSlideId === slide.id ? 'chevron-up' : 'chevron-down'} size={24} color={COLORS.secondary} />
+                  <Feather
+                    name={expandedSlideId === slide.id ? 'chevron-up' : 'chevron-down'}
+                    size={24}
+                    color={COLORS.secondary}
+                  />
                 </View>
               </View>
             </TouchableOpacity>
+
             {expandedSlideId === slide.id && (
               <View style={styles.slideContent}>
-                <SlideContentEditor 
+                <SlideContentEditor
                   slide={slide}
                   index={index}
                   handleSlideChange={handleSlideChange}
@@ -449,14 +603,14 @@ const handleImageChange = async (
             )}
           </View>
         ))}
-        
+
         <TouchableOpacity style={styles.addSlideButton} onPress={handleAddSlide}>
           <Feather name="plus-circle" size={22} color={COLORS.secondary} />
           <Text style={styles.addSlideButtonText}>Adicionar Novo Slide</Text>
         </TouchableOpacity>
-
       </ScrollView>
-      <AddSlideModal 
+
+      <AddSlideModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onSelectLayout={handleLayoutSelect}
@@ -468,6 +622,6 @@ const handleImageChange = async (
         primaryButtonTitle="Salvar"
         onPrimaryButtonPress={handleSaveChanges}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

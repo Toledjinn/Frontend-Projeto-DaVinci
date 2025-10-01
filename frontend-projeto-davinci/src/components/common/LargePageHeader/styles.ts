@@ -3,6 +3,10 @@ import { FONTS, COLORS } from '@/constants/theme';
 
 
 export const getLargePageHeaderStyles = (screenWidth: number, screenHeight: number) => {
+  const chefinhoTopPosition = screenHeight * 0.0800;
+  const circleDiameter = screenWidth * 0.5373;
+  const titleNameTopPosition = chefinhoTopPosition + circleDiameter + 16;
+ 
   return StyleSheet.create({
     container: {
       ...StyleSheet.absoluteFillObject,
@@ -11,27 +15,28 @@ export const getLargePageHeaderStyles = (screenWidth: number, screenHeight: numb
     },
     backgroundCircle: {
       position: 'absolute',
-      width: screenWidth * 0.28,
-      height: screenWidth * 0.28,
-      left: screenWidth * 0.36,
-      top: screenHeight * 0.1,
-      borderRadius: (screenWidth * 0.28) / 2,
+      width: circleDiameter,
+      height: circleDiameter,
+      top: chefinhoTopPosition, 
+      borderRadius: circleDiameter / 2,
       backgroundColor: COLORS.primary,
-      borderWidth: 3,
+      borderWidth: 7,
       borderColor: COLORS.secondary,
       justifyContent: 'center',
       alignItems: 'center',
+      overflow: 'hidden',
+      alignSelf: 'center',
     },
     characterWrapper: {
-      width: screenWidth * 0.18,
-      height: screenHeight * 0.11,
+      width: circleDiameter * 0.9,
+      height: circleDiameter * 0.9,
     },
     title: {
       position: 'absolute',
       width: '100%',
       textAlign: 'center',
-      top: screenHeight * 0.24,
-      ...FONTS.h2,
+      top: titleNameTopPosition,
+      ...FONTS.h5,
       color: COLORS.secondary,
     },
   });

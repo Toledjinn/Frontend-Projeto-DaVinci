@@ -5,7 +5,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './LaboratorioScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -14,7 +14,7 @@ import HomeSection from '@/components/features/HomeSection';
 
 export default function LaboratorioScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.324;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter(); 
 
@@ -32,7 +32,7 @@ export default function LaboratorioScreen() {
         visible: true,
         layout: 'page-large',
         showPageHeaderElements: true,
-        pageTitle: 'LABORATÓRIO',
+        pageTitle: 'Laboratório',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
@@ -40,7 +40,7 @@ export default function LaboratorioScreen() {
   );
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
@@ -52,6 +52,6 @@ export default function LaboratorioScreen() {
         <HomeSection title="" buttons={labButtons} />
 
       </ScrollView>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }

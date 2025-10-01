@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 24,
-    paddingTop: 250,
+    paddingTop: "44%",
   },
   blockContainer: {
     backgroundColor: COLORS.white,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, useWindowDimensions, Text, View, Alert } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { styles } from './ConsultationScreen.styles';
@@ -16,7 +16,7 @@ import ExamRequestInput from '@/components/features/ExamRequestInput';
 
 export default function ConsultationScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.216;
   const { appointmentId } = useLocalSearchParams<{ appointmentId: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -103,14 +103,14 @@ export default function ConsultationScreen() {
 
 
   if (!appointment || !patient) {
-    return <SafeAreaProvider style={styles.safeArea}><Text>Carregando...</Text></SafeAreaProvider>;
+    return <SafeAreaView style={styles.safeArea}><Text>Carregando...</Text></SafeAreaView>;
   }
 
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 9 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
 
         <View style={styles.topButtonContainer}>
@@ -144,14 +144,14 @@ export default function ConsultationScreen() {
 
         <View style={styles.mediaButtonsContainer}>
           <StyledButton
-            title="Adicionar Imagens"
-            variant="primary"
+            title="Imagens"
+            variant="secondary"
             onPress={() => handleImagePick('image')}
             style={[styles.mediaButton, !isPrimeiraConsulta && { marginRight: 8 }]}
           />
           {!isPrimeiraConsulta && (
             <StyledButton
-              title="Adicionar Raios-X"
+              title="Raios-X"
               variant="primary"
               onPress={() => handleImagePick('xray')}
               style={[styles.mediaButton, { marginLeft: 8 }]}
@@ -167,6 +167,6 @@ export default function ConsultationScreen() {
           router.back();
         }}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
