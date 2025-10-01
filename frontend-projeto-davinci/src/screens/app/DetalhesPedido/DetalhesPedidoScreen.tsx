@@ -19,22 +19,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const userType = 'admin';
 
-const getStatusColor = (status: OrderStatus) => {
-  switch (status) {
-    case 'Aprovado':
-    case 'Entregue':
-      return COLORS.green;
-    case 'Pendente':
-      return COLORS.primary;
-    case 'Enviado':
-      return COLORS.blue;
-    case 'Cancelado':
-      return COLORS.red;
-    default:
-      return COLORS.gray_400;
-  }
-};
-
 export default function DetalhesPedidoScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -46,6 +30,10 @@ export default function DetalhesPedidoScreen() {
   const order = useMemo(() => getOrderById(id!), [id, getOrderById]);
 
   const [currentStatus, setCurrentStatus] = useState(order?.status);
+
+  React.useEffect(() => {
+    setCurrentStatus(order?.status);
+  }, [order?.status]);
 
   useFocusEffect(
     useCallback(() => {
@@ -84,29 +72,41 @@ export default function DetalhesPedidoScreen() {
       >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Cliente</Text>
-          <Text style={styles.customerName}>{order.customerName}</Text>
-          {order.address && <Text style={styles.customerAddress}>{order.address}</Text>}
+          <View style={styles.card}>
+            <Text style={styles.customerName}>{order.customerName}</Text>
+            {order.address && <Text style={styles.customerAddress}>{order.address}</Text>}
+          </View>
         </View>
         
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Produtos</Text>
-          {order.products.map(product => (
-            <View key={product.productId} style={styles.productRow}>
-              <Image source={product.image} style={styles.productImage} />
-              <View style={styles.productInfo}>
-                <Text style={styles.productName}>{product.name}</Text>
-                <Text style={styles.productDetails}>Qtd: {product.quantity} - R$ {product.price.toFixed(2).replace('.', ',')}</Text>
+          <View style={styles.card}>
+            {order.products.map((product, index) => (
+              <View 
+                key={product.productId} 
+                style={[
+                  styles.productRow, 
+                  index === order.products.length - 1 && { borderBottomWidth: 0 }
+                ]}
+              >
+                <Image source={product.image} style={styles.productImage} />
+                <View style={styles.productInfo}>
+                  <Text style={styles.productName}>{product.name}</Text>
+                  <Text style={styles.productDetails}>Qtd: {product.quantity} - R$ {product.price.toFixed(2).replace('.', ',')}</Text>
+                </View>
+                <Text style={styles.productTotal}>R$ {(product.quantity * product.price).toFixed(2).replace('.', ',')}</Text>
               </View>
-              <Text style={styles.productTotal}>R$ {(product.quantity * product.price).toFixed(2).replace('.', ',')}</Text>
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Resumo</Text>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Valor Total</Text>
-            <Text style={styles.summaryValue}>R$ {order.totalValue.toFixed(2).replace('.', ',')}</Text>
+          <View style={styles.card}>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Valor Total</Text>
+              <Text style={styles.summaryValue}>R$ {order.totalValue.toFixed(2).replace('.', ',')}</Text>
+            </View>
           </View>
         </View>
 
@@ -116,11 +116,22 @@ export default function DetalhesPedidoScreen() {
             <View style={styles.statusContainer}>
               {statusOptions.map(status => (
                 <TouchableOpacity
-                  key={status}
-                  style={[styles.statusButton, currentStatus === status && styles.statusButtonSelected]}
+                  style={[
+                    styles.statusButton,
+                    status === 'Cancelado' && styles.statusButtonCancel,
+                    currentStatus === status && styles.statusButtonSelected,
+                  ]}
                   onPress={() => handleStatusChange(status)}
                 >
-                  <Text style={[styles.statusButtonText, currentStatus === status && styles.statusButtonTextSelected]}>{status}</Text>
+                  <Text 
+                    style={[
+                      styles.statusButtonText,
+                      status === 'Cancelado' && styles.statusButtonTextCancel,
+                      currentStatus === status && styles.statusButtonTextSelected,
+                    ]}
+                  >
+                    {status}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -130,4 +141,3 @@ export default function DetalhesPedidoScreen() {
     </SafeAreaView>
   );
 }
-

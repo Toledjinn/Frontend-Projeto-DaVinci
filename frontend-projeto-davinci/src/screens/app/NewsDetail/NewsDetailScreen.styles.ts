@@ -1,53 +1,66 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
+import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
-  },
-  title: {
-    ...FONTS.h1,
-    color: COLORS.secondary,
-    marginBottom: 8,
-  },
-  date: {
-    ...FONTS.body13,
-    color: COLORS.gray_400,
-    marginBottom: 20,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  videoContainer: {
-    width: '100%',
-    aspectRatio: 16 / 9,
-    borderRadius: 8,
-    overflow: 'hidden',
-    marginBottom: 20,
-    backgroundColor: '#000',
-  },
-  video: {
-    flex: 1,
-  },
-  content: {
-    ...FONTS.body10,
-    color: COLORS.secondary,
-    lineHeight: 22,
-  },
-  notFoundContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    safeArea: {
+        flex: 1,
+        backgroundColor: COLORS.white,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    contentContainer: {
+        paddingHorizontal: SIZES.padding * 1.5,
+        paddingBottom: SIZES.padding * 12,
+    },
+    image: {
+        width: '100%',
+        aspectRatio: 16 / 9,
+        borderRadius: SIZES.radius,
+        alignSelf: 'center',
+        marginBottom: 8, 
+    },
+    title: {
+        ...FONTS.h5,
+        lineHeight: 30,
+        color: COLORS.secondary,
+        marginBottom: SIZES.base,
+    },
+    date: {
+        ...FONTS.body13,
+        color: COLORS.gray_400,
+    },
+    separator: {
+        height: 1,
+        backgroundColor: COLORS.gray_100,
+        width: '100%',
+        marginVertical: 8, 
+    },
+    content: {
+        ...FONTS.body9,
+        lineHeight: 26,
+        color: COLORS.secondary,
+        textAlign: 'justify',
+    },
+    videoContainer: {
+        width: '100%',
+        aspectRatio: 16 / 9,
+        borderRadius: SIZES.radius,
+        overflow: 'hidden',
+        marginTop: SIZES.padding,
+    },
+    video: {
+        flex: 1,
+    },
+    notFoundContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SIZES.padding,
+    },
+    titleNotFound: {
+        ...FONTS.h2,
+        color: COLORS.secondary,
+        textAlign: 'center',
+    },
 });

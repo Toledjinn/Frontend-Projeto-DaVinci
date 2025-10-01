@@ -12,6 +12,7 @@ export default StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 24,
     paddingBottom: 40,
+    marginTop: 30,
   },
   centeredMessage: {
     flex: 1,
@@ -25,9 +26,16 @@ export default StyleSheet.create({
     ...FONTS.h2,
     color: COLORS.secondary,
     marginBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray_100,
-    paddingBottom: 8,
+  },
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   customerName: {
     ...FONTS.body7,
@@ -41,16 +49,19 @@ export default StyleSheet.create({
   productRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray_100,
   },
   productImage: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 8,
     marginRight: 12,
   },
   productInfo: {
     flex: 1,
+    marginRight: 8,
   },
   productName: {
     ...FONTS.body9,
@@ -59,16 +70,19 @@ export default StyleSheet.create({
   productDetails: {
     ...FONTS.body11,
     color: COLORS.gray_400,
+    marginTop: 2,
   },
   productTotal: {
     ...FONTS.body9,
     color: COLORS.secondary,
     fontWeight: 'bold',
+    minWidth: 80, 
+    textAlign: 'right',
   },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 4,
+    alignItems: 'center',
   },
   summaryLabel: {
     ...FONTS.body9,
@@ -81,16 +95,16 @@ export default StyleSheet.create({
   statusContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    gap: 8, 
   },
   statusButton: {
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 12,
     borderRadius: 8,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: COLORS.gray_200,
     backgroundColor: COLORS.white,
-    marginBottom: 8,
+    flex: 1,
     minWidth: '48%',
     alignItems: 'center',
   },
@@ -101,9 +115,16 @@ export default StyleSheet.create({
   statusButtonText: {
     ...FONTS.body10,
     color: COLORS.secondary,
+    fontWeight: '600',
   },
   statusButtonTextSelected: {
     color: COLORS.white,
   },
+  statusButtonCancel: {
+    backgroundColor: COLORS.red, 
+    borderColor: COLORS.red,
+  },
+  statusButtonTextCancel: {
+    color: COLORS.white, 
+  },
 });
-
