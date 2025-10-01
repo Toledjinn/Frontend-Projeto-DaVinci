@@ -7,12 +7,12 @@ import StyledPicker from '@/components/common/StyledPicker';
 import StyledMultiSelect from '@/components/common/StyledMultiSelect';
 import StyledInput from '@/components/common/StyledInput';
 import { getUsers } from '@/data/mockUsers';
-import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
+import { SPECIALTIES } from '@/data/mockSpecialties';
 import { ALL_PROCEDURES } from '@/data/mockProcedures';
 import { COLORS } from '@/constants/theme';
 
 const MOCK_DENTISTS = getUsers('dentist');
-const specialtyItems = ALL_SPECIALTIES.map(s => ({ label: s, value: s }));
+const specialtyItems = SPECIALTIES.map(s => ({ label: s, value: s }));
 
 type PlanItem = {
   id: number;

@@ -133,7 +133,7 @@ export default function StyledMultiSelect({
               style={{ maxHeight: height * 0.4 }}
             />
             <View style={styles.modalFooter}>
-                <StyledButton title="Aplicar" onPress={handleApply} />
+                <StyledButton title="Aplicar" onPress={handleApply} variant='secondary'/>
             </View>
           </SafeAreaView>
         </View>

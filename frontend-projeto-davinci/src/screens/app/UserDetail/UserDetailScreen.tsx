@@ -97,7 +97,7 @@ export default function UserDetailScreen() {
           <View style={styles.buttonActionsContainer}>
             <StyledButton
               title="Diagnósticos"
-              variant="secondary" 
+              variant="primary" 
               onPress={() => router.push({ 
               pathname: '/(app)/diagnostico', 
               params: { patientId: user.id } 
@@ -125,7 +125,6 @@ export default function UserDetailScreen() {
           }
         ]}
       />
-
     </SafeAreaView>
   );
 }

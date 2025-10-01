@@ -9,6 +9,7 @@ export const formatUserName = (fullName: string | undefined): string => {
   }
 
   const firstName = names[0];
+  const lastName = names[names.length - 1];
 
-  return `${firstName}`;
+  return `${firstName} ${lastName}`;
 };

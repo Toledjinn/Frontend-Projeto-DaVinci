@@ -7,7 +7,7 @@ import { useUIStore } from '@/state/uiStore';
 import { findUserById, UserProfile } from '@/data/mockUsers';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import HomeSection from '@/components/features/HomeSection';
-import { SPECIALTIES } from '@/data/mockSpecialties';
+import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 import { formatUserName } from '@/utils/nameUtils';
 import RiskAssessmentCard from '@/components/features/RiskAssessmentCard';
 
@@ -126,10 +126,17 @@ const preventionButtons = [
     } },
 ];
 
-  const specialtyButtons = SPECIALTIES.map(specialty => ({
+  const specialtyButtons = ALL_SPECIALTIES.map(specialty => ({
     id: specialty.toLowerCase().replace(/\s/g, '_'),
     title: specialty,
-    onPress: () => console.log(`Especialidade: ${specialty}`),
+    onPress: () => {
+      if (patient) {
+        router.push({
+          pathname: '/(app)/diagnosticos/[specialty]',
+          params: { patientId: patient.id, specialty: specialty },
+        });
+      }
+    },
   }));
 
 

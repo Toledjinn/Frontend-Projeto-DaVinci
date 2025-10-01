@@ -10,7 +10,7 @@ interface StyledButtonProps extends TouchableOpacityProps {
 export default function StyledButton({
   title,
   style,
-  variant = 'secondary', 
+  variant = 'primary', 
   ...rest
 }: StyledButtonProps) {
   const { height } = useWindowDimensions();

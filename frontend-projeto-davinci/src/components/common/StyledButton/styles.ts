@@ -10,19 +10,19 @@ export const getStyledButtonStyles = (height: number) => {
       alignItems: 'center',
       paddingHorizontal: 16, 
     },
-    secondaryContainer: {
+    primaryContainer: {
       backgroundColor: COLORS.secondary,
     },
-    secondaryText: {
+    primaryText: {
       ...FONTS.body2,
       color: COLORS.primary,
       width: '100%',
       textAlign: 'center',
     },
-    primaryContainer: {
+    secondaryContainer: {
       backgroundColor: COLORS.primary,
     },
-    primaryText: {
+    secondaryText: {
       ...FONTS.body2,
       color: COLORS.secondary,
       width: '100%',
