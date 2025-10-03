@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS, SIZES } from '@/constants/theme';
+import { COLORS, FONTS } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
   safeArea: {
@@ -9,9 +9,6 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
-  },
-  sectionContainer: {
-    marginBottom: 24,
   },
   description: {
     ...FONTS.body9,
@@ -31,22 +28,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 25,
   },
-  itemCircle: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: COLORS.primary,
-    borderWidth: 3,
-    borderColor: COLORS.gray_400,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
+
+  badgeShadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    marginBottom: 8,
   },
+
   itemText: {
     ...FONTS.body9,
     color: COLORS.secondary,

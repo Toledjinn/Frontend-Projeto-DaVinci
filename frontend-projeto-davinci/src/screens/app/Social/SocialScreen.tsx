@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,8 +12,10 @@ import { useUIStore } from '@/state/uiStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova2 from '@/assets/characters/escova2.svg';
 import Escova4 from '@/assets/characters/escova4.svg';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Escova3 from '@/assets/characters/escova3.svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { COLORS } from '@/constants/theme';
+import LogoBadge from '@/components/common/LogoBadge';
 
 const actionButtons = [
   { id: 'oQueE', title: 'O que é?', SvgComponent: Escova4 },
@@ -23,9 +25,15 @@ const actionButtons = [
 
 export default function SocialScreen() {
   const router = useRouter();
-  const { height } = useWindowDimensions();
-  const headerHeight = height * 0.320;
+  const { height, width } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+
+  const headerHeight = height * 0.320;
+
+  const badgeSize = useMemo(() => {
+    const ideal = width * 0.22;
+    return Math.round(Math.min(92, Math.max(76, ideal)));
+  }, [width]);
 
   useFocusEffect(
     useCallback(() => {
@@ -72,10 +80,19 @@ export default function SocialScreen() {
               key={button.id}
               style={styles.buttonItem}
               onPress={() => handleButtonPress(button.id)}
+              activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel={button.title}
             >
-              <View style={styles.itemCircle}>
-                <button.SvgComponent width="70%" height="70%" />
-              </View>
+              <LogoBadge
+                CharacterSvg={button.SvgComponent}
+                diameter={badgeSize}
+                borderWidth={3}
+                backgroundColor={COLORS.primary}
+                borderColor={COLORS.secondary}
+                inset={8} 
+                style={styles.badgeShadow}          
+              />
               <Text style={styles.itemText}>{button.title}</Text>
             </TouchableOpacity>
           ))}

@@ -1,30 +1,42 @@
-import React from 'react';
-import { View, Text, useWindowDimensions } from 'react-native'; 
+import React, { useMemo } from 'react';
+import { View, Text, useWindowDimensions } from 'react-native';
 import { SvgProps } from 'react-native-svg';
-import { getPageHeaderStyles } from './styles'; 
+import { getPageHeaderStyles } from './styles';
+import LogoBadge from '../LogoBadge';
+import { COLORS } from '@/constants/theme';
 
 type PageHeaderProps = {
   CharacterSvg: React.FC<SvgProps>;
-  title: string; 
+  title: string;
 };
 
 export default function PageHeader({ CharacterSvg, title }: PageHeaderProps) {
-  const { width, height } = useWindowDimensions(); 
-  const styles = getPageHeaderStyles(width, height); 
-  
-  const notificationCircle = height * 0.09;
-  const border = 3;                      
-  const iconPadding = Math.round(height * 0.008); 
-  const iconSize = notificationCircle - (border * 2) - (iconPadding * 2)
+  const { width, height } = useWindowDimensions();
+  const styles = getPageHeaderStyles(width, height);
+
+  const circleDiameter = useMemo(() => width * 0.3073, [width]);
+  const chefinhoTopPosition = useMemo(() => height * 0.07, [height]);
 
   return (
     <View style={styles.container}>
-      <View style={styles.backgroundCircle}>
-        <View style={styles.characterWrapper}>
-          <CharacterSvg width="100%" height="100%" />
-        </View>
+      <View
+        style={[
+          styles.circleAnchor,
+          { top: chefinhoTopPosition, width: circleDiameter, height: circleDiameter },
+        ]}
+      >
+        <LogoBadge
+          CharacterSvg={CharacterSvg}
+          diameter={circleDiameter}
+          borderWidth={3}
+          backgroundColor={COLORS.primary}
+          borderColor={COLORS.secondary}
+        />
       </View>
-      <Text style={styles.title}>{title}</Text>
+
+      <Text style={[styles.title, { top: chefinhoTopPosition + circleDiameter + 8 }]}>
+        {title}
+      </Text>
     </View>
   );
 }

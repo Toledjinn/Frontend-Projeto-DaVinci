@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,22 +10,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './LaboratorioScreen.styles';
 import { useUIStore } from '@/state/uiStore';
+
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova2 from '@/assets/characters/escova2.svg';
 import Escova3 from '@/assets/characters/escova3.svg';
 import Escova4 from '@/assets/characters/escova4.svg';
 
+import LogoBadge from '@/components/common/LogoBadge';
+import { COLORS } from '@/constants/theme';
+
 const labButtons = [
-    { id: 'produtos',  title: 'Nossa Filosofia', SvgComponent: Escova4, pageName: 'produtos' },
-    { id: 'trabalhos', title: 'Trabalhos', SvgComponent: Escova2, pageName: 'trabalhos' },
-    { id: 'parceiros', title: 'Parceiros', SvgComponent: Escova3, pageName: 'parceiros' },
-  ];
+  { id: 'produtos',  title: 'Nossa Filosofia', SvgComponent: Escova4, pageName: 'produtos' },
+  { id: 'trabalhos', title: 'Trabalhos',       SvgComponent: Escova2, pageName: 'trabalhos' },
+  { id: 'parceiros', title: 'Parceiros',       SvgComponent: Escova3, pageName: 'parceiros' },
+];
 
 export default function LaboratorioScreen() {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const headerHeight = height * 0.324;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const router = useRouter(); 
+  const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -47,6 +51,11 @@ export default function LaboratorioScreen() {
     });
   };
 
+  const badgeSize = useMemo(() => {
+    const ideal = width * 0.20; 
+    return Math.round(Math.min(92, Math.max(76, ideal)));
+  }, [width]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -56,22 +65,30 @@ export default function LaboratorioScreen() {
         <Text style={styles.paragraph}>
           Bem-vindo à nossa seção de laboratório. Aqui você pode encontrar informações sobre os produtos que utilizamos, ver exemplos de nossos trabalhos e conhecer os nossos parceiros.
         </Text>
-        
+
         <View style={styles.buttonsContainer}>
           {labButtons.map((button) => (
             <TouchableOpacity
               key={button.id}
               style={styles.buttonItem}
               onPress={() => handleButtonPress(button.pageName)}
+              activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel={button.title}
             >
-              <View style={styles.itemCircle}>
-                <button.SvgComponent width="70%" height="70%" />
-              </View>
+              <LogoBadge
+                CharacterSvg={button.SvgComponent}
+                diameter={badgeSize}
+                borderWidth={3}
+                backgroundColor={COLORS.primary}
+                borderColor={COLORS.gray_400} 
+                inset={8}                     
+                style={styles.badgeShadow}
+              />
               <Text style={styles.itemText}>{button.title}</Text>
             </TouchableOpacity>
           ))}
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );

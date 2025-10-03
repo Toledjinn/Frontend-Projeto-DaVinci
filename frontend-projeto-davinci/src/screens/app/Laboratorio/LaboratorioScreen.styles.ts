@@ -31,15 +31,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: 100, 
   },
-  itemCircle: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: COLORS.primary,
-    borderWidth: 3,
-    borderColor: COLORS.gray_400,
-    justifyContent: 'center',
-    alignItems: 'center',
+
+  badgeShadow: {
     marginBottom: SIZES.base,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -47,6 +40,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+
   itemText: {
     ...FONTS.body8,
     color: COLORS.secondary,

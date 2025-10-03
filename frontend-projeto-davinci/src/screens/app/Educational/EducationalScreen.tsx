@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,8 @@ import Pasta from '@/assets/characters/pasta.svg';
 import FioDental from '@/assets/characters/fio.svg';
 import Fluor from '@/assets/characters/fluor.svg';
 import Revelador from '@/assets/characters/revelador.svg';
+import LogoBadge from '@/components/common/LogoBadge';
+import { COLORS } from '@/constants/theme';
 
 const educationalItems = [
   { id: '1', title: 'Chefinho', SvgComponent: Chefinho, contentType: 'chefinho' },
@@ -29,7 +31,7 @@ const educationalItems = [
 
 export default function EducationalScreen() {
   const router = useRouter();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const headerHeight = height * 0.296;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
@@ -53,37 +55,47 @@ export default function EducationalScreen() {
     });
   };
 
+  const badgeSize = useMemo(() => {
+    const ideal = width * 0.20; 
+    return Math.round(Math.min(88, Math.max(72, ideal)));
+  }, [width]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-            contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 24 }}
-            showsVerticalScrollIndicator={false}
-        >
-            <View style={styles.container}>
-                <Text style={styles.description}>
-                Nós somos promotores da saúde, na verdade manejadores de
-                conhecimentos, recursos e estratégias que visam a promoção da saúde, o
-                controle das doenças, o tratamento adequado a manutenção de longo
-                prazo e admiradores da estética do sorriso.
-                </Text>
+      <ScrollView
+        contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          <Text style={styles.description}>
+            Nós somos promotores da saúde, na verdade manejadores de conhecimentos,
+            recursos e estratégias que visam a promoção da saúde, o controle das doenças,
+            o tratamento adequado a manutenção de longo prazo e admiradores da estética do sorriso.
+          </Text>
 
-                <View style={styles.gridContainer}>
-                {educationalItems.map((item) => (
-                    <TouchableOpacity
-                    key={item.id}
-                    style={styles.gridItem}
-                    onPress={() => handleItemPress(item)}
-                    >
-                    <View style={styles.itemCircle}>
-                        <item.SvgComponent width="70%" height="70%" />
-                    </View>
-                    <Text style={styles.itemText}>{item.title}</Text>
-                    </TouchableOpacity>
-                ))}
-                </View>
-            </View>
+          <View style={styles.gridContainer}>
+            {educationalItems.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.gridItem}
+                onPress={() => handleItemPress(item)}
+                activeOpacity={0.8}
+              >
+                <LogoBadge
+                  CharacterSvg={item.SvgComponent}
+                  diameter={badgeSize}
+                  borderWidth={3}
+                  backgroundColor={COLORS.primary}
+                  borderColor={COLORS.gray_400} 
+                  style={styles.badgeShadow}
+                  inset={8} 
+                />
+                <Text style={styles.itemText}>{item.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
