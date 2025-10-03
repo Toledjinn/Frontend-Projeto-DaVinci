@@ -15,13 +15,11 @@ import Escova4 from '@/assets/characters/escova4.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Escova3 from '@/assets/characters/escova3.svg';
 
-
-
 const actionButtons = [
-  { id: '1', title: 'O que é?', SvgComponent: Escova4, route: '/(app)/o-que-e' },
-  { id: '2', title: 'Como Participar', SvgComponent: Escova2, route: '/(app)/como-participar' },
-  { id: '3', title: 'Depoimentos', SvgComponent: Escova3, route: '/(app)/depoimentos' },
-]; 
+  { id: 'oQueE', title: 'O que é?', SvgComponent: Escova4 },
+  { id: 'comoParticipar', title: 'Como Participar', SvgComponent: Escova2 },
+  { id: 'depoimentos', title: 'Depoimentos', SvgComponent: Escova3 },
+];
 
 export default function SocialScreen() {
   const router = useRouter();
@@ -42,12 +40,11 @@ export default function SocialScreen() {
     }, [])
   );
 
-  const handleButtonPress = (item: (typeof actionButtons)[0]) => {
-    if (item.route) {
-      router.push(item.route as any);
-    } else {
-      console.log(`Botão "${item.title}" pressionado.`);
-    }
+  const handleButtonPress = (buttonId: string) => {
+    router.push({
+      pathname: '/(app)/social/[pageName]',
+      params: { pageName: buttonId },
+    });
   };
 
   return (
@@ -74,7 +71,7 @@ export default function SocialScreen() {
             <TouchableOpacity
               key={button.id}
               style={styles.buttonItem}
-              onPress={() => handleButtonPress(button)}
+              onPress={() => handleButtonPress(button.id)}
             >
               <View style={styles.itemCircle}>
                 <button.SvgComponent width="70%" height="70%" />
