@@ -24,14 +24,12 @@ export default function AppointmentListItem({ item, onPress }: AppointmentListIt
       </View>
 
       <View style={styles.contentContainer}>
-        {/* Informações Principais */}
         <View>
           <Text style={styles.patientName} numberOfLines={1}>{item.patientName || 'Paciente'}</Text>
           <Text style={styles.detailText}>{item.dentist}</Text>
           <Text style={styles.detailText}>{item.specialty}</Text>
         </View>
 
-        {/* Rodapé do Card */}
         <View style={styles.footer}>
           <View style={styles.statusContainer}>
             <Feather name={icon} size={14} color={color} />
