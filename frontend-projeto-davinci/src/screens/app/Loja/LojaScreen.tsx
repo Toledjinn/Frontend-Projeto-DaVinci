@@ -37,7 +37,7 @@ export default function LojaScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'loja',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'Loja',
         CharacterSvg: Chefinho,

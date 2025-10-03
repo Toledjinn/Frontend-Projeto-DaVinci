@@ -38,7 +38,7 @@ export default function EstoqueScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'Estoque',
         CharacterSvg: Chefinho,

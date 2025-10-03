@@ -1,49 +1,62 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
+import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
-  container: {
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.white,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
-    paddingVertical: 12, 
-    paddingHorizontal: 16, 
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding / 2,
+    marginBottom: SIZES.base * 1.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 2.22,
+    shadowRadius: 2,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: COLORS.gray_100,
+    minHeight: 85, 
   },
-  dateTimeContainer: {
-    alignItems: 'center',
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.gray_100,
     justifyContent: 'center',
-    paddingRight: 16, 
-    borderRightWidth: 1,
-    borderRightColor: COLORS.gray_200,
+    alignItems: 'center',
+    marginRight: SIZES.base * 1.5,
   },
-  dateText: {
-    ...FONTS.body8,
-    color: COLORS.secondary, 
-  },
-  timeText: {
-    ...FONTS.body11,
-    color: COLORS.gray_400, 
-  },
-  textContainer: {
+  contentContainer: {
     flex: 1,
-    paddingLeft: 16, 
+    justifyContent: 'center',
+    paddingBottom: 5,
   },
   notificationText: {
     ...FONTS.body11,
     color: COLORS.secondary,
-    textAlign: 'left',
-    lineHeight: 18, 
+    lineHeight: 18,
+  },
+  dateTimeContainer: {
+  position: 'absolute',
+  bottom: SIZES.padding / 2,
+  right: SIZES.padding / 2,
+  flexDirection: 'row',
+  alignItems: 'center',
+  },
+  dateText: {
+    ...FONTS.body8,
+    color: COLORS.secondary,
+    fontWeight: '500',
+  },
+  timeText: {
+    ...FONTS.body13,
+    color: COLORS.gray_400,
+  },
+  chevronContainer: {
+    paddingLeft: SIZES.base,
+  },
+  chevron: {
+    color: COLORS.gray_400,
   },
 });

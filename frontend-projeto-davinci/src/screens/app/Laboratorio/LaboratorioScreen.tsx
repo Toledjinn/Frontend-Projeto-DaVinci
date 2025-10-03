@@ -31,7 +31,7 @@ export default function LaboratorioScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'Laboratório',
         CharacterSvg: Chefinho,

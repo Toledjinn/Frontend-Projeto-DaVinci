@@ -37,7 +37,7 @@ export default function EducationalScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'DaVinci Educacional',
         CharacterSvg: Chefinho,

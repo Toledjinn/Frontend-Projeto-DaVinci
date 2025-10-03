@@ -34,7 +34,7 @@ export default function DetalhesProdutoScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'loja',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: product?.name,
         CharacterSvg: Chefinho,

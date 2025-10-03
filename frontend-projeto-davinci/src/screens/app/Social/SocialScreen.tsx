@@ -31,7 +31,7 @@ export default function SocialScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page-large',
+        layout: 'page',
         showPageHeaderElements: true,
         pageTitle: 'DaVinci Social',
         CharacterSvg: Chefinho,
