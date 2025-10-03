@@ -9,7 +9,6 @@ import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import AppointmentListItem from '@/components/features/AppointmentListItem';
 import RecordFilterModal from '@/components/features/RecordFilterModal';
-import FullAppointmentListItem from '@/components/features/FullAppointmentListItem';
 
 import { getUsers, findUserById, UserProfile } from '@/data/mockUsers';
 import { getAllAppointments, getPendingAppointments, getAppointmentsByPatientId, getAppointmentsByDentistName, Appointment, APPOINTMENT_STATUSES } from '@/data/mockAppointments';
@@ -152,12 +151,8 @@ export default function AppointmentListScreen() {
     
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
-      const isPatientSearch = listType === 'all' || listType === 'pending';
-      if (isPatientSearch) {
-         appointmentsWithData = appointmentsWithData.filter(a => a.patientName?.toLowerCase().includes(lowerQuery));
-      } else {
-         appointmentsWithData = appointmentsWithData.filter(a => a.procedures?.some(p => p.toLowerCase().includes(lowerQuery)));
-      }
+      // A busca por nome do paciente agora funciona para todos os layouts
+      appointmentsWithData = appointmentsWithData.filter(a => a.patientName?.toLowerCase().includes(lowerQuery));
     }
     return appointmentsWithData;
   }, [allAppointments, searchQuery, startDate, endDate, selectedDentists, selectedSpecialties, selectedStatus, listType]);
@@ -188,37 +183,33 @@ export default function AppointmentListScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.outerContainer}>
-        <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
+      <FlatList
+        data={filteredAppointments}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />
+        )}
+        contentContainerStyle={[styles.listContentContainer, { paddingTop: headerHeight }]}
+        ListHeaderComponent={
           <SearchAndFilterBar
-            searchPlaceholder={config.searchPlaceholder}
+            value={searchQuery}
+            placeholder={config.searchPlaceholder}
             onSearchChange={setSearchQuery}
             onFilterPress={() => setFilterModalVisible(true)}
           />
-          <FlatList
-            data={filteredAppointments}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              if (config.headerLayout === 'page') { 
-                return <FullAppointmentListItem item={item} onPress={() => handleItemPress(item)} />;
-              }
-              return <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />;
-            }}
-            contentContainerStyle={styles.listContentContainer}
-            ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
-          />
-        </View>
-        {config.showFooter && (
-          <ScreenFooter
-            buttons={[{
-              title: config.footerButtonTitle, 
-              onPress: handleFooterButtonPress,
-              variant: 'secondary',
-            }]}
-          />
-        )}
-      </View>
-       <RecordFilterModal
+        }
+        ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
+      />
+      {config.showFooter && (
+        <ScreenFooter
+          buttons={[{
+            title: config.footerButtonTitle, 
+            onPress: handleFooterButtonPress,
+            variant: 'secondary',
+          }]}
+        />
+      )}
+      <RecordFilterModal
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApply={handleApplyFilter}
@@ -236,3 +227,4 @@ export default function AppointmentListScreen() {
     </SafeAreaView>
   );
 }
+

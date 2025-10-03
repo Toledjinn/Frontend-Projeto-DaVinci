@@ -1,79 +1,44 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
+import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
-    flex: 1,
-  },
   contentContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 40,
+    paddingHorizontal: SIZES.padding,
+    paddingBottom: 100, // Espaço para o footer
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.white,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 24,
+    borderRadius: SIZES.radius,
+    paddingHorizontal: SIZES.base * 1.5,
+    marginTop: 20, // Espaço abaixo do header
+    marginBottom: SIZES.padding, // Espaço antes da lista de pedidos
     elevation: 2,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
+    shadowOffset: { width: 0, height: 1 },
   },
   searchInput: {
-    flex: 1,
+      flex: 1,
+      ...FONTS.body10,
+      color: COLORS.secondary,
+      paddingVertical: SIZES.base * 1.5,
+      textAlignVertical: 'center',
+      marginLeft: SIZES.base,
+      marginRight: SIZES.base,
+    },
+
+  emptyText: {
     ...FONTS.body10,
-    color: COLORS.secondary,
-    paddingVertical: 12,
-    marginLeft: 8,
-  },
-  orderCard: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    alignItems: 'center',
-  },
-  orderInfo: {
-    flex: 1,
-  },
-  customerName: {
-    ...FONTS.body7,
-    color: COLORS.secondary,
-    marginBottom: 12,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  label: {
-    ...FONTS.body11,
     color: COLORS.gray_400,
-    width: 90,
-  },
-  value: {
-    ...FONTS.body9,
-    color: COLORS.secondary,
-  },
-  status: {
-    ...FONTS.body9,
-    fontWeight: 'bold',
-  },
-  chevronContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 16,
+    textAlign: 'center',
+    marginTop: 48,
   },
 });
 

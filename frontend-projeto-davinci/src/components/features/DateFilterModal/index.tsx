@@ -64,8 +64,8 @@ export default function DateFilterModal({
             />
           </View>
           <View style={styles.footer}>
-            <StyledButton title="Limpar" onPress={handleClear} variant="primary" style={styles.button} />
             <StyledButton title="Aplicar" onPress={handleApply} variant="secondary" style={styles.button} />
+            <StyledButton title="Limpar" onPress={handleClear} variant="primary" style={styles.button} />
           </View>
         </View>
       </View>

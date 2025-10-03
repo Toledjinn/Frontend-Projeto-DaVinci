@@ -36,7 +36,7 @@ export const FONTS = {
   body7: { fontFamily: 'Poppins-SemiBold', fontSize: 14, lineHeight: 20 },
   body8: { fontFamily: 'Poppins-SemiBold', fontSize: 12, lineHeight: 17 },
   body9: { fontFamily: 'Poppins-Medium', fontSize: 16, lineHeight: 22 },
-  body10: { fontFamily: 'Poppins-Medium', fontSize: 14, lineHeight: 20 },
+  body10: { fontFamily: 'Poppins-Medium', fontSize: 14, lineHeight: 25 },
   body11: { fontFamily: 'Poppins-Medium', fontSize: 12, lineHeight: 17 },
   body12: { fontFamily: 'Poppins-Medium', fontSize: 10, lineHeight: 17 },
   body13: { fontFamily: 'Poppins-Regular', fontSize: 12, lineHeight: 17 },

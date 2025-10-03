@@ -23,7 +23,6 @@ const NewsListItem = React.memo(({ item, onPress }: Props) => {
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       <Image source={item.image} style={styles.image} />
       <View style={styles.infoContainer}>
-        <Text style={styles.dateText}>{item.date}</Text>
         <Text style={styles.titleText} numberOfLines={2}>{item.title}</Text>
         <Text style={styles.snippetText} numberOfLines={2}>{item.snippet}</Text>
       </View>

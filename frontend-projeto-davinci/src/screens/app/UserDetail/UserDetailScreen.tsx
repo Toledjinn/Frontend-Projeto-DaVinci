@@ -114,7 +114,7 @@ export default function UserDetailScreen() {
       <ScreenFooter
         buttons={[
           {
-            title: isPatient ? "Prontuário" : "Ver Agendamentos",
+            title: isPatient ? "Prontuário" : "Consultas",
             onPress: isPatient ? handleViewRecord : (isDentist ? handleViewAppointments : () => {}),
             variant: 'primary',
           },

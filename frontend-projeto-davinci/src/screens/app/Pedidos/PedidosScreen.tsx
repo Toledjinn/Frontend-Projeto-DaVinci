@@ -1,38 +1,21 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import {
-  View,
   Text,
-  ScrollView,
+  FlatList,
   useWindowDimensions,
-  TextInput,
-  TouchableOpacity,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import styles from './PedidosScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { usePedidosStore, OrderStatus } from '@/state/pedidosStore';
+import { usePedidosStore, OrderItem, OrderStatus } from '@/state/pedidosStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
-import { Feather } from '@expo/vector-icons';
-import { COLORS } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import OrderListItem from '@/components/features/OrderListItem';
+import OrderFilterModal from '@/components/features/OrderFilterModal';
+import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 
-const userType = 'admin';
-
-const getStatusColor = (status: OrderStatus) => {
-  switch (status) {
-    case 'Aprovado':
-    case 'Entregue':
-      return COLORS.green;
-    case 'Pendente':
-      return COLORS.primary;
-    case 'Enviado':
-      return COLORS.blue;
-    case 'Cancelado':
-      return COLORS.red;
-    default:
-      return COLORS.gray_400;
-  }
-};
+// Opções de status para o filtro
+const ALL_STATUSES: OrderStatus[] = ['Pendente', 'Aprovado', 'Enviado', 'Entregue'];
 
 export default function PedidosScreen() {
   const router = useRouter();
@@ -41,18 +24,27 @@ export default function PedidosScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   
   const allOrders = usePedidosStore((state) => state.orders);
+  
   const [searchQuery, setSearchQuery] = useState('');
+  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+  const [selectedStatuses, setSelectedStatuses] = useState<OrderStatus[]>([]);
 
   const filteredOrders = useMemo(() => {
-    const nonCancelledOrders = allOrders.filter(order => order.status !== 'Cancelado');
+    let orders = allOrders.filter(order => order.status !== 'Cancelado');
 
-    if (!searchQuery) {
-      return nonCancelledOrders;
+    if (selectedStatuses.length > 0) {
+      orders = orders.filter(order => selectedStatuses.includes(order.status));
     }
-    return nonCancelledOrders.filter((order) =>
-      order.customerName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [allOrders, searchQuery]);
+
+    if (searchQuery) {
+        const lowercasedQuery = searchQuery.toLowerCase();
+        orders = orders.filter((order) =>
+            order.customerName.toLowerCase().includes(lowercasedQuery)
+        );
+    }
+
+    return orders;
+  }, [allOrders, searchQuery, selectedStatuses]);
 
   useFocusEffect(
     useCallback(() => {
@@ -71,50 +63,46 @@ export default function PedidosScreen() {
     router.push({ pathname: '/(app)/detalhes-pedido', params: { id: orderId } });
   };
 
+  const handleApplyFilter = (filters: { statuses: OrderStatus[] }) => {
+    setSelectedStatuses(filters.statuses);
+  };
+
+  const statusOptions = ALL_STATUSES.map(status => ({ label: status, value: status }));
+
+  const renderOrder = ({ item }: { item: OrderItem }) => (
+    <OrderListItem 
+      item={item}
+      onPress={() => handleViewPress(item.id)}
+    />
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
-      >
-        <View style={styles.searchBar}>
-          <Feather name="list" size={20} color={COLORS.gray_400} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Digite o nome do cliente"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          <Feather name="search" size={20} color={COLORS.gray_400} />
-        </View>
-
-        {filteredOrders.map((order) => (
-          <TouchableOpacity 
-            key={order.id} 
-            style={styles.orderCard} 
-            onPress={() => handleViewPress(order.id)}
-          >
-            <View style={styles.orderInfo}>
-              <Text style={styles.customerName}>{order.customerName}</Text>
-              <View style={styles.row}>
-                <Text style={styles.label}>Valor total</Text>
-                <Text style={styles.value}>R$ {order.totalValue.toFixed(2).replace('.', ',')}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>Status</Text>
-                <Text style={[styles.status, { color: getStatusColor(order.status) }]}>{order.status}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>Produtos</Text>
-                <Text style={styles.value}>{order.products.join(', ')}</Text>
-              </View>
-            </View>
-            <View style={styles.chevronContainer}>
-              <Feather name="chevron-right" size={24} color={COLORS.gray_400} />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+        <FlatList
+            data={filteredOrders}
+            renderItem={renderOrder}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+            ListHeaderComponent={
+              <SearchAndFilterBar
+                value={searchQuery}
+                placeholder="Pesquisar por cliente..."
+                onSearchChange={setSearchQuery}
+                onFilterPress={() => setFilterModalVisible(true)}
+              />
+            }
+            ListEmptyComponent={<Text style={styles.emptyText}>Nenhum pedido encontrado.</Text>}
+        />
+        <OrderFilterModal
+            visible={isFilterModalVisible}
+            onClose={() => setFilterModalVisible(false)}
+            onApply={handleApplyFilter}
+            statusOptions={statusOptions}
+            initialFilters={{
+                statuses: selectedStatuses,
+            }}
+        />
     </SafeAreaView>
   );
 }
+

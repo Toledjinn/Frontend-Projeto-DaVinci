@@ -1,48 +1,54 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { styles } from './styles';
-import { COLORS } from '@/constants/theme';
+import { styles, getStatusStyle } from './styles';
 import { Appointment } from '@/data/mockAppointments';
+import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 
-type AppointmentListItemProps = {
-  item: Appointment;
+export type AppointmentListItemProps = {
+  item: Appointment & { patientName?: string; patientImage?: any };
   onPress: () => void;
 };
 
-const AppointmentListItem = React.memo(({ item, onPress }: AppointmentListItemProps) => {
-  const statusInfo = {
-    realizada: { text: 'Realizada', color: COLORS.green, icon: 'check-circle' as const },
-    agendada: { text: 'Agendada', color: COLORS.primary, icon: 'calendar' as const },
-    cancelada: { text: 'Cancelada', color: COLORS.red, icon: 'x-circle' as const },
-    pendente: { text: 'Pendente', color: COLORS.gray_400, icon: 'alert-circle' as const },
-  };
-
-  const currentStatus = statusInfo[item.status];
-  if (!currentStatus) {
-    return null; 
-  }
+export default function AppointmentListItem({ item, onPress }: AppointmentListItemProps) {
+  const { icon, color } = getStatusStyle(item.status);
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
-      <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>{item.date}</Text>
-        <Text style={styles.timeText}>{item.time}</Text>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <View style={styles.imageContainer}>
+        {item.patientImage ? (
+          <Image source={item.patientImage} style={styles.image} />
+        ) : (
+          <UserPlaceholder width="100%" height="100%" />
+        )}
       </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.dentistText}>{item.dentist}</Text>
-        <View style={styles.statusContainer}>
-          <Feather name={currentStatus.icon} size={14} color={currentStatus.color} />
-          <Text style={[styles.statusText, { color: currentStatus.color }]}>
-            {currentStatus.text}
-          </Text>
+
+      <View style={styles.contentContainer}>
+        {/* Informações Principais */}
+        <View>
+          <Text style={styles.patientName} numberOfLines={1}>{item.patientName || 'Paciente'}</Text>
+          <Text style={styles.detailText}>{item.dentist}</Text>
+          <Text style={styles.detailText}>{item.specialty}</Text>
+        </View>
+
+        {/* Rodapé do Card */}
+        <View style={styles.footer}>
+          <View style={styles.statusContainer}>
+            <Feather name={icon} size={14} color={color} />
+            <Text style={[styles.statusText, { color }]}>{item.status}</Text>
+          </View>
         </View>
       </View>
-      <View style={styles.iconContainer}>
-        <Feather name="eye" size={28} color={COLORS.gray_400} />
+
+      <View style={styles.chevronContainer}>
+        <Feather name="chevron-right" size={24} color={styles.chevron.color} />
       </View>
+          <View style={styles.dateTimeContainer}>
+            <Text style={styles.dateText}>{item.date}</Text>
+            <Text style={styles.timeText}> - </Text> 
+            <Text style={styles.timeText}>{item.time}</Text>
+          </View>
     </TouchableOpacity>
   );
-});
+}
 
-export default AppointmentListItem;

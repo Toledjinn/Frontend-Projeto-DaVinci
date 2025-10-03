@@ -162,7 +162,8 @@ export default function UserListScreen() {
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
-            searchPlaceholder={config.searchPlaceholder}
+            value={searchQuery}
+            placeholder={config.searchPlaceholder}
             onSearchChange={setSearchQuery}
             onFilterPress={() => setFilterModalVisible(true)}
           />

@@ -2,18 +2,16 @@ import React, { useCallback } from 'react';
 import {
   FlatList,
   useWindowDimensions,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
 import { styles } from './NewsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useNewsStore } from '@/state/newsStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import NewsListItem, { NewsItemProps } from '@/components/features/NewsListItem';
-import { COLORS } from '@/constants/theme';
+import ScreenFooter from '@/components/common/ScreenFooter'; 
 
 const userType = 'admin';
 
@@ -58,9 +56,15 @@ export default function NewsScreen() {
       />
 
       {(userType === 'admin' || userType === 'dentista') && (
-        <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
-          <Feather name="plus" size={30} color={COLORS.white} />
-        </TouchableOpacity>
+        <ScreenFooter
+          buttons={[
+            {
+              title: "Adicionar Novidade",
+              onPress: handleAddPress,
+              variant: 'secondary',
+            },
+          ]}
+        />
       )}
     </SafeAreaView>
   );

@@ -122,8 +122,8 @@ export default function RecordFilterModal({
             {renderMultiSelect('Especialidades', specialtyOptions, selectedSpecialties, (item) => toggleSelection(selectedSpecialties, setSelectedSpecialties, item))}
           </ScrollView>
           <View style={styles.footer}>
-            <StyledButton title="Limpar" onPress={handleClear} variant="primary" style={styles.button} />
-            <StyledButton title="Aplicar" onPress={handleApply} variant="secondary" style={styles.button} />
+            <StyledButton title="Aplicar" onPress={handleApply} variant="primary" style={styles.button} />
+            <StyledButton title="Limpar" onPress={handleClear} variant="secondary" style={styles.button} />
           </View>
         </View>
       </View>

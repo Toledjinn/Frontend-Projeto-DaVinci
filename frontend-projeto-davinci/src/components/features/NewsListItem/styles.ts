@@ -22,11 +22,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  dateText: {
-    ...FONTS.body13,
-    color: COLORS.gray_400,
-    marginBottom: 4,
-  },
   titleText: {
     ...FONTS.body7,
     color: COLORS.secondary,
