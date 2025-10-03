@@ -9,7 +9,7 @@ export type CarouselSlide = {
   videoUrl?: string;
 };
 
-type PageName = 'produtos' | 'trabalhos' | 'parceiros';
+export type PageName = 'produtos' | 'trabalhos' | 'parceiros';
 
 type LaboratorioState = {
   pages: Record<PageName, { title: string; slides: CarouselSlide[] }>;
@@ -23,16 +23,16 @@ const MOCK_DATA = {
         title: 'Produtos',
         slides: [
             {
-              id: 'prod1',
-              title: 'Coroas de Zircônia',
-              text: 'Oferecemos coroas de zircônia fresadas com tecnologia CAD/CAM...',
-              image: require('@/assets/images/produto-1.png'),
+                id: 'prod1',
+                title: 'Coroas de Zircônia',
+                text: 'Oferecemos coroas de zircônia fresadas com tecnologia CAD/CAM...',
+                image: require('@/assets/images/produto-1.png'),
             },
             {
-              id: 'prod2',
-              title: 'Lentes de Contato Dental',
-              text: 'Nossas lentes de contato são ultrafinas e resistentes...',
-              image: require('@/assets/images/produto-2.png'),
+                id: 'prod2',
+                title: 'Lentes de Contato Dental',
+                text: 'Nossas lentes de contato são ultrafinas e resistentes...',
+                image: require('@/assets/images/produto-2.png'),
             },
         ],
     },

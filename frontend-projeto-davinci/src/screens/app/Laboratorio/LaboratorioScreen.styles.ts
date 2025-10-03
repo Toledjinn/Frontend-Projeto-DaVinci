@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
+import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
   safeArea: {
@@ -10,15 +10,47 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingHorizontal: SIZES.padding,
+    paddingBottom: SIZES.padding,
   },
   paragraph: {
-    ...FONTS.body9,
+    ...FONTS.body10,
     color: COLORS.secondary,
     textAlign: 'center',
     lineHeight: 22,
+    marginBottom: 40,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    width: '100%',
     marginTop: 20,
-    marginBottom: 24,
+  },
+  buttonItem: {
+    alignItems: 'center',
+    width: 100, 
+  },
+  itemCircle: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: COLORS.primary,
+    borderWidth: 3,
+    borderColor: COLORS.gray_400,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SIZES.base,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  itemText: {
+    ...FONTS.body8,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });

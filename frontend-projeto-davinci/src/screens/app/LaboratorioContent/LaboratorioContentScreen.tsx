@@ -9,46 +9,53 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { WebView } from 'react-native-webview'; 
-import { styles } from './ParceirosScreen.styles';
+import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
+import { WebView } from 'react-native-webview';
+import { styles } from './LaboratorioContentScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { useLaboratorioStore } from '@/state/laboratorioStore';
+import { useLaboratorioStore, PageName } from '@/state/laboratorioStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
 
 const userType = 'admin';
 
-const convertYouTubeUrl = (url: string) => {
-  if (!url) return '';
-  let videoId = '';
-  if (url.includes('youtu.be/')) {
-    videoId = url.split('youtu.be/')[1].split('?')[0];
-  } else if (url.includes('watch?v=')) {
-    videoId = url.split('watch?v=')[1].split('&')[0];
-  }
-  return `https://www.youtube.com/embed/${videoId}`;
-};
+const isValidPageName = (name: any): name is PageName => {
+    return ['produtos', 'trabalhos', 'parceiros'].includes(name);
+}
 
-export default function ParceirosScreen() {
+export default function LaboratorioContentScreen() {
   const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const { pageName } = useLocalSearchParams<{ pageName: string }>();
+
+  const page = isValidPageName(pageName) ? pageName : 'produtos';
+  
+  const { title, slides: carouselItems } = useLaboratorioStore((state) => state.pages[page]);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const carouselItems = useLaboratorioStore((state) => state.pages.parceiros?.slides || []);
 
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: 'Parceiros',
+        pageTitle: title,
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
-    }, [])
+    }, [title])
   );
+
+  const convertToEmbedUrl = (url?: string) => {
+    if (!url) return '';
+    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (videoIdMatch && videoIdMatch[1]) {
+      return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+    }
+    return url;
+  };
 
   const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
@@ -59,7 +66,10 @@ export default function ParceirosScreen() {
   };
 
   const handleEditPress = () => {
-    router.push({ pathname: '/(app)/editar-laboratorio', params: { page: 'parceiros' } });
+    router.push({
+      pathname: '/(app)/edit-laboratorio/[pageName]',
+      params: { pageName: page },
+    });
   };
 
   return (
@@ -75,20 +85,22 @@ export default function ParceirosScreen() {
           style={styles.carousel}
           contentContainerStyle={styles.carouselContent}
         >
-          {carouselItems.map((item) => (
+          {carouselItems && carouselItems.map((item) => (
             <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
               <View style={styles.card}>
                 <Text style={styles.title}>{item.title}</Text>
+                
                 {item.videoUrl ? (
                   <View style={styles.videoContainer}>
                     <WebView
-                      source={{ uri: convertYouTubeUrl(item.videoUrl) }}
                       style={styles.video}
-                      allowsFullscreenVideo
+                      javaScriptEnabled={true}
+                      domStorageEnabled={true}
+                      source={{ uri: convertToEmbedUrl(item.videoUrl) }}
                     />
                   </View>
                 ) : (
-                  item.image && <Image source={item.image} style={styles.image} />
+                  item.image && <Image source={item.image} style={styles.image} resizeMode="contain" />
                 )}
 
                 <Text style={styles.paragraph}>{item.text}</Text>
@@ -98,7 +110,7 @@ export default function ParceirosScreen() {
         </ScrollView>
 
         <View style={styles.paginationContainer}>
-          {carouselItems.map((_, index) => (
+          {carouselItems && carouselItems.map((_, index) => (
             <View
               key={index}
               style={[
@@ -110,13 +122,13 @@ export default function ParceirosScreen() {
         </View>
       </View>
 
-      {(userType === 'admin' || userType === 'dentista') && (
+      {(userType === 'admin') && (
         <ScreenFooter
           buttons={[
             {
               title: "Editar Conteúdo",
               onPress: handleEditPress,
-              variant: 'secondary',  
+              variant: 'secondary', 
             }
           ]}
         />

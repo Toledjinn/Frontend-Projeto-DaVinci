@@ -127,7 +127,7 @@ export default function EducationalContentScreen() {
 
   const handleEditContent = () => {
     router.push({
-      pathname: '/(app)/editar-conteudo-educacional',
+      pathname: '/(app)/edit-educacional/[contentType]',
       params: { contentType: contentType },
     });
   };

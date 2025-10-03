@@ -129,7 +129,7 @@ export default function SocialContentScreen() {
         <ScreenFooter
           buttons={[
             {
-              title: `Editar "${config.title}"`,
+              title: "Editar Seção",
               onPress: handleEditPress,
               variant: 'secondary',
             }

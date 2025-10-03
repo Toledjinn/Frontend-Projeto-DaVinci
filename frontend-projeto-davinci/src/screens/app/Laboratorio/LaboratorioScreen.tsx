@@ -4,27 +4,28 @@ import {
   Text,
   useWindowDimensions,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './LaboratorioScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
-import HomeSection from '@/components/features/HomeSection';
+import Escova2 from '@/assets/characters/escova2.svg';
+import Escova3 from '@/assets/characters/escova3.svg';
+import Escova4 from '@/assets/characters/escova4.svg';
+
+const labButtons = [
+    { id: 'produtos',  title: 'Nossa Filosofia', SvgComponent: Escova4, pageName: 'produtos' },
+    { id: 'trabalhos', title: 'Trabalhos', SvgComponent: Escova2, pageName: 'trabalhos' },
+    { id: 'parceiros', title: 'Parceiros', SvgComponent: Escova3, pageName: 'parceiros' },
+  ];
 
 export default function LaboratorioScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.324;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter(); 
-
- 
-  const labButtons = [
-    { id: 'produtos',  title: 'Nossa Filosofia', onPress: () => router.push('/(app)/produtos') },
-    { id: 'trabalhos', title: 'Trabalhos', onPress: () => router.push('/(app)/trabalhos') },
-    { id: 'parceiros', title: 'Parceiros', onPress: () => router.push('/(app)/parceiros') },
-  ];
-
 
   useFocusEffect(
     useCallback(() => {
@@ -39,6 +40,13 @@ export default function LaboratorioScreen() {
     }, [])
   );
 
+  const handleButtonPress = (pageName: string) => {
+    router.push({
+      pathname: '/(app)/laboratorio/[pageName]',
+      params: { pageName },
+    });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -49,7 +57,20 @@ export default function LaboratorioScreen() {
           Bem-vindo à nossa seção de laboratório. Aqui você pode encontrar informações sobre os produtos que utilizamos, ver exemplos de nossos trabalhos e conhecer os nossos parceiros.
         </Text>
         
-        <HomeSection title="" buttons={labButtons} />
+        <View style={styles.buttonsContainer}>
+          {labButtons.map((button) => (
+            <TouchableOpacity
+              key={button.id}
+              style={styles.buttonItem}
+              onPress={() => handleButtonPress(button.pageName)}
+            >
+              <View style={styles.itemCircle}>
+                <button.SvgComponent width="70%" height="70%" />
+              </View>
+              <Text style={styles.itemText}>{button.title}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
       </ScrollView>
     </SafeAreaView>
