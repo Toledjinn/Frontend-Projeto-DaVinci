@@ -5,7 +5,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './UserDetailScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import ProfileDataList from '@/components/features/ProfileDataList';
-import ScreenFooter from '@/components/common/ScreenFooter'; 
+import ScreenFooter from '@/components/common/ScreenFooter';
 import { findUserById, UserProfile } from '@/data/mockUsers';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import AllergyWarning from '@/components/features/AllergyWarning';
@@ -49,8 +49,8 @@ export default function UserDetailScreen() {
   const handleViewRecord = () => {
     if (user) {
       router.push({
-        pathname: "/record/[patientId]",
-        params: { patientId: user.id },
+        pathname: '/(app)/consultas-list',
+        params: { listType: 'patient', id: user.id } 
       });
     }
   };
@@ -58,8 +58,8 @@ export default function UserDetailScreen() {
   const handleViewAppointments = () => {
     if (user) {
       router.push({
-        pathname: "/dentist-appointments/[dentistId]",
-        params: { dentistId: user.id },
+        pathname: '/(app)/consultas-list', 
+        params: { listType: 'dentist', id: user.id }, 
       });
     }
   };
@@ -67,10 +67,10 @@ export default function UserDetailScreen() {
   const handleEditData = () => {
     if (user) {
       router.push({
-        pathname: '/register',
-        params: { 
-            userType: user.type, 
-            userId: user.id 
+        pathname: '/(app)/register', 
+        params: {
+          userType: user.type,
+          userId: user.id
         },
       });
     }
@@ -88,7 +88,7 @@ export default function UserDetailScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight  }]}
         showsVerticalScrollIndicator={false}
@@ -97,10 +97,10 @@ export default function UserDetailScreen() {
           <View style={styles.buttonActionsContainer}>
             <StyledButton
               title="Diagnósticos"
-              variant="primary" 
-              onPress={() => router.push({ 
-              pathname: '/(app)/diagnostico', 
-              params: { patientId: user.id } 
+              variant="primary"
+              onPress={() => router.push({
+              pathname: '/(app)/diagnostico',
+              params: { patientId: user.id }
             })}
           />
           </View>
@@ -116,12 +116,12 @@ export default function UserDetailScreen() {
           {
             title: isPatient ? "Prontuário" : "Ver Agendamentos",
             onPress: isPatient ? handleViewRecord : (isDentist ? handleViewAppointments : () => {}),
-            variant: 'primary', 
+            variant: 'primary',
           },
           {
             title: !isDentist ? "Editar Dados" : undefined,
             onPress: handleEditData,
-            variant: 'secondary',  
+            variant: 'secondary',
           }
         ]}
       />

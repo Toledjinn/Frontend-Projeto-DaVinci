@@ -50,7 +50,7 @@ export default function HomeScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { height } = useWindowDimensions();
   const router = useRouter();
-  const headerHeight = height * 0.15; 
+  const headerHeight = height * 0.15;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -65,11 +65,19 @@ export default function HomeScreen() {
 
   const handleButtonPress = (sectionId: string, buttonId: string) => {
     if (buttonId === 'consultas') {
-      router.push('/(app)/consultas');
-    } else if (buttonId === 'agendar') {
+      router.push({
+        pathname: '/(app)/consultas-list',
+        params: { listType: 'all' }
+      });
+    } 
+    else if (buttonId === 'solicitacoes') {
+      router.push({
+        pathname: '/(app)/consultas-list',
+        params: { listType: 'pending' }
+      });
+    }
+    else if (buttonId === 'agendar') {
       router.push('/(app)/schedule-appointment');
-    } else if (buttonId === 'solicitacoes') {
-      router.push('/(app)/solicitacoes');
     } else if (buttonId === 'dentistas') {
       router.push({pathname: '/(app)/users/[userType]', params: { userType: 'dentist'}});
     } else if (buttonId === 'pacientes') {
@@ -87,9 +95,9 @@ export default function HomeScreen() {
     } else if (buttonId === 'estoque') {
       router.push('/(app)/estoque');
     } else if (buttonId === 'pedidos') {
-      router.push('/(app)/pedidos');  
+      router.push('/(app)/pedidos');
     } else if (buttonId === 'loja') {
-      router.push('/(app)/loja');   
+      router.push('/(app)/loja');
     } else {
       console.log(`Botão pressionado: ${sectionId} - ${buttonId}`);
     }

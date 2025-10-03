@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { styles } from './AppointmentListScreen.styles';
@@ -8,9 +8,12 @@ import { useUIStore } from '@/state/uiStore';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import AppointmentListItem from '@/components/features/AppointmentListItem';
+import RecordFilterModal from '@/components/features/RecordFilterModal';
+import FullAppointmentListItem from '@/components/features/FullAppointmentListItem';
 
-import { getUsers, findUserById } from '@/data/mockUsers';
-import { getAllAppointments, getPendingAppointments, getAppointmentsByPatientId, getAppointmentsByDentistName, Appointment } from '@/data/mockAppointments';
+import { getUsers, findUserById, UserProfile } from '@/data/mockUsers';
+import { getAllAppointments, getPendingAppointments, getAppointmentsByPatientId, getAppointmentsByDentistName, Appointment, APPOINTMENT_STATUSES } from '@/data/mockAppointments';
+import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 
 import Chefinho from '@/assets/characters/chefinho.svg';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
@@ -20,145 +23,187 @@ const listTypeConfig = {
   all: {
     title: 'Consultas',
     fetchData: () => getAllAppointments().filter(a => a.status !== 'pendente'),
-    itemVariant: 'full' as const,
     searchPlaceholder: 'Pesquisar por paciente...',
     showFooter: true,
     footerButtonTitle: 'Agendar Consulta',
+    headerLayout: 'page' as const,
   },
   pending: {
     title: 'Solicitações',
     fetchData: getPendingAppointments,
-    itemVariant: 'full' as const,
     searchPlaceholder: 'Pesquisar por paciente...',
     showFooter: false,
+    footerButtonTitle: '', 
+    headerLayout: 'page' as const,
   },
   patient: {
     title: 'Prontuário de',
     fetchData: getAppointmentsByPatientId,
-    itemVariant: 'compact' as const,
     searchPlaceholder: 'Pesquisar por procedimento...',
     showFooter: true,
     footerButtonTitle: 'Nova Consulta',
+    headerLayout: 'profile' as const,
   },
   dentist: {
     title: 'Consultas de',
     fetchData: getAppointmentsByDentistName,
-    itemVariant: 'compact' as const,
     searchPlaceholder: 'Pesquisar por procedimento...',
     showFooter: true,
     footerButtonTitle: 'Nova Consulta',
+    headerLayout: 'profile' as const,
   },
+};
+
+type ListType = keyof typeof listTypeConfig;
+
+const isValidListType = (value: any): value is ListType => {
+  return value in listTypeConfig;
 };
 
 export default function AppointmentListScreen() {
   const router = useRouter();
-  const { listType, id } = useLocalSearchParams<{ listType: keyof typeof listTypeConfig, id?: string }>();
+  const { listType: rawListType, id } = useLocalSearchParams<{ listType?: string, id?: string }>();
+  
+  const listType: ListType = isValidListType(rawListType)
+    ? rawListType
+    : id ? 'patient' : 'all';
 
+  const config = listTypeConfig[listType];
+
+  const { height } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const headerHeight = useUIStore((state) => state.headerConfig.headerHeight);
+  const headerHeight = height * (config.headerLayout === 'profile' ? 0.29 : 0.208);
 
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [selectedDentists, setSelectedDentists] = useState<string[]>([]);
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+  
   useFocusEffect(
-  useCallback(() => {
-    const config = listType ? listTypeConfig[listType] : listTypeConfig.all;
-    const isProfileLayout = config.itemVariant === 'compact';
-    const user = (isProfileLayout && id) ? findUserById(id) : null;
+    useCallback(() => {
+      const user = (config.headerLayout === 'profile' && id) ? findUserById(id) : null;
 
-    const commonConfig = {
-      visible: true,
-      showBackground: true,        // mantém a faixa laranja
-      showNotificationIcon: true,
-    } as const;
+      if (user) {
+        const formattedName = formatUserName(user.name);
+        setHeaderConfig({
+          layout: 'profile',
+          userName: `${config.title} ${formattedName}`,
+          UserImageSvg: user.image || UserPlaceholder,
+          riskLevel: user.riskLevel,
+          showNotificationIcon: true,
+          showBackground: true,
+        });
+      } else {
+        setHeaderConfig({
+          layout: 'page',
+          showPageHeaderElements: true, 
+          pageTitle: config.title,
+          CharacterSvg: Chefinho,
+          showNotificationIcon: true,
+          showBackground: true,
+        });
+      }
 
-    if (user) {
-      // PRONTUÁRIO / CONSULTAS DENTISTA -> layout 'profile'
-      setHeaderConfig({
-        ...commonConfig,
-        layout: 'profile',
-        userName: `${config.title} ${formatUserName(user.name)}`,
-        UserImageSvg: user.image || UserPlaceholder, // <-- use componente SVG aqui
-        riskLevel: user.riskLevel,
-        // NÃO envie pageTitle nesse layout
-        // NÃO use imageUrl (não é string e ProfileHeader não usa)
-        // CharacterSvg não é necessário em 'profile'
-      });
-    } else {
-      // CONSULTAS / SOLICITAÇÕES -> layout 'page'
-      setHeaderConfig({
-        ...commonConfig,
-        layout: 'page',
-        pageTitle: config.title,    // "Consultas" ou "Solicitações"
-        CharacterSvg: Chefinho,     // garante mascote
-        // Limpa campos de perfil
-        userName: undefined,
-        UserImageSvg: undefined,
-        riskLevel: undefined,
-        // NÃO envie imageUrl
-      });
-    }
+      let fetchedAppointments: Appointment[] = [];
+      if (listType === 'patient' && id) {
+        fetchedAppointments = (config.fetchData as (id: string) => Appointment[])(id);
+      } else if (listType === 'dentist' && user) {
+        fetchedAppointments = (config.fetchData as (name: string) => Appointment[])(user.name);
+      } else {
+        fetchedAppointments = (config.fetchData as () => Appointment[])();
+      }
+      setAllAppointments(fetchedAppointments || []);
+    }, [listType, id, config])
+  );
 
-    let fetchedAppointments: Appointment[] = [];
-    if (listType === 'patient' && id) {
-      // @ts-ignore
-      fetchedAppointments = config.fetchData(id);
-    } else if (listType === 'dentist' && user) {
-      // @ts-ignore
-      fetchedAppointments = config.fetchData(user.name);
-    } else {
-      // @ts-ignore
-      fetchedAppointments = config.fetchData();
-    }
-    setAppointments(fetchedAppointments || []);
-
-  }, [listType, id, setHeaderConfig])
-);
-
-  const processedAppointments = useMemo(() => {
+  const filteredAppointments = useMemo(() => {
     const patients = getUsers('patient');
-    let appointmentsData = appointments.map(appt => {
+    let appointmentsWithData = allAppointments.map(appt => {
       const patient = patients.find(p => p.id === appt.patientId);
-      return { ...appt, patientName: patient?.name || 'Paciente não encontrado', patientImage: patient?.image || null, hasAllergies: !!patient?.allergies?.length };
+      return {
+          ...appt,
+          patientName: patient?.name || 'Paciente não encontrado',
+          patientImage: patient?.image || null,
+          hasAllergies: !!patient?.allergies?.length,
+      }
     });
+
+    if (startDate) {
+        appointmentsWithData = appointmentsWithData.filter(appt => new Date(appt.date.split('/').reverse().join('-')) >= startDate);
+    }
+    if (endDate) {
+        const inclusiveEndDate = new Date(endDate);
+        inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1);
+        appointmentsWithData = appointmentsWithData.filter(appt => new Date(appt.date.split('/').reverse().join('-')) < inclusiveEndDate);
+    }
+    if (selectedDentists.length > 0) {
+        appointmentsWithData = appointmentsWithData.filter(appt => selectedDentists.includes(appt.dentist));
+    }
+    if (selectedSpecialties.length > 0) {
+        appointmentsWithData = appointmentsWithData.filter(appt => selectedSpecialties.includes(appt.specialty));
+    }
+    if (selectedStatus.length > 0) {
+        appointmentsWithData = appointmentsWithData.filter(appt => selectedStatus.includes(appt.status));
+    }
+    
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
-      const config = listType ? listTypeConfig[listType] : listTypeConfig.all;
-      if (config.itemVariant === 'full') {
-        appointmentsData = appointmentsData.filter(a => a.patientName?.toLowerCase().includes(lowerQuery));
+      const isPatientSearch = listType === 'all' || listType === 'pending';
+      if (isPatientSearch) {
+         appointmentsWithData = appointmentsWithData.filter(a => a.patientName?.toLowerCase().includes(lowerQuery));
       } else {
-        appointmentsData = appointmentsData.filter(a => a.procedures?.some(p => p.toLowerCase().includes(lowerQuery)));
+         appointmentsWithData = appointmentsWithData.filter(a => a.procedures?.some(p => p.toLowerCase().includes(lowerQuery)));
       }
     }
-    return appointmentsData;
-  }, [appointments, searchQuery, listType]);
-
+    return appointmentsWithData;
+  }, [allAppointments, searchQuery, startDate, endDate, selectedDentists, selectedSpecialties, selectedStatus, listType]);
+  
+  const dentistOptions = useMemo(() => [...new Set(getAllAppointments().map(a => a.dentist))], []);
+  
+  const handleApplyFilter = (filters: any) => {
+    setStartDate(filters.start);
+    setEndDate(filters.end);
+    setSelectedDentists(filters.dentists);
+    setSelectedSpecialties(filters.specialties);
+    setSelectedStatus(filters.status);
+    setFilterModalVisible(false);
+  };
+  
   const handleItemPress = (item: Appointment) => {
-    router.push({ pathname: '/(app)/appointment/[appointmentId]', params: { appointmentId: item.id } });
+    router.push(`/(app)/appointment/${item.id}`);
   };
 
   const handleFooterButtonPress = () => {
-    const params = listType === 'patient' ? { patientId: id } : { dentistId: id };
+    const params: { patientId?: string; dentistId?: string } = {};
+    if (id) {
+        if (listType === 'patient') params.patientId = id;
+        if (listType === 'dentist') params.dentistId = id;
+    }
     router.push({ pathname: '/(app)/schedule-appointment', params });
   };
 
-  const config = listType ? listTypeConfig[listType] : listTypeConfig.all;
-
   return (
-    <SafeAreaView key={listType || 'all'} style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
           <SearchAndFilterBar
             searchPlaceholder={config.searchPlaceholder}
             onSearchChange={setSearchQuery}
-            onFilterPress={() => { }}
+            onFilterPress={() => setFilterModalVisible(true)}
           />
           <FlatList
-            data={processedAppointments}
+            data={filteredAppointments}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <AppointmentListItem item={item} variant={config.itemVariant} onPress={() => handleItemPress(item)} />
-            )}
+            renderItem={({ item }) => {
+              if (config.headerLayout === 'page') { 
+                return <FullAppointmentListItem item={item} onPress={() => handleItemPress(item)} />;
+              }
+              return <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />;
+            }}
             contentContainerStyle={styles.listContentContainer}
             ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
           />
@@ -166,13 +211,28 @@ export default function AppointmentListScreen() {
         {config.showFooter && (
           <ScreenFooter
             buttons={[{
-              title: config.footerButtonTitle || '',
+              title: config.footerButtonTitle, 
               onPress: handleFooterButtonPress,
-              variant: 'primary',
+              variant: 'secondary',
             }]}
           />
         )}
       </View>
+       <RecordFilterModal
+        visible={isFilterModalVisible}
+        onClose={() => setFilterModalVisible(false)}
+        onApply={handleApplyFilter}
+        dentistOptions={listType === 'all' ? dentistOptions : []}
+        specialtyOptions={ALL_SPECIALTIES}
+        statusOptions={APPOINTMENT_STATUSES} 
+        initialFilters={{ 
+          start: startDate, 
+          end: endDate, 
+          dentists: selectedDentists, 
+          specialties: selectedSpecialties, 
+          status: selectedStatus 
+        }}
+      />
     </SafeAreaView>
   );
 }
