@@ -10,6 +10,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
   },
+  sectionContainer: {
+    marginBottom: 24,
+  },
   description: {
     ...FONTS.body9,
     color: COLORS.gray_400,
@@ -24,7 +27,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   gridItem: {
-    width: '30%', 
+    width: '30%',
     alignItems: 'center',
     marginBottom: 25,
   },

@@ -9,12 +9,12 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
-import { useLocalSearchParams, useRouter, useFocusEffect, useSegments } from 'expo-router';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './EditEducationalContentScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { useEducationalContentStore, CarouselSlide } from '@/state/educationalContentStore';
+import { useEducationalContentStore, CarouselSlide, PageName } from '@/state/educationalContentStore';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import StyledInput from '@/components/common/StyledInput';
 import AddSlideModal from '@/components/features/AddSlideModal';
@@ -27,60 +27,35 @@ import FioDental from '@/assets/characters/fio.svg';
 import Fluor from '@/assets/characters/fluor.svg';
 import Revelador from '@/assets/characters/revelador.svg';
 
-type PageName = 'chefinho' | 'escova' | 'pasta' | 'fio' | 'fluor' | 'revelador';
-
-const fitIconForHeader = (
-  Svg: React.ComponentType<any>,
-  scalePct = 0.90 
-) => {
-  const pct = `${Math.round(scalePct * 100)}%`;
-  const Fitted = () => (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-      }}
-    >
-      <Svg width={pct} height={pct} preserveAspectRatio="xMidYMid meet" />
-    </View>
-  );
-  return Fitted;
+const editContentConfig = {
+  chefinho: {
+    title: 'Chefinho',
+    CharacterSvg: Chefinho,
+  },
+  escova: {
+    title: 'Escova',
+    CharacterSvg: Escova,
+  },
+  pasta: {
+    title: 'Pasta',
+    CharacterSvg: Pasta,
+  },
+  'fio-dental': {
+    title: 'Fio Dental',
+    CharacterSvg: FioDental,
+  },
+  fluor: {
+    title: 'Flúor',
+    CharacterSvg: Fluor,
+  },
+  'revelador-de-placa': {
+    title: 'Revelador de Placa',
+    CharacterSvg: Revelador,
+  },
 };
 
-const CHARACTER_MAP: Record<PageName, React.ComponentType<any>> = {
-  chefinho: Chefinho,
-  escova: Escova,
-  pasta: Pasta,
-  fio: FioDental,
-  fluor: Fluor,
-  revelador: Revelador,
-};
-
-const TITLE_MAP: Record<PageName, string> = {
-  chefinho: 'Chefinho',
-  escova: 'Escova',
-  pasta: 'Pasta',
-  fio: 'Fio Dental',
-  fluor: 'Flúor',
-  revelador: 'Revelador de Placa',
-};
-
-function resolvePageName(paramPage?: string, segments?: string[]): PageName {
-  if (paramPage) {
-    const p = paramPage.toLowerCase();
-    if (p in CHARACTER_MAP) return p as PageName;
-  }
-  const last = (segments?.[segments.length - 1] || '').toLowerCase();
-  if (last.includes('chefinho')) return 'chefinho';
-  if (last.includes('escova')) return 'escova';
-  if (last.includes('pasta')) return 'pasta';
-  if (last.includes('fio')) return 'fio';
-  if (last.includes('fluor') || last.includes('flúor')) return 'fluor';
-  if (last.includes('revelador')) return 'revelador';
-  return 'chefinho';
+const isValidPageName = (name: any): name is PageName => {
+  return name in editContentConfig;
 }
 
 const SlideContentEditor = ({
@@ -427,13 +402,14 @@ const SlideContentEditor = ({
   }
 };
 
+
 export default function EditEducationalContentScreen() {
   const router = useRouter();
-  const segments = useSegments();
-  const { page: pageParam } = useLocalSearchParams<{ page?: string }>();
+  const { contentType } = useLocalSearchParams<{ contentType?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const page = resolvePageName(pageParam, segments);
+  const page = isValidPageName(contentType) ? contentType : 'chefinho';
+  const config = editContentConfig[page];
 
   const pageContent = useEducationalContentStore((state) => state.pages[page]);
   const updatePage = useEducationalContentStore((state) => state.updatePage);
@@ -454,22 +430,15 @@ export default function EditEducationalContentScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const BaseIcon = CHARACTER_MAP[page] ?? Chefinho;
-      const CharacterSvg = fitIconForHeader(BaseIcon, 0.90);
-
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
-        pageTitle: `Editar ${TITLE_MAP[page] ?? page}`,
-        CharacterSvg,
+        pageTitle: `Editar ${config.title}`,
+        CharacterSvg: config.CharacterSvg,
         showNotificationIcon: true,
         visible: true,
       });
-
-      return () => {
-        setHeaderConfig((prev) => ({ ...prev, showPageHeaderElements: false }));
-      };
-    }, [page, setHeaderConfig])
+    }, [page, config])
   );
 
   const handleToggleSlide = (slideId: string) => {
@@ -498,12 +467,10 @@ export default function EditEducationalContentScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 9],
       quality: 0.8,
     });
 
     if (result.canceled) return;
-
     const uri = result.assets?.[0]?.uri;
     if (!uri) return;
 
@@ -621,15 +588,16 @@ export default function EditEducationalContentScreen() {
           {
             title: "Salvar",
             onPress: handleSaveChanges,
-            variant: 'primary',  
+            variant: 'primary',
           },
           {
             title: "Cancelar",
             onPress: () => router.back(),
-            variant: 'secondary',  
+            variant: 'secondary',
           }
         ]}
       />
     </SafeAreaView>
   );
 }
+
