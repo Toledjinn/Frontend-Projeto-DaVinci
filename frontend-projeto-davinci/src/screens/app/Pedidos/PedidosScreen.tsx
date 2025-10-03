@@ -14,7 +14,6 @@ import OrderListItem from '@/components/features/OrderListItem';
 import OrderFilterModal from '@/components/features/OrderFilterModal';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 
-// Opções de status para o filtro
 const ALL_STATUSES: OrderStatus[] = ['Pendente', 'Aprovado', 'Enviado', 'Entregue'];
 
 export default function PedidosScreen() {

@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   listContentContainer: {
     paddingHorizontal: SIZES.padding,
-    paddingBottom: 120, // Espaço para o footer flutuante
+    paddingBottom: 120, 
   },
   emptyText: {
     ...FONTS.body10,

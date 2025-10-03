@@ -151,7 +151,6 @@ export default function AppointmentListScreen() {
     
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
-      // A busca por nome do paciente agora funciona para todos os layouts
       appointmentsWithData = appointmentsWithData.filter(a => a.patientName?.toLowerCase().includes(lowerQuery));
     }
     return appointmentsWithData;

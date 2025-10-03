@@ -8,7 +8,6 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
     paddingHorizontal: SIZES.base * 1.5,
-    // CORREÇÃO: Movendo o padding vertical para o contêiner
     paddingVertical: SIZES.base * 1.5,
     marginTop: 20,
     marginBottom: SIZES.padding,
@@ -22,7 +21,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     ...FONTS.body10,
     color: COLORS.secondary,
-    // CORREÇÃO: Removendo o padding vertical do input e zerando-o
     paddingVertical: 0, 
     marginLeft: SIZES.base,
     marginRight: SIZES.base,

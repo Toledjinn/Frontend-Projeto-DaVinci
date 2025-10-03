@@ -1,4 +1,3 @@
-// CORREÇÃO: Criando e exportando o tipo para o status
 export type AppointmentStatus = 'realizada' | 'agendada' | 'cancelada' | 'pendente';
 
 export type Appointment = {
@@ -6,7 +5,6 @@ export type Appointment = {
   patientId: string;
   date: string;
   time: string;
-  // CORREÇÃO: Usando o novo tipo exportado
   status: AppointmentStatus; 
   dentist: string;
   procedures: string[];

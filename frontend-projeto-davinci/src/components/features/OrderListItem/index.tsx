@@ -9,7 +9,6 @@ type OrderListItemProps = {
   onPress: () => void;
 };
 
-// Pequeno componente interno para renderizar cada produto
 const ProductRow = ({ product }: { product: ProductInOrder }) => (
   <View style={styles.productRow}>
     <Image source={product.image} style={styles.productImage} />

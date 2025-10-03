@@ -8,7 +8,7 @@ export default StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: SIZES.padding,
-    paddingBottom: 100, // Espaço para o footer
+    paddingBottom: 100, 
   },
   searchBar: {
     flexDirection: 'row',
@@ -16,8 +16,8 @@ export default StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
     paddingHorizontal: SIZES.base * 1.5,
-    marginTop: 20, // Espaço abaixo do header
-    marginBottom: SIZES.padding, // Espaço antes da lista de pedidos
+    marginTop: 20, 
+    marginBottom: SIZES.padding, 
     elevation: 2,
     shadowColor: '#000',
     shadowOpacity: 0.1,

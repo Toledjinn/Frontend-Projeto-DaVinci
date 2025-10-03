@@ -3,7 +3,6 @@ import { ImageSourcePropType } from 'react-native';
 
 export type OrderStatus = 'Pendente' | 'Aprovado' | 'Enviado' | 'Entregue' | 'Cancelado';
 
-// Novo tipo para detalhar cada produto no pedido
 export type ProductInOrder = {
   productId: string;
   name: string;
@@ -18,7 +17,7 @@ export type OrderItem = {
   address?: string; 
   totalValue: number;
   status: OrderStatus;
-  products: ProductInOrder[]; // Atualizado para usar o novo tipo
+  products: ProductInOrder[];
 };
 
 type PedidosState = {
@@ -27,7 +26,6 @@ type PedidosState = {
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
 };
 
-// MOCK_DATA atualizado com a nova estrutura de produtos
 const MOCK_DATA: OrderItem[] = [
   { 
     id: 'ord1', 

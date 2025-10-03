@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     justifyContent: 'space-between',
-    minHeight: 70, // Garante altura mínima para o alinhamento
+    minHeight: 70, 
   },
   patientName: {
     ...FONTS.body7,
@@ -80,8 +80,8 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     bottom: SIZES.padding / 2,
     right: SIZES.padding / 2,
-    flexDirection: 'row',   // Adiciona esta linha para alinhar na horizontal
-    alignItems: 'center',     // Altera de 'flex-end' para 'center' para o alinhamento vertical
+    flexDirection: 'row',   
+    alignItems: 'center',     
   },
   dateText: {
     ...FONTS.body8,

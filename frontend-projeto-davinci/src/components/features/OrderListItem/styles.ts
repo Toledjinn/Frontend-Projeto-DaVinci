@@ -6,13 +6,13 @@ export const getStatusColor = (status: OrderStatus) => {
   switch (status) {
     case 'Aprovado':
     case 'Entregue':
-      return '#10B981'; // green-500 from Tailwind
+      return '#10B981'; 
     case 'Pendente':
-      return '#F59E0B'; // amber-500 from Tailwind
+      return '#F59E0B';
     case 'Enviado':
-      return '#3B82F6'; // blue-500 from Tailwind
+      return '#3B82F6'; 
     case 'Cancelado':
-      return '#EF4444'; // red-500 from Tailwind
+      return '#EF4444';
     default:
       return COLORS.gray_400;
   }
