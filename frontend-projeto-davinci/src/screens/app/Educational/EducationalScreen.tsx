@@ -77,8 +77,7 @@ export default function EducationalScreen() {
                 onPress={() => handleItemPress(item)}
                 activeOpacity={0.8}
               >
-                
-                <LogoBadge {...badge.button(item.SvgComponent)} />
+                <LogoBadge {...badge.educationalButton(item.SvgComponent)} />
                 <Text style={styles.itemText}>{item.title}</Text>
               </TouchableOpacity>
             ))}

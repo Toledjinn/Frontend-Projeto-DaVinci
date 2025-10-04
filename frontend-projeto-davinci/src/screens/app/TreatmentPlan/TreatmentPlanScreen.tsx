@@ -35,6 +35,7 @@ export default function TreatmentPlanScreen() {
         userName: `Plano de Tratamento de ${formatUserName(patient.name)}`,
         UserImageSvg: patient.image || UserPlaceholder,
         riskLevel: patient.riskLevel,
+        showNotificationIcon: false
       });
     }
   }, [patient]));

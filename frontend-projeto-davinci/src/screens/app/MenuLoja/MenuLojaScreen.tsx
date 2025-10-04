@@ -99,7 +99,7 @@ export default function MenuLojaScreen({ mode }: Props) {
               accessibilityRole="button"
               accessibilityLabel={category.title}
             >
-              <LogoBadge {...badge.store(category.SvgComponent)} />
+              <LogoBadge {...badge.storeButton(category.SvgComponent)} />
               <Text style={styles.itemText}>{category.title}</Text>
             </TouchableOpacity>
           ))}

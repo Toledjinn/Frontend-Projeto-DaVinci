@@ -47,7 +47,7 @@ export default function PrevencaoScreen() {
           showBackground: true,
           userName: `${title} de ${formatUserName(patient.name)}`,
           UserImageSvg: patient.image || UserPlaceholder,
-          showNotificationIcon: true,
+          showNotificationIcon: false,
           riskLevel: patient.riskLevel,
         });
       }

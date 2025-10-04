@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,17 +15,26 @@ import { Feather } from '@expo/vector-icons';
 import styles from './EditEstoqueProdutoScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useEstoqueStore, CategoryName, ProductItem, ProductStatus } from '@/state/estoqueStore';
-import Chefinho from '@/assets/characters/chefinho.svg';
-import ScreenFooter from '@/components/common/ScreenFooter';
 import { COLORS } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { SvgProps } from 'react-native-svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
+import Chefinho from '@/assets/characters/chefinho.svg';
 import ToothbrushIcon from '@/assets/icons/toothbrush.svg';
 import ToothpasteIcon from '@/assets/icons/toothpaste.svg';
 import DentalFlossIcon from '@/assets/icons/dental-floss.svg';
 import FluorIcon from '@/assets/icons/mouthwash1.svg';
 import ReveladorIcon from '@/assets/icons/dropper.svg';
 import EnxaguanteIcon from '@/assets/icons/mouthwash2.svg';
+
+const CATEGORY_ICON_MAP: Record<CategoryName, React.FC<SvgProps>> = {
+  'Escovas': ToothbrushIcon,
+  'Pastas de Dente': ToothpasteIcon,
+  'Fio Dental': DentalFlossIcon,
+  'Flúor': FluorIcon,
+  'Revelador de Placa': ReveladorIcon,
+  'Enxaguante Bucal': EnxaguanteIcon,
+};
 
 const getStatusColor = (status: ProductStatus) => {
   switch (status) {
@@ -39,47 +49,10 @@ const getStatusColor = (status: ProductStatus) => {
   }
 };
 
-const fitIconForHeader = (
-  Svg: React.ComponentType<any>,
-  scalePct = 0.72 
-) => {
-  const pct = `${Math.round(scalePct * 100)}%`;
-  const Fitted = () => (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-      }}
-    >
-      <Svg width={pct} height={pct} preserveAspectRatio="xMidYMid meet" />
-    </View>
-  );
-  return Fitted;
-};
-
-const CATEGORY_ICON_MAP: Record<CategoryName, React.ComponentType<any>> = {
-  'Escovas': ToothbrushIcon,
-  'Pastas de Dente': ToothpasteIcon,
-  'Fio Dental': DentalFlossIcon,
-  'Flúor': FluorIcon,
-  'Revelador de Placa': ReveladorIcon,
-  'Enxaguante Bucal': EnxaguanteIcon,
-};
-
-const ICON_SCALE: Partial<Record<CategoryName, number>> = {
-  'Escovas': 0.74,
-  'Pastas de Dente': 0.72,
-  'Fio Dental': 0.72,
-  'Flúor': 0.70,
-  'Revelador de Placa': 0.72,
-  'Enxaguante Bucal': 0.72,
-};
-
 export default function EditEstoqueProdutoScreen() {
   const router = useRouter();
+  const { height } = useWindowDimensions();
+  const headerHeight = height * 0.216; 
   const { category, productId } = useLocalSearchParams<{ category: CategoryName; productId?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
@@ -88,7 +61,7 @@ export default function EditEstoqueProdutoScreen() {
 
   const productToEdit = useMemo(
     () => (isEditMode ? categories[category!]?.find((p) => p.id === productId) : null),
-    [categories, category, productId, isEditMode]
+    [categories, category, productId, isEditMode],
   );
 
   const [formData, setFormData] = useState<
@@ -129,22 +102,19 @@ export default function EditEstoqueProdutoScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const BaseIcon = category ? CATEGORY_ICON_MAP[category] : undefined;
-      const CharacterSvg = BaseIcon
-        ? fitIconForHeader(BaseIcon, ICON_SCALE[category as CategoryName] ?? 0.72)
-        : Chefinho;
+      const CharacterSvg =
+        (category && CATEGORY_ICON_MAP[category]) || (Chefinho as React.FC<SvgProps>);
 
       setHeaderConfig({
-        layout: 'page',
-        showPageHeaderElements: true,
-        pageTitle: isEditMode
-          ? ('Editar Produto')
-          : 'Cadastrar Produto',
-        CharacterSvg,
-        showNotificationIcon: true,
+        layout: 'loja',                   
+        showPageHeaderElements: true,    
+        pageTitle: isEditMode ? 'Editar Produto' : 'Cadastrar Produto',
+        CharacterSvg,                     
+        showNotificationIcon: false,      
+        pageHeaderBadgeVariant: 'store', 
         visible: true,
       });
-    }, [category, isEditMode, productToEdit?.name, setHeaderConfig])
+    }, [category, isEditMode, setHeaderConfig]),
   );
 
   const handleInputChange = (field: keyof typeof formData, value: string | number) => {
@@ -196,7 +166,10 @@ export default function EditEstoqueProdutoScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        showsVerticalScrollIndicator={false}
+      >
         <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
           {formData.imageUri ? (
             <Image source={{ uri: formData.imageUri }} style={styles.imagePreview} />
@@ -273,15 +246,15 @@ export default function EditEstoqueProdutoScreen() {
       <ScreenFooter
         buttons={[
           {
-            title: "Salvar",
+            title: 'Salvar',
             onPress: handleSaveChanges,
-            variant: 'primary',  
+            variant: 'primary',
           },
           {
-            title: "Cancelar",
+            title: 'Cancelar',
             onPress: () => router.back(),
-            variant: 'secondary',  
-          }
+            variant: 'secondary',
+          },
         ]}
       />
     </SafeAreaView>

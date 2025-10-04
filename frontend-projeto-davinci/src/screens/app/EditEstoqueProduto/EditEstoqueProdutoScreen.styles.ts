@@ -8,7 +8,6 @@ export default StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-    paddingTop: '44%',
     paddingBottom: 120,
   },
   imagePicker: {
@@ -58,4 +57,3 @@ export default StyleSheet.create({
     ...FONTS.body9,
   },
 });
-

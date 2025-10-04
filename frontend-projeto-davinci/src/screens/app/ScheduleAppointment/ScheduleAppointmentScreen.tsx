@@ -91,7 +91,7 @@ export default function ScheduleAppointmentScreen() {
                 showPageHeaderElements: true,
                 pageTitle: getTitle(),
                 CharacterSvg: Chefinho,
-                showNotificationIcon: true,
+                showNotificationIcon: false,
             });
         }, [isRescheduleMode, isReproposeMode])
     );

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -8,62 +8,32 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import styles from './EstoqueCategoriaScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useEstoqueStore, CategoryName, ProductStatus } from '@/state/estoqueStore';
-import Chefinho from '@/assets/characters/chefinho.svg';
-import ScreenFooter from '@/components/common/ScreenFooter';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { SvgProps } from 'react-native-svg';
 import { Feather } from '@expo/vector-icons';
 import { COLORS } from '@/constants/theme';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import Chefinho from '@/assets/characters/chefinho.svg';
 import ToothbrushIcon from '@/assets/icons/toothbrush.svg';
 import ToothpasteIcon from '@/assets/icons/toothpaste.svg';
 import DentalFlossIcon from '@/assets/icons/dental-floss.svg';
 import FluorIcon from '@/assets/icons/mouthwash1.svg';
 import ReveladorIcon from '@/assets/icons/dropper.svg';
 import EnxaguanteIcon from '@/assets/icons/mouthwash2.svg';
+import ScreenFooter from '@/components/common/ScreenFooter';
 
 const userType = 'admin';
 
-const categoryIcons: Record<CategoryName, React.ComponentType<any>> = {
-  'Escovas': ToothbrushIcon,
+const CATEGORY_ICON_MAP: Record<string, React.FC<SvgProps>> = {
+  Escovas: ToothbrushIcon,
   'Pastas de Dente': ToothpasteIcon,
   'Fio Dental': DentalFlossIcon,
-  'Flúor': FluorIcon,
+  Flúor: FluorIcon,
   'Revelador de Placa': ReveladorIcon,
   'Enxaguante Bucal': EnxaguanteIcon,
-};
-
-const fitIconForHeader = (
-  Svg: React.ComponentType<any>,
-  scalePct = 0.70 
-) => {
-  const pct = `${Math.round(scalePct * 100)}%`;
-  const Fitted = () => (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden', 
-      }}
-    >
-      <Svg width={pct} height={pct} preserveAspectRatio="xMidYMid meet" />
-    </View>
-  );
-  return Fitted;
-};
-
-const ICON_SCALE: Partial<Record<CategoryName, number>> = {
-  'Escovas': 0.72,
-  'Pastas de Dente': 0.70,
-  'Fio Dental': 0.70,
-  'Flúor': 0.68,
-  'Revelador de Placa': 0.70,
-  'Enxaguante Bucal': 0.70,
 };
 
 const getStatusColor = (status: ProductStatus) => {
@@ -83,7 +53,7 @@ export default function EstoqueCategoriaScreen() {
   const router = useRouter();
   const { category } = useLocalSearchParams<{ category: CategoryName }>();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.216;
+  const headerHeight = height * 0.216; 
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const allProducts = useEstoqueStore((state) => state.categories[category!]);
@@ -92,30 +62,26 @@ export default function EstoqueCategoriaScreen() {
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
     if (!searchQuery) return allProducts;
-    return allProducts.filter((product) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    return allProducts.filter((p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [allProducts, searchQuery]);
 
   useFocusEffect(
     useCallback(() => {
-      const BaseIcon =
-        category && categoryIcons[category] ? categoryIcons[category] : Chefinho;
-
       const CharacterSvg =
-        category && ICON_SCALE[category]
-          ? fitIconForHeader(BaseIcon, ICON_SCALE[category]!)
-          : fitIconForHeader(BaseIcon, 0.70);
+        (category && CATEGORY_ICON_MAP[category]) || (Chefinho as React.FC<SvgProps>);
 
       setHeaderConfig({
         visible: true,
-        layout: 'page',
-        showPageHeaderElements: true,
-        pageTitle: category,
-        CharacterSvg,
-        showNotificationIcon: true,
+        layout: 'page',                  
+        showPageHeaderElements: true,    
+        pageTitle: (category?.toUpperCase() || 'PRODUTOS') as string,
+        CharacterSvg,                  
+        showNotificationIcon: false,      
+        pageHeaderBadgeVariant: 'store',
       });
-    }, [category, setHeaderConfig])
+    }, [category, setHeaderConfig]),
   );
 
   const handleEditPress = (productId: string) => {
@@ -147,6 +113,7 @@ export default function EstoqueCategoriaScreen() {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        showsVerticalScrollIndicator={false}
       >
         <View style={styles.searchBar}>
           <Feather name="list" size={20} color={COLORS.gray_400} />
@@ -196,10 +163,10 @@ export default function EstoqueCategoriaScreen() {
         <ScreenFooter
           buttons={[
             {
-              title: "Adicionar Produto",
+              title: 'Adicionar Produto',
               onPress: handleAddPress,
-              variant: 'secondary',  
-            }
+              variant: 'secondary',
+            },
           ]}
         />
       )}

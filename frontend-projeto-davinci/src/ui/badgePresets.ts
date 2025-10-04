@@ -21,7 +21,6 @@ const shadowSoft: ViewStyle = {
 };
 
 export const badge = {
-  /** Header padrão (mascote): diâmetro do PageHeader, conteúdo 85% */
   header: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
     const width = getScreenWidth();
     return {
@@ -34,14 +33,13 @@ export const badge = {
     };
   },
 
-  /** Botões/grade: ideal = width*0.22 (clamp 76..92), conteúdo 80%, com sombra */
-  button: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+  storeHeader: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
     const width = getScreenWidth();
     const ideal = width * 0.22;
     const clamped = Math.min(92, Math.max(76, ideal));
     return {
       CharacterSvg,
-      diameter: Math.round(clamped),
+      diameter: width * 0.3073,
       borderWidth: 3,
       inset: 0,
       contentPercent: 80,
@@ -49,22 +47,34 @@ export const badge = {
     };
   },
 
-  /** Loja/Estoque (grid): fixo 100px, ícone 60%, com sombra */
-  store: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => ({
-    CharacterSvg,
-    diameter: 100,
-    borderWidth: 3,
-    inset: 0,
-    contentPercent: 60,
-    style: shadowSoft,
-  }),
+  storeButton: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+    const width = getScreenWidth();
+    const ideal = width * 0.22;
+    const diameter = Math.round(Math.min(100, Math.max(76, ideal)));
+    return {
+      CharacterSvg,
+      diameter,
+      borderWidth: 3,
+      inset: 0,
+      contentPercent: 60,   
+      style: shadowSoft,
+    };
+  },
 
-  /**
-   * ✅ NOVO: Header da loja com ícone de produto no centro
-   * - diâmetro = PageHeader (width * 0.3073)
-   * - proporção do conteúdo = 60% (igual aos botões da loja)
-   * - sem sombra
-   */
+  educationalButton: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+    const width = getScreenWidth();
+    const ideal = width * 0.22;
+    const diameter = Math.round(Math.min(100, Math.max(76, ideal)));
+    return {
+      CharacterSvg,
+      diameter,
+      borderWidth: 3,
+      inset: 0,
+      contentPercent: 75,   
+      style: shadowSoft,
+    };
+  },
+
   headerStore: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
     const width = getScreenWidth();
     return {

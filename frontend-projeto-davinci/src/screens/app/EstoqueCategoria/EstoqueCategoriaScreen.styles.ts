@@ -13,12 +13,7 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 40,
   },
-  centeredMessage: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 50,
-  },
+
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -38,6 +33,7 @@ export default StyleSheet.create({
     paddingVertical: 12,
     marginLeft: 8,
   },
+
   productCard: {
     flexDirection: 'row',
     backgroundColor: COLORS.white,
@@ -90,5 +86,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 12,
   },
-});
 
+  centeredMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 50,
+  },
+});
