@@ -4,6 +4,7 @@ import { SvgProps } from 'react-native-svg';
 import { getPageHeaderStyles } from './styles';
 import LogoBadge from '../LogoBadge';
 import { COLORS } from '@/constants/theme';
+import { badgePresets } from '@/ui/badgePresets';
 
 type PageHeaderProps = {
   CharacterSvg: React.FC<SvgProps>;
@@ -14,8 +15,10 @@ export default function PageHeader({ CharacterSvg, title }: PageHeaderProps) {
   const { width, height } = useWindowDimensions();
   const styles = getPageHeaderStyles(width, height);
 
-  const circleDiameter = useMemo(() => width * 0.3073, [width]);
   const chefinhoTopPosition = useMemo(() => height * 0.07, [height]);
+
+  const headerPreset = useMemo(() => badgePresets.header(width), [width]);
+  const circleDiameter = headerPreset.diameter;
 
   return (
     <View style={styles.container}>
@@ -27,11 +30,8 @@ export default function PageHeader({ CharacterSvg, title }: PageHeaderProps) {
       >
         <LogoBadge
           CharacterSvg={CharacterSvg}
-          diameter={circleDiameter}
-          borderWidth={3}
-          backgroundColor={COLORS.primary}
-          borderColor={COLORS.secondary}
-          contentPercent={85}
+          {...headerPreset}                
+          backgroundColor={COLORS.primary} 
         />
       </View>
 
