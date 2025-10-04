@@ -26,7 +26,6 @@ export const styles = StyleSheet.create({
   },
 });
 
-
 export const makeCircleStyle = (
   m: ReturnType<typeof getMetrics>,
   backgroundColor?: string,
@@ -36,10 +35,9 @@ export const makeCircleStyle = (
   borderRadius: m.r,
   borderWidth: m.bw,
   padding: m.inset,
-  backgroundColor,
-  borderColor: COLORS.secondary, 
+  backgroundColor: backgroundColor ?? COLORS.primary, 
+  borderColor: COLORS.secondary,
 });
-
 
 export const makeContentSizeStyle = (
   innerBox: number,
@@ -50,7 +48,6 @@ export const makeContentSizeStyle = (
   const px = (innerBox * pct) / 100;
   return { width: px, height: px };
 };
-
 
 export const makePressableStyle = (radius: number): ViewStyle => ({
   borderRadius: radius,

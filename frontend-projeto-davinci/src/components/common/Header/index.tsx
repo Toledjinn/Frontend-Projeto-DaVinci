@@ -34,7 +34,7 @@ export default function Header() {
     riskLevel,
   } = headerConfig;
 
-  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.29;
+  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.32;
 
   const notificationCircle = height * 0.09;
   const border = 3;                      

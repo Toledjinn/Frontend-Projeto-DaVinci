@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import Escova3 from '@/assets/characters/escova3.svg';
 import Escova4 from '@/assets/characters/escova4.svg';
 
 import LogoBadge from '@/components/common/LogoBadge';
-import { COLORS } from '@/constants/theme';
+import { badge } from '@/ui/badgePresets';
 
 const labButtons = [
   { id: 'produtos',  title: 'Nossa Filosofia', SvgComponent: Escova4, pageName: 'produtos' },
@@ -26,7 +26,7 @@ const labButtons = [
 ];
 
 export default function LaboratorioScreen() {
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const headerHeight = height * 0.324;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
@@ -51,11 +51,6 @@ export default function LaboratorioScreen() {
     });
   };
 
-  const badgeSize = useMemo(() => {
-    const ideal = width * 0.20; 
-    return Math.round(Math.min(92, Math.max(76, ideal)));
-  }, [width]);
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -77,12 +72,7 @@ export default function LaboratorioScreen() {
               accessibilityLabel={button.title}
             >
               <LogoBadge
-                CharacterSvg={button.SvgComponent}
-                diameter={badgeSize}
-                borderWidth={3}
-                backgroundColor={COLORS.primary}
-                borderColor={COLORS.gray_400} 
-                inset={8}                     
+                {...badge.button(button.SvgComponent)}
                 style={styles.badgeShadow}
               />
               <Text style={styles.itemText}>{button.title}</Text>
