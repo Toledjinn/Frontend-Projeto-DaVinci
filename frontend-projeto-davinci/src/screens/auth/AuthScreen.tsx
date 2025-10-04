@@ -158,7 +158,6 @@ function ForgotPanel() {
         visible: true,
         showBackground: false,
         showNotificationIcon: false,
-        hideCenter: true,
       });
     }, [setHeaderConfig])
   );
@@ -257,7 +256,6 @@ function ChangePanel() {
         visible: true,
         showBackground: false,
         showNotificationIcon: false,
-        hideCenter: true,
       });
     }, [setHeaderConfig])
   );

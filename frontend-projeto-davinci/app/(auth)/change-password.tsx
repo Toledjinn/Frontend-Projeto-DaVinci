@@ -1,3 +1,3 @@
-import ChangePasswordScreen from '@/screens/auth/ChangePasswordScreen';
-
-export default ChangePasswordScreen;
+import React from 'react';
+import AuthScreen from '@/screens/auth/AuthScreen';
+export default function ChangePassword() { return <AuthScreen mode="change" />; }
