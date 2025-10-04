@@ -7,10 +7,11 @@ export type LogoBadgeProps = React.ComponentProps<typeof LogoBadge>;
 
 export type FullBadgePreset = Pick<
   LogoBadgeProps,
-  'CharacterSvg' | 'diameter' | 'borderWidth' | 'inset' | 'contentPercent' | 'style'
+  'CharacterSvg' | 'diameter' | 'borderWidth' | 'inset' | 'contentPercent' | 'style' | 'backgroundColor'
 >;
 
 const getScreenWidth = () => Dimensions.get('window').width;
+const getScreenHeight = () => Dimensions.get('window').height;
 
 const shadowSoft: ViewStyle = {
   shadowColor: '#000',
@@ -30,24 +31,11 @@ export const badge = {
       inset: 0,
       contentPercent: 85,
       style: {},
+      backgroundColor: undefined,
     };
   },
 
-  storeHeader: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
-    const width = getScreenWidth();
-    const ideal = width * 0.22;
-    const clamped = Math.min(92, Math.max(76, ideal));
-    return {
-      CharacterSvg,
-      diameter: width * 0.3073,
-      borderWidth: 3,
-      inset: 0,
-      contentPercent: 80,
-      style: shadowSoft,
-    };
-  },
-
-  storeButton: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+  button: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
     const width = getScreenWidth();
     const ideal = width * 0.22;
     const diameter = Math.round(Math.min(100, Math.max(76, ideal)));
@@ -56,12 +44,13 @@ export const badge = {
       diameter,
       borderWidth: 3,
       inset: 0,
-      contentPercent: 60,   
+      contentPercent: 60,
       style: shadowSoft,
+      backgroundColor: undefined,
     };
   },
 
-  educationalButton: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+  store: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
     const width = getScreenWidth();
     const ideal = width * 0.22;
     const diameter = Math.round(Math.min(100, Math.max(76, ideal)));
@@ -70,8 +59,9 @@ export const badge = {
       diameter,
       borderWidth: 3,
       inset: 0,
-      contentPercent: 75,   
+      contentPercent: 60,
       style: shadowSoft,
+      backgroundColor: undefined,
     };
   },
 
@@ -84,6 +74,24 @@ export const badge = {
       inset: 0,
       contentPercent: 60,
       style: {},
+      backgroundColor: undefined,
+    };
+  },
+
+  headerNotif: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+    const h = getScreenHeight();
+    const notificationCircle = h * 0.085;
+    const border = 3;
+    const iconPadding = Math.round(h * 0.008);
+
+    return {
+      CharacterSvg,
+      diameter: notificationCircle,
+      borderWidth: 0,                    
+      inset: border + iconPadding,       
+      contentPercent: 100,               
+      style: {},                        
+      backgroundColor: 'transparent',    
     };
   },
 } as const;

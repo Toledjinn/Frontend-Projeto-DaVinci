@@ -15,6 +15,7 @@ import ShoppingCartIcon from '@/assets/icons/shoppingcart.svg';
 import { COLORS } from '@/constants/theme';
 import { useUIStore as useUIStoreHeader } from '@/state/uiStore';
 import { badge } from '@/ui/badgePresets';
+import LogoBadge from '@/components/common/LogoBadge'; 
 
 export default function Header() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function Header() {
     userName,
     UserImageSvg,
     riskLevel,
-    pageHeaderBadgeVariant, 
+    pageHeaderBadgeVariant,
   } = headerConfig;
 
   const headerHeight = layout === 'home' ? height * 0.226 : height * 0.32;
@@ -45,7 +46,7 @@ export default function Header() {
 
   if (!visible) return null;
 
-   const headerBadgePreset =
+  const headerBadgePreset =
     pageHeaderBadgeVariant === 'store' ? badge.headerStore : badge.header;
 
   return (
@@ -68,7 +69,7 @@ export default function Header() {
             title={pageTitle}
             badgePreset={headerBadgePreset}
           />
-      )}
+        )}
 
       {layout === 'profile' && UserImageSvg && userName && (
         <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} riskLevel={riskLevel} />
@@ -103,17 +104,18 @@ export default function Header() {
         <View style={styles.rightSection}>
           {showNotificationIcon && layout !== 'loja' && (
             <TouchableOpacity
-              style={[styles.notificationContainer, { padding: iconPadding }]}
+              style={[styles.notificationContainer]}
               onPress={() => router.push('/(app)/notifications')}
               activeOpacity={1}
             >
-              <NotificacaoIcon width={iconSize} height={iconSize} preserveAspectRatio="xMidYMid meet" />
+              <LogoBadge {...badge.headerNotif(NotificacaoIcon)} />
               <View style={styles.notificationDot} />
             </TouchableOpacity>
           )}
+
           {layout === 'loja' && (
             <TouchableOpacity
-              style={[styles.notificationContainer, { padding: iconPadding }]}
+              style={[styles.cartContainer]}
               onPress={() => router.push('/(app)/carrinho')}
               activeOpacity={1}
             >

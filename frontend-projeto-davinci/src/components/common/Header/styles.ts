@@ -77,6 +77,14 @@ export const getHeaderStyles = (height: number) => {
       justifyContent: 'center',
       alignItems: 'center',
     },
+    cartContainer: {
+      width: notificationCircle,
+      height: notificationCircle,
+      borderRadius: notificationCircle / 2,
+      borderColor: COLORS.secondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     notificationIcon: {
       width: notificationCircle,
       height: notificationCircle,
