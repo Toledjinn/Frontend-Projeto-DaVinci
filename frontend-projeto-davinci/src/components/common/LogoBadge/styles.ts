@@ -1,3 +1,4 @@
+// LogoBadge/styles.ts
 import { StyleSheet } from 'react-native';
 
 export const getMetrics = (diameter: number, borderWidth: number, inset: number) => {
@@ -15,8 +16,9 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   characterWrap: {
-    width: '100%',
-    height: '100%',
+    // agora o tamanho vem de contentSizeStyle; usamos só centralização
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   overlay: {
     position: 'absolute',

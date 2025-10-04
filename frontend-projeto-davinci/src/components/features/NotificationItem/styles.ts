@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
   },
   dateTimeContainer: {
   position: 'absolute',
-  bottom: SIZES.padding / 2,
+  bottom: SIZES.padding / 4,
   right: SIZES.padding / 2,
   flexDirection: 'row',
   alignItems: 'center',
