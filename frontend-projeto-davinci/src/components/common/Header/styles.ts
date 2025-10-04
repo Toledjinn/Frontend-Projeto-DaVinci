@@ -5,7 +5,6 @@ export const getHeaderStyles = (height: number) => {
   const circleDiameter = height * 0.115;
   const notificationCircle = height * 0.085;
 
-
   return StyleSheet.create({
     wrapper: {
       position: 'absolute',
@@ -16,7 +15,7 @@ export const getHeaderStyles = (height: number) => {
     },
     backgroundContainer: {
       ...StyleSheet.absoluteFillObject,
-      zIndex: 1, 
+      zIndex: 1,
     },
     headerContainer: {
       flex: 1,
@@ -24,8 +23,8 @@ export const getHeaderStyles = (height: number) => {
       justifyContent: 'space-between',
       paddingHorizontal: 20,
       paddingTop: 40,
-      zIndex: 3, 
-      top: 6
+      zIndex: 3,
+      top: 6,
     },
     leftSection: {
       flex: 1,
@@ -82,7 +81,6 @@ export const getHeaderStyles = (height: number) => {
       width: notificationCircle,
       height: notificationCircle,
     },
-
     notificationDot: {
       position: 'absolute',
       bottom: -5,

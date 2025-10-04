@@ -1,3 +1,6 @@
-import EstoqueScreen from '@/screens/app/Estoque/EstoqueScreen';
+import React from 'react';
+import MenuLojaScreen from '@/screens/app/MenuLoja/MenuLojaScreen';
 
-export default EstoqueScreen;
+export default function EstoqueRoute() {
+  return <MenuLojaScreen mode="estoque" />;
+}

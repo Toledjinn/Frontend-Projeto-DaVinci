@@ -3,20 +3,25 @@ import { View, Text, useWindowDimensions } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 import { getPageHeaderStyles } from './styles';
 import LogoBadge from '@/components/common/LogoBadge';
-import { badge } from '@/ui/badgePresets';
+import { badge, FullBadgePreset } from '@/ui/badgePresets';
 
 type PageHeaderProps = {
   CharacterSvg: React.FC<SvgProps>;
   title: string;
+
+  badgePreset?: (svg: React.FC<SvgProps>) => FullBadgePreset;
 };
 
-export default function PageHeader({ CharacterSvg, title }: PageHeaderProps) {
+export default function PageHeader({
+  CharacterSvg,
+  title,
+  badgePreset = badge.header, 
+}: PageHeaderProps) {
   const { width, height } = useWindowDimensions();
   const styles = getPageHeaderStyles(width, height);
 
-  const headerPreset = useMemo(() => badge.header(CharacterSvg), [CharacterSvg]);
-  const circleDiameter = headerPreset.diameter;
-
+  const preset = useMemo(() => badgePreset(CharacterSvg), [badgePreset, CharacterSvg]);
+  const circleDiameter = preset.diameter;
   const chefinhoTopPosition = useMemo(() => height * 0.07, [height]);
 
   return (
@@ -27,7 +32,7 @@ export default function PageHeader({ CharacterSvg, title }: PageHeaderProps) {
           { top: chefinhoTopPosition, width: circleDiameter, height: circleDiameter },
         ]}
       >
-        <LogoBadge {...headerPreset} />
+        <LogoBadge {...preset} />
       </View>
 
       <Text style={[styles.title, { top: chefinhoTopPosition + circleDiameter + 8 }]}>

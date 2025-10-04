@@ -1,3 +1,6 @@
-import LojaScreen from '@/screens/app/Loja/LojaScreen';
+import React from 'react';
+import MenuLojaScreen from '@/screens/app/MenuLoja/MenuLojaScreen';
 
-export default LojaScreen;
+export default function LojaRoute() {
+  return <MenuLojaScreen mode="loja" />;
+}

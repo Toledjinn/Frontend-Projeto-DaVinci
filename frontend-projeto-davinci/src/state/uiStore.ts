@@ -4,7 +4,7 @@ import React from 'react';
 
 type HeaderConfig = {
   visible: boolean;
-  layout: 'home' | 'page' | 'profile' | 'register' | 'loja'; 
+  layout: 'home' | 'page' | 'profile' | 'register' | 'loja';
   showPageHeaderElements: boolean;
   pageTitle: string;
   CharacterSvg: React.FC<SvgProps> | null;
@@ -13,6 +13,7 @@ type HeaderConfig = {
   userName?: string;
   UserImageSvg?: React.FC<SvgProps> | null;
   riskLevel?: 'baixo' | 'moderado' | 'alto';
+  pageHeaderBadgeVariant?: 'default' | 'store'; 
 };
 
 type UIState = {
@@ -30,6 +31,7 @@ const initialConfig: HeaderConfig = {
   showBackground: true,
   userName: '',
   UserImageSvg: null,
+  pageHeaderBadgeVariant: 'default', 
 };
 
 export const useUIStore = create<UIState>((set) => ({
