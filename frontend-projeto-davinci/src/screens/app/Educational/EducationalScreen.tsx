@@ -88,7 +88,8 @@ export default function EducationalScreen() {
                   backgroundColor={COLORS.primary}
                   borderColor={COLORS.gray_400} 
                   style={styles.badgeShadow}
-                  inset={8} 
+                  inset={0}
+                  contentPercent={80} 
                 />
                 <Text style={styles.itemText}>{item.title}</Text>
               </TouchableOpacity>

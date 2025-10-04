@@ -24,32 +24,32 @@ import Revelador from '@/assets/characters/revelador.svg';
 
 const contentConfig = {
   chefinho: {
-    title: 'O Chefinho',
+    title: 'Chefinho',
     CharacterSvg: Chefinho,
     pageName: 'chefinho' as const,
   },
   escova: {
-    title: 'A Escova',
+    title: 'Escova',
     CharacterSvg: Escova1,
     pageName: 'escova' as const,
   },
   'fio-dental': {
-    title: 'O Fio Dental',
+    title: 'Fio Dental',
     CharacterSvg: Fio,
     pageName: 'fio-dental' as const,
   },
   pasta: {
-    title: 'A Pasta',
+    title: 'Pasta',
     CharacterSvg: Pasta,
     pageName: 'pasta' as const,
   },
   fluor: {
-    title: 'O Flúor',
+    title: 'Flúor',
     CharacterSvg: Fluor,
     pageName: 'fluor' as const,
   },
   'revelador-de-placa': {
-    title: 'O Revelador de Placa',
+    title: 'Revelador de Placa',
     CharacterSvg: Revelador,
     pageName: 'revelador-de-placa' as const,
   },

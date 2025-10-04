@@ -1,4 +1,3 @@
-// /src/screens/auth/AuthScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -17,7 +16,6 @@ import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay } from 'react-native-reanimated';
 import { loginStyles, changeStyles, forgotStyles } from './AuthScreen.styles';
 
-// componentes/utilitários existentes (inalterados)
 import StyledInput from '@/components/common/StyledInput';
 import StyledButton from '@/components/common/StyledButton';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
@@ -47,8 +45,6 @@ function LoginPanel() {
 
   useFocusEffect(
     React.useCallback(() => {
-      // 🔧 header atual: sempre informe o layout
-      // login não mostra header
       setHeaderConfig({ layout: 'page', visible: false, showBackground: false });
     }, [setHeaderConfig])
   );
@@ -75,16 +71,7 @@ function LoginPanel() {
   };
 
   const handleLogin = () => {
-    // setCpfError(null);
-    // setPasswordError(null);
-
-    // const isCpfValid = validateCPF(cpf);
-    // const isPasswordValid = validatePassword(password);
-
-    // if (!isCpfValid) setCpfError('Por favor, insira um CPF válido.');
-    // if (!isPasswordValid) setPasswordError('A senha deve ter no mínimo 8 caracteres.');
-    // if (!isCpfValid || !isPasswordValid) return;
-
+    
     Alert.alert('Sucesso', 'Login efetuado!');
     router.replace('/(app)/home');
   };
@@ -152,7 +139,6 @@ function ForgotPanel() {
 
   useFocusEffect(
     React.useCallback(() => {
-      // 🔧 header atual: só botão de voltar (sem centro/sino)
       setHeaderConfig({
         layout: 'page',
         visible: true,
@@ -250,7 +236,6 @@ function ChangePanel() {
 
   useFocusEffect(
     React.useCallback(() => {
-      // 🔧 header atual: só botão de voltar (sem centro/sino)
       setHeaderConfig({
         layout: 'page',
         visible: true,

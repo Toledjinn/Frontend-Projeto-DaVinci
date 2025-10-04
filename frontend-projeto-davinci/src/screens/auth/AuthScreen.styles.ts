@@ -1,8 +1,6 @@
-// /src/screens/auth/AuthScreen.styles.ts
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
 
-// 🔹 Estilos do LoginScreen.styles.ts :contentReference[oaicite:0]{index=0}
 export const loginStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -40,7 +38,6 @@ export const loginStyles = StyleSheet.create({
   },
 });
 
-// 🔹 Estilos do ForgotPasswordScreen.styles.ts :contentReference[oaicite:1]{index=1}
 export const forgotStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -85,7 +82,6 @@ export const forgotStyles = StyleSheet.create({
   },
 });
 
-// 🔹 Estilos do ChangePasswordScreen.styles.ts :contentReference[oaicite:2]{index=2}
 export const changeStyles = StyleSheet.create({
   safeArea: {
     flex: 1,

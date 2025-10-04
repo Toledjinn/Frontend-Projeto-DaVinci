@@ -31,6 +31,7 @@ export default function PageHeader({ CharacterSvg, title }: PageHeaderProps) {
           borderWidth={3}
           backgroundColor={COLORS.primary}
           borderColor={COLORS.secondary}
+          contentPercent={85}
         />
       </View>
 
