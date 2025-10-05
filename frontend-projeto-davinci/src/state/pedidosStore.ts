@@ -7,6 +7,7 @@ export type ProductInOrder = {
   productId: string;
   name: string;
   quantity: number;
+  price: number;               
   image: ImageSourcePropType;
 };
 
@@ -14,7 +15,7 @@ export type OrderItem = {
   id: string;
   date: string;
   customerName: string;
-  address?: string; 
+  address?: string;
   totalValue: number;
   status: OrderStatus;
   products: ProductInOrder[];
@@ -27,39 +28,39 @@ type PedidosState = {
 };
 
 const MOCK_DATA: OrderItem[] = [
-  { 
-    id: 'ord1', 
+  {
+    id: 'ord1',
     date: '2025/09/25',
-    customerName: 'Rafael Ferreira Resende', 
+    customerName: 'Rafael Ferreira Resende',
     address: 'Rua das Flores, 123, Bairro Jardim, Cidade-UF, CEP 12345-678',
-    totalValue: 59.99, 
-    status: 'Pendente', 
+    totalValue: 59.99,
+    status: 'Pendente',
     products: [
-      { productId: 'esc1', name: 'Escova Slim Soft', quantity: 2, image: require('@/assets/images/produto-1.png') },
-      { productId: 'pas1', name: 'Pasta Total Care', quantity: 1, image: require('@/assets/images/produto-2.png') },
-    ]
+      { productId: 'esc1', name: 'Escova Slim Soft', quantity: 2, price: 20.00, image: require('@/assets/images/produto-1.png') },
+      { productId: 'pas1', name: 'Pasta Total Care', quantity: 1, price: 19.99, image: require('@/assets/images/produto-2.png') },
+    ],
   },
-  { 
-    id: 'ord2', 
+  {
+    id: 'ord2',
     date: '2025/10/01',
-    customerName: 'Bruce Wayne', 
+    customerName: 'Bruce Wayne',
     address: 'Mansão Wayne, Gotham City',
-    totalValue: 159.99, 
-    status: 'Pendente', 
+    totalValue: 160.00,
+    status: 'Pendente',
     products: [
-        { productId: 'esc2', name: 'Escova Infantil', quantity: 10, image: require('@/assets/images/placeholder.png') },
-    ]
+      { productId: 'esc2', name: 'Escova Infantil', quantity: 10, price: 16.00, image: require('@/assets/images/placeholder.png') },
+    ],
   },
-  { 
-    id: 'ord3', 
+  {
+    id: 'ord3',
     date: '2025/10/02',
-    customerName: 'Anderson Silva', 
+    customerName: 'Anderson Silva',
     address: 'Avenida Principal, 987, Centro, Cidade-UF, CEP 98765-432',
-    totalValue: 59.99, 
-    status: 'Aprovado', 
+    totalValue: 60.00,
+    status: 'Aprovado',
     products: [
-        { productId: 'esc1', name: 'Escova Slim Soft', quantity: 2, image: require('@/assets/images/produto-1.png') },
-    ]
+      { productId: 'esc1', name: 'Escova Slim Soft', quantity: 2, price: 30.00, image: require('@/assets/images/produto-1.png') },
+    ],
   },
 ];
 
@@ -67,7 +68,7 @@ export const usePedidosStore = create<PedidosState>((set, get) => ({
   orders: MOCK_DATA,
 
   getOrderById: (orderId) => {
-    return get().orders.find(order => order.id === orderId);
+    return get().orders.find((order) => order.id === orderId);
   },
 
   updateOrderStatus: (orderId, status) => {
@@ -78,4 +79,3 @@ export const usePedidosStore = create<PedidosState>((set, get) => ({
     }));
   },
 }));
-

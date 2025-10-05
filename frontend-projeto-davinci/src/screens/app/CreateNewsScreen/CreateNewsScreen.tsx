@@ -42,7 +42,7 @@ export default function CreateNewsScreen() {
         showPageHeaderElements: true,
         pageTitle: 'Criar Novidade',
         CharacterSvg: Chefinho,
-        showNotificationIcon: true,
+        showNotificationIcon: false,
       });
     }, [])
   );

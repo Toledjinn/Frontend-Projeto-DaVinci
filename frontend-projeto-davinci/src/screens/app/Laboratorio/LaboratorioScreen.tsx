@@ -72,7 +72,7 @@ export default function LaboratorioScreen() {
               accessibilityLabel={button.title}
             >
               <LogoBadge
-                {...badge.button(button.SvgComponent)}
+                {...badge.educationalButton(button.SvgComponent)}
                 style={styles.badgeShadow}
               />
               <Text style={styles.itemText}>{button.title}</Text>

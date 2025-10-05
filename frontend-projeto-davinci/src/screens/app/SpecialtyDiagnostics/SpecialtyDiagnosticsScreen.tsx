@@ -35,6 +35,7 @@ export default function SpecialtyDiagnosticsScreen() {
         userName: `Diagnósticos de ${specialty}`,
         UserImageSvg: patient.image || UserPlaceholder,
         riskLevel: patient.riskLevel,
+        showNotificationIcon: false
       });
     }
   }, [patient, specialty]));

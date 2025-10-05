@@ -37,9 +37,9 @@ export default function Header() {
     pageHeaderBadgeVariant,
   } = headerConfig;
 
-  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.32;
+  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.30;
 
-  const notificationCircle = height * 0.085;
+  const notificationCircle = height * 0.15;
   const border = 3;
   const iconPadding = Math.round(height * 0.008);
   const iconSize = notificationCircle - border * 2 - iconPadding * 2;
@@ -119,7 +119,7 @@ export default function Header() {
               onPress={() => router.push('/(app)/carrinho')}
               activeOpacity={1}
             >
-              <ShoppingCartIcon width={iconSize} height={iconSize} preserveAspectRatio="xMidYMid meet" />
+              <ShoppingCartIcon width={iconSize} height={iconSize} style={styles.notificationIcon} />
             </TouchableOpacity>
           )}
         </View>

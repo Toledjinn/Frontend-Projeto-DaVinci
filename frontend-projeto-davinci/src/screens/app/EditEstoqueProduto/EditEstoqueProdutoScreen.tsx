@@ -106,7 +106,7 @@ export default function EditEstoqueProdutoScreen() {
         (category && CATEGORY_ICON_MAP[category]) || (Chefinho as React.FC<SvgProps>);
 
       setHeaderConfig({
-        layout: 'loja',                   
+        layout: 'page',                   
         showPageHeaderElements: true,    
         pageTitle: isEditMode ? 'Editar Produto' : 'Cadastrar Produto',
         CharacterSvg,                     

@@ -435,7 +435,7 @@ export default function EditEducationalContentScreen() {
         showPageHeaderElements: true,
         pageTitle: `Editar ${config.title}`,
         CharacterSvg: config.CharacterSvg,
-        showNotificationIcon: true,
+        showNotificationIcon: false,
         visible: true,
       });
     }, [page, config])

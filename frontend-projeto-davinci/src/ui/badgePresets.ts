@@ -35,22 +35,21 @@ export const badge = {
     };
   },
 
-  button: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+  storeButton: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
     const width = getScreenWidth();
-    const ideal = width * 0.22;
+    const ideal = width * 0.40;
     const diameter = Math.round(Math.min(100, Math.max(76, ideal)));
     return {
       CharacterSvg,
       diameter,
       borderWidth: 3,
       inset: 0,
-      contentPercent: 60,
+      contentPercent: 60,   
       style: shadowSoft,
-      backgroundColor: undefined,
     };
   },
 
-  store: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
+  educationalButton: (CharacterSvg: React.FC<SvgProps>): FullBadgePreset => {
     const width = getScreenWidth();
     const ideal = width * 0.22;
     const diameter = Math.round(Math.min(100, Math.max(76, ideal)));
@@ -59,9 +58,8 @@ export const badge = {
       diameter,
       borderWidth: 3,
       inset: 0,
-      contentPercent: 60,
+      contentPercent: 75,   
       style: shadowSoft,
-      backgroundColor: undefined,
     };
   },
 

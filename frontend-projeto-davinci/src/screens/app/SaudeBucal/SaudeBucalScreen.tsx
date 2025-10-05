@@ -34,7 +34,7 @@ export default function SaudeBucalScreen() {
           showBackground: true,
           userName: `Saúde Bucal de ${formatUserName(patient.name)}`,
           UserImageSvg: patient.image || UserPlaceholder,
-          showNotificationIcon: true,
+          showNotificationIcon: false,
           riskLevel: patient.riskLevel,
         });
       }

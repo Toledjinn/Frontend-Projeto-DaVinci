@@ -79,7 +79,7 @@ export default function SocialScreen() {
               accessibilityRole="button"
               accessibilityLabel={button.title}
             >
-              <LogoBadge {...badge.button(button.SvgComponent)} />
+              <LogoBadge {...badge.educationalButton(button.SvgComponent)} />
               <Text style={styles.itemText}>{button.title}</Text>
             </TouchableOpacity>
           ))}

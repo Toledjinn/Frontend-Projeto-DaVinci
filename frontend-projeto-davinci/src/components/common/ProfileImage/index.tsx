@@ -24,24 +24,25 @@ export default function ProfileHeader({ UserImageSvg, userName, riskLevel }: Pro
   };
 
   const styles = getProfileHeaderStyles(width, height, !!riskLevel);
-  const singleLineHeight = styles.userName.lineHeight || 22;
-  const verticalShift = numberOfLines > 1 ? -singleLineHeight / 2 : 0;
 
   return (
-    <View style={[styles.container, { transform: [{ translateY: verticalShift }] }]}>
+    <View style={styles.container}>
       <View style={styles.backgroundCircle}>
         <View style={styles.imageWrapper}>
           <UserImageSvg width="100%" height="100%" />
         </View>
       </View>
-      <Text style={styles.userName} onTextLayout={onTextLayout} key={userName}>
-        {userName}
-      </Text>
-      {riskLevel && (
-        <View style={styles.riskContainer}>
+
+      <View style={styles.textBlock}>
+        <Text style={styles.userName} onTextLayout={onTextLayout} key={userName}>
+          {userName}
+        </Text>
+        {riskLevel && (
+          <View style={styles.riskContainer}>
             <RiskLevelIndicator level={riskLevel} />
-        </View>
-      )}
+          </View>
+        )}
+      </View>
     </View>
   );
 }

@@ -53,7 +53,7 @@ export default function EditLaboratorioContentScreen() {
         showPageHeaderElements: true,
         pageTitle: `Editar "${pageContent.title}"`,
         CharacterSvg: Chefinho,
-        showNotificationIcon: true,
+        showNotificationIcon: false,
       });
     }, [page, pageContent.title])
   );

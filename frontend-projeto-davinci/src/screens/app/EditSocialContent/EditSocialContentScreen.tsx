@@ -60,7 +60,7 @@ export default function EditSocialContentScreen() {
         showPageHeaderElements: true,
         pageTitle: `Editar "${config.title}"`,
         CharacterSvg: Chefinho,
-        showNotificationIcon: true,
+        showNotificationIcon: false,
       });
     }, [page, config])
   );

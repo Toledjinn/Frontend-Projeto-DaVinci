@@ -10,7 +10,6 @@ import { findUserById, UserProfile } from '@/data/mockUsers';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import AllergyWarning from '@/components/features/AllergyWarning';
 import StyledButton from '@/components/common/StyledButton';
-import { formatUserName } from '@/utils/nameUtils';
 
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
@@ -38,7 +37,7 @@ export default function UserDetailScreen() {
           layout: 'profile',
           showBackground: true,
           showNotificationIcon: false,
-          userName: formatUserName(user.name),
+          userName: user.name,
           UserImageSvg: user.image || UserPlaceholder,
           riskLevel: user.riskLevel,
         });
@@ -119,7 +118,7 @@ export default function UserDetailScreen() {
             variant: 'primary',
           },
           {
-            title: !isDentist ? "Editar Dados" : undefined,
+            title: isDentist ? "Editar Dados" : undefined,
             onPress: handleEditData,
             variant: 'secondary',
           }

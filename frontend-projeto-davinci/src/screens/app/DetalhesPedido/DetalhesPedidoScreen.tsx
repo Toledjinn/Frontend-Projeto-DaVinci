@@ -55,7 +55,7 @@ export default function DetalhesPedidoScreen() {
         showPageHeaderElements: true,
         pageTitle: 'Detalhes do Pedido',
         CharacterSvg: Chefinho,
-        showNotificationIcon: true,
+        showNotificationIcon: false,
       });
     }, [])
   );

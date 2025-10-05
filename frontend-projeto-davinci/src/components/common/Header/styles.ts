@@ -86,8 +86,8 @@ export const getHeaderStyles = (height: number) => {
       alignItems: 'center',
     },
     notificationIcon: {
-      width: notificationCircle,
-      height: notificationCircle,
+      width: notificationCircle * 2,
+      height: notificationCircle * 2,
     },
     notificationDot: {
       position: 'absolute',

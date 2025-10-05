@@ -34,10 +34,11 @@ export default function DetalhesProdutoScreen() {
     useCallback(() => {
       setHeaderConfig({
         visible: true,
-        layout: 'page',
+        layout: 'loja',
         showPageHeaderElements: true,
         pageTitle: product?.name,
         CharacterSvg: Chefinho,
+        pageHeaderBadgeVariant: 'store'
         });
     }, [product, totalCartItems])
   );

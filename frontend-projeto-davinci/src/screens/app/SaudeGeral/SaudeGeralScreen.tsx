@@ -34,7 +34,7 @@ export default function SaudeGeralScreen() {
           showBackground: true,
           userName: `Saúde Geral de ${formatUserName(patient.name)}`,
           UserImageSvg: patient.image || UserPlaceholder,
-          showNotificationIcon: true,
+          showNotificationIcon: false,
           riskLevel: patient.riskLevel,
         });
       }
