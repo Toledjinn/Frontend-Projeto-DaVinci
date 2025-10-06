@@ -1,6 +1,6 @@
 export const COLORS = {
   primary: '#FFC045',
-  secondary: '#374151',
+  secondary: '#252933',
   background: '#F3F4F6',
   white: '#FFFFFF',
   black: '#000000',
@@ -21,7 +21,8 @@ export const SIZES = {
 
 export const FONTS = {
   h1: { fontFamily: 'trajan-pro-3-bold', fontSize: 20, lineHeight: 24 },
-  h2: { fontFamily: 'trajan-pro-3-bold', fontSize: 18, lineHeight: 22 },
+  ph1: { fontFamily: 'Poppins-Bold', fontSize: 20, lineHeight: 22 },
+  h2: { fontFamily: 'trajan-pro-3-bold', fontSize: 17, lineHeight: 22 },
   h3: { fontFamily: 'trajan-pro-3-bold', fontSize: 13, lineHeight: 20 },  
   h4: { fontFamily: 'trajan-pro-3-bold', fontSize: 15, lineHeight: 20 },  
   h5: { fontFamily: 'trajan-pro-3-bold', fontSize: 24, lineHeight: 28 },  
@@ -40,6 +41,7 @@ export const FONTS = {
   body11: { fontFamily: 'Poppins-Medium', fontSize: 12, lineHeight: 17 },
   body12: { fontFamily: 'Poppins-Medium', fontSize: 10, lineHeight: 17 },
   body13: { fontFamily: 'Poppins-Regular', fontSize: 12, lineHeight: 17 },
+  body14: { fontFamily: 'Poppins-Medium', fontSize: 15, lineHeight: 25 },
 };
 
 const appTheme = { COLORS, SIZES, FONTS };

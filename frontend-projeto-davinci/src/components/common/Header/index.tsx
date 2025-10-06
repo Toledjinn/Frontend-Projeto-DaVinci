@@ -39,11 +39,10 @@ export default function Header() {
 
   const headerHeight = layout === 'home' ? height * 0.226 : height * 0.30;
 
-  const notificationCircle = height * 0.15;
+  const notificationCircle = height * 0.12;
   const border = 3;
-  const iconPadding = Math.round(height * 0.008);
-  const iconSize = notificationCircle - border * 2 - iconPadding * 2;
-
+  const iconSize = notificationCircle - border * 2 
+  
   if (!visible) return null;
 
   const headerBadgePreset =

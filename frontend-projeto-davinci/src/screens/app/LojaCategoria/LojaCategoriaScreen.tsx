@@ -47,7 +47,7 @@ export default function LojaCategoriaScreen() {
         visible: true,
         layout: 'loja',                   
         showPageHeaderElements: true,      
-        pageTitle: (category?.toUpperCase() || 'PRODUTOS') as string,
+        pageTitle: (category?.toUpperCase() || 'Nossa Filosofia') as string,
         CharacterSvg,                      
         showNotificationIcon: false,      
         pageHeaderBadgeVariant: 'store',   

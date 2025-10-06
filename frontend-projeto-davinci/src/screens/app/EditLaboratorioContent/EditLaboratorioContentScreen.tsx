@@ -20,7 +20,7 @@ import { COLORS } from '@/constants/theme';
 import Chefinho from '@/assets/characters/chefinho.svg';
 
 const isValidPageName = (name: any): name is PageName => {
-  return ['produtos', 'trabalhos', 'parceiros'].includes(name);
+  return ['nossaFilosofia', 'trabalhos', 'parceiros'].includes(name);
 };
 
 export default function EditLaboratorioContentScreen() {
@@ -28,7 +28,7 @@ export default function EditLaboratorioContentScreen() {
   const { pageName } = useLocalSearchParams<{ pageName?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const page = isValidPageName(pageName) ? pageName : 'produtos';
+  const page = isValidPageName(pageName) ? pageName : 'nossaFilosofia';
 
   const { pages, updateSlide, addSlide, removeSlide } = useLaboratorioStore();
   const pageContent = pages[page];

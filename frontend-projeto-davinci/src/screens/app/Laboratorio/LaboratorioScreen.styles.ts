@@ -13,23 +13,55 @@ export const styles = StyleSheet.create({
     paddingHorizontal: SIZES.padding,
     paddingBottom: SIZES.padding,
   },
-  paragraph: {
-    ...FONTS.body10,
+
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginBottom: SIZES.padding,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 680,
+  },
+
+  cardTitle: {
+    ...FONTS.h1,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.gray_200 || '#E0E0E0',
+    marginVertical: 12,
+    alignSelf: 'center',
+    width: '100%',
+  },
+
+  cardParagraph: {
+    ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 40,
   },
+
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'flex-start',
     width: '100%',
-    marginTop: 20,
+    marginTop: 16,
   },
   buttonItem: {
     alignItems: 'center',
-    width: 100, 
+    width: 100,
   },
 
   badgeShadow: {

@@ -34,25 +34,28 @@ const isValidPageName = (page: any): page is PageName => {
 };
 
 const convertToEmbedUrl = (url?: string | null) => {
-    if (!url) return '';
-    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-    return (videoIdMatch && videoIdMatch[1]) ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : url;
+  if (!url) return '';
+  const videoIdMatch = url.match(
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  );
+  return videoIdMatch && videoIdMatch[1]
+    ? `https://www.youtube.com/embed/${videoIdMatch[1]}`
+    : url;
 };
-
 
 export default function SocialContentScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
   const params = useLocalSearchParams<{ pageName: string }>();
-  
+
   const pageName = isValidPageName(params.pageName) ? params.pageName : 'oQueE';
   const config = socialContentConfig[pageName];
 
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const contentBlocks = useSocialStore((state) => state.pages[pageName]);
-  
+
   const headerHeight = height * 0.224;
-  const userType = 'admin'; 
+  const userType = 'admin';
 
   useFocusEffect(
     useCallback(() => {
@@ -60,7 +63,7 @@ export default function SocialContentScreen() {
         layout: 'page',
         showPageHeaderElements: true,
         pageTitle: config.title,
-        CharacterSvg: Chefinho, 
+        CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
     }, [pageName, config])
@@ -69,7 +72,7 @@ export default function SocialContentScreen() {
   const handleEditPress = () => {
     router.push({
       pathname: '/(app)/edit-social/[pageName]',
-      params: { pageName: pageName }, 
+      params: { pageName: pageName },
     });
   };
 
@@ -81,38 +84,45 @@ export default function SocialContentScreen() {
         <View key={depoimento.id} style={styles.card}>
           {embedUrl && (
             <View style={styles.videoContainer}>
-              <WebView
-                style={styles.video}
-                javaScriptEnabled={true}
-                source={{ uri: embedUrl }}
-              />
+              <WebView style={styles.video} javaScriptEnabled source={{ uri: embedUrl }} />
             </View>
           )}
           <Text style={styles.depoimentoText}>{`"${depoimento.text}"`}</Text>
-          <Text style={styles.author}>- {depoimento.author}</Text>
+          <Text style={styles.author}>— {depoimento.author}</Text>
         </View>
       );
     }
 
     const contentBlock = block as ContentBlock;
+
     if (contentBlock.type === 'text') {
-      return <Text key={contentBlock.id} style={styles.paragraph}>{contentBlock.content}</Text>;
+      return (
+        <View key={contentBlock.id} style={styles.card}>
+          <Text style={styles.paragraph}>{contentBlock.content}</Text>
+        </View>
+      );
     }
+
     if (contentBlock.type === 'image' && contentBlock.image) {
-      return <Image key={contentBlock.id} source={contentBlock.image} style={styles.image} resizeMode="contain" />;
+      return (
+        <Image
+          key={contentBlock.id}
+          source={contentBlock.image}
+          style={styles.image}
+          resizeMode="contain"
+        />
+      );
     }
+
     if (contentBlock.type === 'video' && contentBlock.videoUrl) {
       const embedUrl = convertToEmbedUrl(contentBlock.videoUrl);
       return (
         <View key={contentBlock.id} style={styles.videoContainer}>
-          <WebView
-            style={styles.video}
-            javaScriptEnabled={true}
-            source={{ uri: embedUrl }}
-          />
+          <WebView style={styles.video} javaScriptEnabled source={{ uri: embedUrl }} />
         </View>
       );
     }
+
     return null;
   };
 
@@ -129,10 +139,10 @@ export default function SocialContentScreen() {
         <ScreenFooter
           buttons={[
             {
-              title: "Editar Seção",
+              title: 'Editar Seção',
               onPress: handleEditPress,
               variant: 'secondary',
-            }
+            },
           ]}
         />
       )}

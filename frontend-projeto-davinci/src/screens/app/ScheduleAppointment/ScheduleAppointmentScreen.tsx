@@ -8,7 +8,6 @@ import { useUIStore } from '@/state/uiStore';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import Chefinho from '@/assets/characters/chefinho.svg';
 import StyledPicker, { PickerItem } from '@/components/common/StyledPicker';
-import StyledMultiSelect from '@/components/common/StyledMultiSelect';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
 import StyledTimePicker from '@/components/common/StyledTimePicker';
 import { getUsers } from '@/data/mockUsers';
@@ -167,7 +166,7 @@ export default function ScheduleAppointmentScreen() {
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Observações</Text>
                         <View style={styles.manualInputContainer}>
-                            <Feather name="file-text" size={24} color={COLORS.gray_400} style={{ marginTop: 2 }}/>
+                            <Feather name="file-text" size={24} color={COLORS.gray_400} style={{ marginTop: 8 }}/>
                             <TextInput
                                 value={observations}
                                 onChangeText={setObservations}

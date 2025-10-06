@@ -63,11 +63,13 @@ export default function EducationalScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.container}>
-          <Text style={styles.description}>
-            Nós somos promotores da saúde, na verdade manejadores de conhecimentos,
-            recursos e estratégias que visam a promoção da saúde, o controle das doenças,
-            o tratamento adequado a manutenção de longo prazo e admiradores da estética do sorriso.
-          </Text>
+          <View style={styles.descriptionCard}>
+            <Text style={styles.description}>
+              Nós somos promotores da saúde, na verdade manejadores de conhecimentos,
+              recursos e estratégias que visam a promoção da saúde, o controle das doenças,
+              o tratamento adequado, a manutenção de longo prazo e admiradores da estética do sorriso.
+            </Text>
+          </View>
 
           <View style={styles.gridContainer}>
             {educationalItems.map((item) => (

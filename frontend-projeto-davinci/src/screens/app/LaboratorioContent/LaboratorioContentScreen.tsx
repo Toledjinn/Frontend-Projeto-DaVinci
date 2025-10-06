@@ -20,17 +20,17 @@ import ScreenFooter from '@/components/common/ScreenFooter';
 const userType = 'admin';
 
 const isValidPageName = (name: any): name is PageName => {
-    return ['produtos', 'trabalhos', 'parceiros'].includes(name);
-}
+  return ['nossaFilosofia', 'trabalhos', 'parceiros'].includes(name);
+};
 
 export default function LaboratorioContentScreen() {
   const router = useRouter();
+  const { height } = useWindowDimensions();
   const { width: windowWidth } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { pageName } = useLocalSearchParams<{ pageName: string }>();
 
-  const page = isValidPageName(pageName) ? pageName : 'produtos';
-  
+  const page = isValidPageName(pageName) ? pageName : 'nossaFilosofia';
   const { title, slides: carouselItems } = useLaboratorioStore((state) => state.pages[page]);
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -50,7 +50,9 @@ export default function LaboratorioContentScreen() {
 
   const convertToEmbedUrl = (url?: string) => {
     if (!url) return '';
-    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    const videoIdMatch = url.match(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
     if (videoIdMatch && videoIdMatch[1]) {
       return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
     }
@@ -83,53 +85,62 @@ export default function LaboratorioContentScreen() {
           onScroll={onScroll}
           scrollEventThrottle={16}
           style={styles.carousel}
-          contentContainerStyle={styles.carouselContent}
+          contentContainerStyle={[
+            styles.carouselContent,
+            { paddingTop: height * 0.324 }, 
+          ]}
         >
-          {carouselItems && carouselItems.map((item) => (
-            <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
-              <View style={styles.card}>
-                <Text style={styles.title}>{item.title}</Text>
-                
-                {item.videoUrl ? (
-                  <View style={styles.videoContainer}>
-                    <WebView
-                      style={styles.video}
-                      javaScriptEnabled={true}
-                      domStorageEnabled={true}
-                      source={{ uri: convertToEmbedUrl(item.videoUrl) }}
-                    />
-                  </View>
-                ) : (
-                  item.image && <Image source={item.image} style={styles.image} resizeMode="contain" />
-                )}
 
-                <Text style={styles.paragraph}>{item.text}</Text>
+          {carouselItems &&
+            carouselItems.map((item) => (
+              <View key={item.id} style={[styles.slide, { width: windowWidth }]}>
+                <View style={styles.card}>
+                  <Text style={styles.title}>{item.title}</Text>
+
+                  <View style={styles.divider} />
+                  {item.videoUrl ? (
+                    <View style={styles.videoContainer}>
+                      <WebView
+                        style={styles.video}
+                        javaScriptEnabled
+                        domStorageEnabled
+                        source={{ uri: convertToEmbedUrl(item.videoUrl) }}
+                      />
+                    </View>
+                  ) : (
+                    item.image && (
+                      <Image source={item.image} style={styles.image} resizeMode="contain" />
+                    )
+                  )}
+
+                  <Text style={styles.paragraph}>{item.text}</Text>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
         </ScrollView>
 
         <View style={styles.paginationContainer}>
-          {carouselItems && carouselItems.map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.paginationDot,
-                { backgroundColor: activeIndex === index ? '#FFC045' : '#D1D5DB' },
-              ]}
-            />
-          ))}
+          {carouselItems &&
+            carouselItems.map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.paginationDot,
+                  { backgroundColor: activeIndex === index ? '#FFC045' : '#D1D5DB' },
+                ]}
+              />
+            ))}
         </View>
       </View>
 
-      {(userType === 'admin') && (
+      {userType === 'admin' && (
         <ScreenFooter
           buttons={[
             {
-              title: "Editar Conteúdo",
+              title: 'Editar Conteúdo',
               onPress: handleEditPress,
-              variant: 'secondary', 
-            }
+              variant: 'secondary',
+            },
           ]}
         />
       )}

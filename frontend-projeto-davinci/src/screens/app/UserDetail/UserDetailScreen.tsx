@@ -11,6 +11,12 @@ import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import AllergyWarning from '@/components/features/AllergyWarning';
 import StyledButton from '@/components/common/StyledButton';
 
+type ButtonConfig = {
+  title: string;
+  onPress: () => void;
+  variant: 'primary' | 'secondary';
+};
+
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.32;
@@ -27,7 +33,6 @@ export default function UserDetailScreen() {
   }, [id]);
 
   const isPatient = user?.type === 'patient';
-  const isDentist = user?.type === 'dentist';
   const hasAllergies = isPatient && user.allergies && user.allergies.length > 0;
 
   useFocusEffect(
@@ -49,7 +54,7 @@ export default function UserDetailScreen() {
     if (user) {
       router.push({
         pathname: '/(app)/consultas-list',
-        params: { listType: 'patient', id: user.id } 
+        params: { listType: 'patient', id: user.id }
       });
     }
   };
@@ -57,8 +62,8 @@ export default function UserDetailScreen() {
   const handleViewAppointments = () => {
     if (user) {
       router.push({
-        pathname: '/(app)/consultas-list', 
-        params: { listType: 'dentist', id: user.id }, 
+        pathname: '/(app)/consultas-list',
+        params: { listType: 'dentist', id: user.id },
       });
     }
   };
@@ -66,7 +71,7 @@ export default function UserDetailScreen() {
   const handleEditData = () => {
     if (user) {
       router.push({
-        pathname: '/(app)/register', 
+        pathname: '/(app)/register',
         params: {
           userType: user.type,
           userId: user.id
@@ -74,6 +79,32 @@ export default function UserDetailScreen() {
       });
     }
   };
+
+  const getFooterButtons = (): ButtonConfig[] => {
+    const editDataButton: ButtonConfig = {
+      title: "Editar Dados",
+      onPress: handleEditData,
+      variant: 'secondary',
+    };
+
+    if (user?.type === 'admin') {
+      return [editDataButton];
+    }
+
+    if (user?.type === 'patient' || user?.type === 'dentist') {
+      return [
+        {
+          title: "Consultas",
+          onPress: user.type === 'patient' ? handleViewRecord : handleViewAppointments,
+          variant: 'primary',
+        },
+        editDataButton,
+      ];
+    }
+
+    return [];
+  };
+
 
   if (!user) {
     return (
@@ -98,10 +129,10 @@ export default function UserDetailScreen() {
               title="Diagnósticos"
               variant="primary"
               onPress={() => router.push({
-              pathname: '/(app)/diagnostico',
-              params: { patientId: user.id }
-            })}
-          />
+                pathname: '/(app)/diagnostico',
+                params: { patientId: user.id }
+              })}
+            />
           </View>
         )}
         
@@ -111,18 +142,7 @@ export default function UserDetailScreen() {
         </View>
       </ScrollView>
       <ScreenFooter
-        buttons={[
-          {
-            title: isPatient ? "Prontuário" : "Consultas",
-            onPress: isPatient ? handleViewRecord : (isDentist ? handleViewAppointments : () => {}),
-            variant: 'primary',
-          },
-          {
-            title: isDentist ? "Editar Dados" : undefined,
-            onPress: handleEditData,
-            variant: 'secondary',
-          }
-        ]}
+        buttons={getFooterButtons()}
       />
     </SafeAreaView>
   );

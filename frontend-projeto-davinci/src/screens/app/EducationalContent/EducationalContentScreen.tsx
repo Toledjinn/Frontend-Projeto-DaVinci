@@ -111,7 +111,7 @@ export default function EducationalContentScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const slides = useEducationalContentStore((state) => state.pages[config.pageName]);
 
-  const headerHeight = height * 0.208;
+  const headerHeight = height * 0.29;
 
   useFocusEffect(
     useCallback(() => {

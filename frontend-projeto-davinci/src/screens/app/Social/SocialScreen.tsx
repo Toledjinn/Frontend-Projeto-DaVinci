@@ -56,18 +56,25 @@ export default function SocialScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        <Text style={styles.paragraph}>
-          Um dos maiores escritores da literatura russa e mundial, Fiódor Dostoiévski, disse um dia que:
-        </Text>
-        <Text style={styles.quote}>
-          "A BELEZA SALVARÁ O MUNDO".
-        </Text>
-        <Text style={styles.paragraph}>
-          Beleza essa, não só a de um sorriso bonito, mas num sentido mais amplo como, a atitude da Gratone Odontologia Especializada com o projeto Da Vinci Social.
-        </Text>
-        <Text style={styles.salutation}>
-          Salve a odontologia!
-        </Text>
+        <View style={styles.cardContainer}>
+
+          <Text style={styles.subtitle}>
+            Um dos maiores escritores da literatura russa e mundial, disse um dia:
+          </Text>
+
+          <View style={styles.quoteBox}>
+            <Text style={styles.quoteText}>{'“ A beleza salvará o mundo ”'}</Text>
+          </View>
+          <Text style={styles.title}>
+            - Fiódor Dostoiévski
+          </Text>
+
+          <Text style={styles.paragraph}>
+            Beleza essa, não só a de um sorriso bonito, mas num sentido mais amplo, como a atitude da Gratone Odontologia Especializada com o projeto Da Vinci Social.
+          </Text>
+
+          <Text style={styles.salutation}>Salve a Odontologia!</Text>
+        </View>
 
         <View style={styles.buttonsContainer}>
           {actionButtons.map((button) => (

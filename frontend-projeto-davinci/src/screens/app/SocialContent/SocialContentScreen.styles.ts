@@ -6,36 +6,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
-    flex: 1,
-  },
+  scrollView: { flex: 1 },
   contentContainer: {
     paddingHorizontal: SIZES.padding,
-    paddingBottom: 100, 
+    paddingBottom: 100,
   },
-  paragraph: {
-    ...FONTS.body10,
-    color: COLORS.secondary,
-    marginBottom: SIZES.padding,
-    lineHeight: 22,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    borderRadius: SIZES.radius,
-    marginBottom: SIZES.padding,
-  },
-  videoContainer: {
-    width: '100%',
-    aspectRatio: 16 / 9,
-    marginBottom: SIZES.padding,
-    borderRadius: SIZES.radius,
-    overflow: 'hidden',
-    backgroundColor: COLORS.black,
-  },
-  video: {
-    flex: 1,
-  },
+
   card: {
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
@@ -46,7 +22,34 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 680,
   },
+
+  paragraph: {
+    ...FONTS.body10,
+    color: COLORS.secondary,
+    lineHeight: 22,
+  },
+
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: SIZES.radius,
+    marginBottom: SIZES.base,
+  },
+  videoContainer: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    marginBottom: SIZES.base,
+    borderRadius: SIZES.radius,
+    overflow: 'hidden',
+    backgroundColor: COLORS.black,
+  },
+  video: { flex: 1 },
+
   depoimentoText: {
     ...FONTS.body10,
     color: COLORS.secondary,

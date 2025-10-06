@@ -2,8 +2,8 @@ import { StyleSheet } from 'react-native';
 import { FONTS, COLORS } from '@/constants/theme';
 
 export const getHeaderStyles = (height: number) => {
-  const circleDiameter = height * 0.115;
-  const notificationCircle = height * 0.085;
+  const circleDiameter = height * 0.12;
+  const notificationCircle = height * 0.08;
 
   return StyleSheet.create({
     wrapper: {
@@ -21,8 +21,8 @@ export const getHeaderStyles = (height: number) => {
       flex: 1,
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingHorizontal: 20,
-      paddingTop: 40,
+      paddingHorizontal: 16,
+      paddingTop: 32,
       zIndex: 3,
       top: 6,
     },

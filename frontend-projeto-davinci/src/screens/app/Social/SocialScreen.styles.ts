@@ -12,33 +12,41 @@ export const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 24,
     paddingBottom: 40,
-  },
-  paragraph: {
-    ...FONTS.body9,
-    color: COLORS.secondary,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginTop: 20,
+     },
+  cardContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,              
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+
+   
+    marginBottom: 24,    
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 680,        
   },
   quote: {
-    ...FONTS.body9,
+    ...FONTS.body3,
     color: COLORS.secondary,
     textAlign: 'center',
     marginVertical: 20,
   },
-  salutation: {
-    ...FONTS.body9,
-    fontStyle: 'italic',
-    color: COLORS.secondary,
+    salutation: {
+    ...FONTS.body5,
+    color: COLORS.gray_400,
     textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 40,
   },
-
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
+    marginTop: 8,      
+    marginBottom: 24,
   },
   buttonItem: {
     alignItems: 'center',
@@ -59,4 +67,66 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
   },
+  
+  title: {
+    ...FONTS.body14,
+    fontWeight: '700',
+    color: COLORS.secondary,
+    textAlign: 'right', 
+    marginBottom: 16,
+  },
+  
+  subtitle: {
+    ...FONTS.body9,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  
+  quoteBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5F6F7',
+    borderLeftWidth: 3,
+    borderLeftColor: COLORS.primary,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    marginHorizontal: 12,
+    overflow: 'visible',  
+    marginBottom: 4      
+  },
+  
+  quoteMark: {
+    ...FONTS.h1,
+    color: COLORS.primary,
+    fontWeight: '700',
+    includeFontPadding: false, 
+  },
+  
+  quoteText: {
+    ...FONTS.h1,
+    color: COLORS.secondary,
+    fontStyle: 'italic',
+    includeFontPadding: false,
+    lineHeight: 22,             
+  },
+  
+  quoteMarkEnd: {
+    fontSize: 28,
+    color: COLORS.primary,
+    marginTop: -10,
+  },
+  
+  paragraph: {
+    ...FONTS.body9,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 24,
+    paddingHorizontal: 8,
+  },
+  
+
 });

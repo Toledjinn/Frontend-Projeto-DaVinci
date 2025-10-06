@@ -9,7 +9,7 @@ export type CarouselSlide = {
   videoUrl?: string;
 };
 
-export type PageName = 'produtos' | 'trabalhos' | 'parceiros';
+export type PageName = 'nossaFilosofia' | 'trabalhos' | 'parceiros';
 
 type LaboratorioState = {
   pages: Record<PageName, { title: string; slides: CarouselSlide[] }>;
@@ -19,8 +19,8 @@ type LaboratorioState = {
 };
 
 const MOCK_DATA = {
-    produtos: {
-        title: 'Produtos',
+    nossaFilosofia: {
+        title: 'Nossa Filosofia',
         slides: [
             {
                 id: 'prod1',

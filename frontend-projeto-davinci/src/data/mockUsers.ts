@@ -28,7 +28,7 @@ const ALL_USERS: UserProfile[] = [
         { id: 'd1-5', label: 'Telefone', value: '(61) 98201-0910' },
         { id: 'd1-6', label: 'E-mail', value: 'jose.gratone@email.com' },
         { id: 'd1-7', label: 'CEP', value: '70711-903' },
-        { id: 'd1-8', label: 'Endereço', value: 'SCN Quadra 01 Bloco E' },
+        { id: 'd1-8', label: 'Endereço', value: 'SCN Quadra 01 Bloco aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaE' },
         { id: 'd1-9', label: 'Bairro', value: 'Asa Norte' },
         { id: 'd1-10', label: 'Número', value: '501' },
         { id: 'd1-11', label: 'Complemento', value: 'Sala 501' },

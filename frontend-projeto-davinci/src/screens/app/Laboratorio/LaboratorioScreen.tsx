@@ -20,9 +20,9 @@ import LogoBadge from '@/components/common/LogoBadge';
 import { badge } from '@/ui/badgePresets';
 
 const labButtons = [
-  { id: 'produtos',  title: 'Nossa Filosofia', SvgComponent: Escova4, pageName: 'produtos' },
-  { id: 'trabalhos', title: 'Trabalhos',       SvgComponent: Escova2, pageName: 'trabalhos' },
-  { id: 'parceiros', title: 'Parceiros',       SvgComponent: Escova3, pageName: 'parceiros' },
+  { id: 'nossaFilosofia', title: 'Nossa Filosofia', SvgComponent: Escova4, pageName: 'nossaFilosofia' },
+  { id: 'trabalhos',      title: 'Trabalhos',       SvgComponent: Escova2, pageName: 'trabalhos' },
+  { id: 'parceiros',      title: 'Parceiros',       SvgComponent: Escova3, pageName: 'parceiros' },
 ];
 
 export default function LaboratorioScreen() {
@@ -56,10 +56,18 @@ export default function LaboratorioScreen() {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.paragraph}>
-          Bem-vindo à nossa seção de laboratório. Aqui você pode encontrar informações sobre os produtos que utilizamos, ver exemplos de nossos trabalhos e conhecer os nossos parceiros.
-        </Text>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Bem-vindo à nossa seção de laboratório!</Text>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.cardParagraph}>
+            Aqui você pode encontrar informações sobre os produtos que utilizamos,
+            ver exemplos de nossos trabalhos e conhecer os nossos parceiros.
+          </Text>
+        </View>
 
         <View style={styles.buttonsContainer}>
           {labButtons.map((button) => (
