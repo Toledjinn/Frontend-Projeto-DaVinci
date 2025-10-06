@@ -7,6 +7,7 @@ import Header from '@/components/common/Header';
 import * as NavigationBar from 'expo-navigation-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+// Mantém a splash screen nativa visível automaticamente
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -34,13 +35,16 @@ export default function RootLayout() {
   useEffect(() => {
     if (error) throw error;
   }, [error]);
-
+  
+  // --- MELHORIA PRINCIPAL ---
+  // Esconde a splash screen nativa APENAS quando as fontes estiverem carregadas
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
 
+  // Se as fontes ainda não carregaram, não renderiza nada (a splash nativa ainda está visível)
   if (!loaded) {
     return null;
   }
@@ -48,11 +52,19 @@ export default function RootLayout() {
  return (
   <SafeAreaProvider>
     <Stack>
-      <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'fade' }} />
-      <Stack.Screen name="(app)" options={{ headerShown: false, animation: 'fade' }} />
+      <Stack.Screen 
+        name="index" 
+        options={{ 
+          headerShown: false, 
+          // Animação 'none' é ideal para deixar a sharedTransitionTag controlar a animação
+          animation: 'none', 
+        }} 
+      />
+      <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'fade_from_bottom' }} />
+      <Stack.Screen name="(app)" options={{ headerShown: false, animation: 'fade_from_bottom' }} />
     </Stack>
     {(inAppLayout || inAuthHeaderScreens) && <Header />}
-  
   </SafeAreaProvider>
   );
 }
+
