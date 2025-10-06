@@ -1,17 +1,115 @@
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from '@/constants/theme';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
+
   scrollView: {
     flex: 1,
   },
+
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingHorizontal: 12,
+    paddingBottom: 24,
+    alignItems: 'center',
+  },
+
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    width: '100%',
+    maxWidth: 680,
+  },
+
+  productImage: {
+    width: '100%',
+    height: 260,
+    borderRadius: 12,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 12,
+    paddingVertical: 12
+  },
+  detailLabel: {
+    ...FONTS.ph1,
+    color: COLORS.secondary,
+  },
+  detailValue: {
+    ...FONTS.body9,
+    color: COLORS.secondary,
+    textAlign: 'right',
+  },
+
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    height: 48,
+    gap: 12,
+  },
+  quantityButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.secondary,
+  },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 1,
+    marginLeft: 12,
+    backgroundColor: COLORS.secondary,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    height: 48,
+  },
+  decrementButton: {
+    backgroundColor: COLORS.pendente,
+  },
+  incrementButton: {
+    backgroundColor: COLORS.secondary,
+  },
+  itemQuantityText: {
+    ...FONTS.body8,
+    color: COLORS.secondary,
+    minWidth: 24,
+    textAlign: 'center',
+  },
+  addButtonCompact: {
+    flexGrow: 1,                 
+    height: 48,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+  },
+  priceFooterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 24,
+    gap: 8
   },
   notFoundContainer: {
     flex: 1,
@@ -22,89 +120,23 @@ export default StyleSheet.create({
     ...FONTS.body9,
     color: COLORS.gray_400,
   },
-  productDetailsContainer: {
-    alignItems: 'center',
-    paddingVertical: 24,
+  section: {
+    paddingVertical: 20
   },
-  productImage: {
-    width: 250,
-    height: 250,
-    borderRadius: 16,
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
-  },
-  productName: {
-    ...FONTS.h2,
+  sectionTitle: {
+    ...FONTS.h1,
     color: COLORS.secondary,
     textAlign: 'center',
-    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderColor: COLORS.gray_400, 
+    paddingTop: 24,
+    paddingBottom: 8
   },
-  productBrand: {
+  sectionContent: {
     ...FONTS.body9,
-    color: COLORS.gray_400,
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  productDescription: {
-    ...FONTS.body10,
     color: COLORS.secondary,
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 24,
-  },
-  productPrice: {
-    ...FONTS.h1,
-    color: COLORS.primary,
-    fontWeight: 'bold',
-    marginBottom: 32,
-  },
-  addToCartButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.primary,
-    paddingVertical: 16,
-    borderRadius: 8,
-    width: '100%',
-    elevation: 3,
-    shadowColor: COLORS.primary,
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    marginTop: 24, 
-  },
-  addToCartText: {
-    ...FONTS.h2,
-    color: COLORS.white,
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-    justifyContent: 'center',
-  },
-  quantityButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.gray_400,
-  },
-  decrementButton: {
-    backgroundColor: COLORS.red,
-    borderColor: COLORS.red,
-  },
-  incrementButton: {
-    backgroundColor: COLORS.green,
-    borderColor: COLORS.green,
-  },
-  itemQuantityText: {
-    ...FONTS.h2,
-    color: COLORS.secondary,
-    marginHorizontal: 24,
+    paddingVertical: 12,
   },
 });

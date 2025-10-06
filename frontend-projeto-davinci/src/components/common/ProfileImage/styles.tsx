@@ -3,7 +3,7 @@ import { FONTS, COLORS } from '@/constants/theme';
 
 export const getProfileHeaderStyles = (screenWidth: number, screenHeight: number, hasRiskLevel: boolean) => {
   const singleLineHeight = FONTS.body1.lineHeight || 22;
-  const photoTopPosition = screenHeight * 0.0700;
+  const photoTopPosition = screenHeight * 0.0450;
   const circleDiameter = screenWidth * 0.3073;
 
   return StyleSheet.create({

@@ -35,7 +35,10 @@ export default function LojaCategoriaScreen() {
   const totalCartItems = cart.reduce((t, i) => t + i.quantity, 0);
 
   const handleProductPress = (productId: string) => {
-    router.push({ pathname: '/(app)/detalhes-produto', params: { id: productId } });
+    router.push({
+          pathname: '/(app)/detalhes-produto',
+          params: { id: productId, category }, 
+        });
   };
 
   useFocusEffect(
@@ -47,7 +50,7 @@ export default function LojaCategoriaScreen() {
         visible: true,
         layout: 'loja',                   
         showPageHeaderElements: true,      
-        pageTitle: (category?.toUpperCase() || 'Nossa Filosofia') as string,
+        pageTitle: (category?.toUpperCase()) as string,
         CharacterSvg,                      
         showNotificationIcon: false,      
         pageHeaderBadgeVariant: 'store',   
@@ -59,7 +62,7 @@ export default function LojaCategoriaScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: height * 0.216 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: height * 0.29 }]}
         showsVerticalScrollIndicator={false}
       >
         {products.length === 0 ? (

@@ -13,7 +13,7 @@ import RiskAssessmentCard from '@/components/features/RiskAssessmentCard';
 
 export default function DiagnosticScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.208;
+  const headerHeight = height * 0.28;
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);

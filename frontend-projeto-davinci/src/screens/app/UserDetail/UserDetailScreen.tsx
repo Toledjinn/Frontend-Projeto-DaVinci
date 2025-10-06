@@ -19,7 +19,7 @@ type ButtonConfig = {
 
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.32;
+  const headerHeight = height * 0.31;
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -93,12 +93,12 @@ export default function UserDetailScreen() {
 
     if (user?.type === 'patient' || user?.type === 'dentist') {
       return [
+        editDataButton,
         {
           title: "Consultas",
           onPress: user.type === 'patient' ? handleViewRecord : handleViewAppointments,
           variant: 'primary',
         },
-        editDataButton,
       ];
     }
 

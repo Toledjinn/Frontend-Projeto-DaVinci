@@ -71,7 +71,7 @@ export default function AppointmentListScreen() {
 
   const { height } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const headerHeight = height * (config.headerLayout === 'profile' ? 0.29 : 0.208);
+  const headerHeight = height * 0.27;
 
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   const [searchQuery, setSearchQuery] = useState('');

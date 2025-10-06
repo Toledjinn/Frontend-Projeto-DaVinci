@@ -13,10 +13,7 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     width: '100%',
-  },
-  contentContainer: {
-    padding: 24,
-    paddingTop: "44%", 
+    paddingHorizontal: 12
   },
   slideEditor: {
     backgroundColor: COLORS.white,

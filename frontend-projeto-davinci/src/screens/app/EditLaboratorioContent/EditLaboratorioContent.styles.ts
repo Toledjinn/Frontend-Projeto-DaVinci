@@ -7,12 +7,10 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollView: {
+    paddingHorizontal: 12,
     flex: 1,
   },
-  contentContainer: {
-    padding: SIZES.padding,
-    paddingBottom: 120, 
-  },
+
   editorCard: {
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,

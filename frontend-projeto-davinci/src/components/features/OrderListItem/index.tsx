@@ -39,6 +39,7 @@ export default function OrderListItem({ item, onPress }: OrderListItemProps) {
         {item.products.map((product) => (
           <ProductRow key={product.productId} product={product} />
         ))}
+        
       </View>
 
       <View style={styles.footer}>

@@ -8,10 +8,7 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-  },
-  contentContainer: {
-    padding: SIZES.padding,
-    paddingBottom: 120, 
+    paddingHorizontal: SIZES.padding,
   },
 
   editorCard: {

@@ -21,7 +21,7 @@ const MOCK_DENTISTS = getUsers('dentist');
 
 export default function AppointmentDetailScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.208;
+  const headerHeight = height * 0.28;
   const { appointmentId, mode } = useLocalSearchParams<{ appointmentId: string, mode?: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
@@ -100,7 +100,10 @@ export default function AppointmentDetailScreen() {
           onPress: () => {
             if (appointmentId) {
               updateAppointmentStatus(appointmentId, 'cancelada');
-              router.push('/(app)/consultas');
+              router.push({
+              pathname: '/(app)/consultas-list',
+              params: { listType: 'pending' }
+            });
             }
           },
           style: 'destructive'
@@ -136,7 +139,10 @@ export default function AppointmentDetailScreen() {
     if (!appointmentId) return;
     updateAppointmentStatus(appointmentId, 'agendada');
     Alert.alert('Sucesso!', 'Solicitação aprovada e agendamento confirmado.');
-    router.push('/(app)/solicitacoes');
+    router.push({
+        pathname: '/(app)/consultas-list',
+        params: { listType: 'pending' }
+      });
   };
   
   const handleRejectRequest = () => {
@@ -201,38 +207,47 @@ export default function AppointmentDetailScreen() {
     { id: '7', label: 'Observações', value: appointment.observations || 'Nenhuma' },
   ];
 
-  const RenderRealizadaView = () => (
-    <View>
-      {record ? (
-        <>
-          <View style={styles.recordContainer}>
-            <Text style={styles.recordSectionTitle}>Procedimentos Realizados</Text>
-            {record.proceduresPerformed.map((proc, index) => (
-              <View 
-                key={index} 
-                style={[
-                  styles.procedureItem,
-                  index < record.proceduresPerformed.length - 1 && styles.procedureSeparator
-                ]}
-              >
-                <Text style={styles.procedureTitle}>{proc.procedure}</Text>
-                <Text style={styles.procedureDescription}>{proc.description}</Text>
-              </View>
-            ))}
-          </View>
-        </>
-      ) : (
-        <Text>Nenhum registro detalhado para este atendimento.</Text>
-      )}
-      {appointment.specialty === 'Periodontia' && (
-        <StyledButton title="Periograma" variant="secondary" style={{top: 8}} />
-      )}
-      <View style={{ flexDirection: 'row', top: 24 }}>
-        <StyledButton title="Imagens" variant="primary" style={{ flex: 1, marginRight: 8 }} />
-        <StyledButton title="Raios-X" variant="primary" style={{ flex: 1, marginLeft: 8 }} />
+  const RenderRealizadaView = () => {
+    const procedures = record?.proceduresPerformed ?? [];
+
+    return (
+      <View>
+        {record ? (
+          <>
+            <View style={styles.recordContainer}>
+              <Text style={styles.recordSectionTitle}>Procedimentos Realizados</Text>
+
+              {procedures.length === 0 ? (
+                <Text>Nenhum procedimento registrado.</Text>
+              ) : (
+                procedures.map((proc, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.procedureItem,
+                      index < procedures.length - 1 && styles.procedureSeparator
+                    ]}
+                  >
+                    <Text style={styles.procedureTitle}>{proc.procedure}</Text>
+                    <Text style={styles.procedureDescription}>{proc.description}</Text>
+                  </View>
+                ))
+              )}
+            </View>
+          </>
+        ) : (
+          <Text>Nenhum registro detalhado para este atendimento.</Text>
+        )}
+        {appointment.specialty === 'Periodontia' && (
+          <StyledButton title="Periograma" variant="secondary" style={{ top: 8 }} />
+        )}
+        <View style={{ flexDirection: 'row', top: 24 }}>
+          <StyledButton title="Imagens" variant="primary" style={{ flex: 1, marginRight: 8 }} />
+          <StyledButton title="Raios-X" variant="primary" style={{ flex: 1, marginLeft: 8 }} />
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const RenderDefaultView = () => (
     <>
@@ -240,7 +255,7 @@ export default function AppointmentDetailScreen() {
       <View style={styles.buttonContainer}>
         <StyledButton
           title="Diagnósticos"
-          variant="secondary"
+          variant="primary"
           onPress={handleGoToDiagnostic}
         />
       </View>
@@ -266,7 +281,7 @@ export default function AppointmentDetailScreen() {
         <View style={styles.actionButtonContainer}>
           <StyledButton
               title="Iniciar Atendimento"
-              variant="primary"
+              variant="secondary"
               onPress={() => {
                 if (appointment) {
                   router.push({
@@ -284,30 +299,30 @@ export default function AppointmentDetailScreen() {
           <ScreenFooter
             buttons={[
               {
+                title: "Reprovar",
+                onPress: handleRejectRequest,
+                variant: 'secondary', 
+              },
+              {
                 title: "Aprovar",
                 onPress: handleApproveRequest,
                 variant: 'primary',
               },
-              {
-                title: "Reprovar",
-                onPress: handleRejectRequest,
-                variant: 'secondary', 
-              }
             ]}
           />
         ) : !isCancelled ? (
           <ScreenFooter
-            buttons={[
+          buttons={[
+              {
+                title: "Cancelar",
+                onPress: handleCancelAppointment,
+                variant: 'secondary', 
+              },
               {
                 title: "Reagendar",
                 onPress: handleReschedule,
                 variant: 'primary',
               },
-              {
-                title: "Cancelar",
-                onPress: handleCancelAppointment,
-                variant: 'secondary', 
-              }
             ]}
           />
         ) : null

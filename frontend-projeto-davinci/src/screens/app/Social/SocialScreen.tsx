@@ -28,7 +28,7 @@ export default function SocialScreen() {
   const { height, width } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const headerHeight = height * 0.320;
+  const headerHeight = height * 0.29;
 
   useFocusEffect(
     useCallback(() => {

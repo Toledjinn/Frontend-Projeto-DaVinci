@@ -35,6 +35,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: SIZES.padding,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderColor: COLORS.gray_200
   },
   headerRight: {
     flexDirection: 'row',
@@ -48,7 +51,6 @@ export const styles = StyleSheet.create({
   orderId: {
     ...FONTS.body13,
     color: COLORS.gray_400,
-    marginTop: 2,
   },
   status: {
     ...FONTS.body7,
@@ -64,7 +66,13 @@ export const styles = StyleSheet.create({
   productRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: SIZES.base * 1.5,
     marginBottom: SIZES.base * 1.5,
+  },
+  resumoDivider: {
+    height: 1,
+    backgroundColor: COLORS.gray_400,
+    width: '100%',
   },
   productImage: {
     width: 64,
@@ -84,20 +92,20 @@ export const styles = StyleSheet.create({
   },
   footer: {
     borderTopWidth: 1,
-    borderTopColor: COLORS.gray_100,
-    paddingTop: SIZES.base * 1.5,
+    borderTopColor: COLORS.secondary,
+    paddingTop: SIZES.padding * 0.75,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   footerLabel: {
-    ...FONTS.body10,
-    color: COLORS.gray_400,
+    ...FONTS.ph2,
+    color: COLORS.secondary,
+
   },
   footerValue: {
-    ...FONTS.h4,
+    ...FONTS.ph1,
     color: COLORS.secondary,
-    fontWeight: 'bold',
   },
 });
 

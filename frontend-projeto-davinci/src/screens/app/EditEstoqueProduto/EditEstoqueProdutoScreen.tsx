@@ -52,7 +52,7 @@ const getStatusColor = (status: ProductStatus) => {
 export default function EditEstoqueProdutoScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.216; 
+  const headerHeight = height * 0.29; 
   const { category, productId } = useLocalSearchParams<{ category: CategoryName; productId?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
@@ -246,14 +246,14 @@ export default function EditEstoqueProdutoScreen() {
       <ScreenFooter
         buttons={[
           {
-            title: 'Salvar',
-            onPress: handleSaveChanges,
-            variant: 'primary',
-          },
-          {
             title: 'Cancelar',
             onPress: () => router.back(),
             variant: 'secondary',
+          },
+          {
+            title: 'Salvar',
+            onPress: handleSaveChanges,
+            variant: 'primary',
           },
         ]}
       />

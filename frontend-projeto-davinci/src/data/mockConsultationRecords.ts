@@ -61,3 +61,7 @@ export const getRecordsForPatientBySpecialty = (patientId: string, specialty: st
     .filter(r => r.patientId === patientId && r.specialty === specialty)
     .sort((a, b) => new Date(b.date.split('/').reverse().join('-')).getTime() - new Date(a.date.split('/').reverse().join('-')).getTime());
 };
+
+export const getRecordForAppointment = (appointmentId: string): ConsultationRecord | null => {
+  return MOCK_RECORDS.find(r => r.appointmentId === appointmentId) ?? null;
+};

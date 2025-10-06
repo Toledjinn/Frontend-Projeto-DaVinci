@@ -26,6 +26,8 @@ export default function RegisterUserScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
   const { userType, userId } = useLocalSearchParams<{ userType: string, userId?: string }>();
+  const { height } = useWindowDimensions();
+  const headerHeight = height * 0.27;
   
   const isEditing = !!userId; 
 
@@ -54,7 +56,7 @@ export default function RegisterUserScreen() {
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: 160 }]}
+          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: headerHeight }]}
           keyboardShouldPersistTaps="handled"
         >
           <RegisterForm />
@@ -62,15 +64,15 @@ export default function RegisterUserScreen() {
         <ScreenFooter
           buttons={[
             {
+              title: "Cancelar",
+              onPress: handleCancel,
+              variant: 'secondary',
+            },
+            {
               title: isEditing ? "Salvar" : "Cadastrar",
               onPress: handleSave,
               variant: 'primary',
             },
-            {
-              title: "Cancelar",
-              onPress: handleCancel,
-              variant: 'secondary',
-            }
           ]}
         />
       </View>

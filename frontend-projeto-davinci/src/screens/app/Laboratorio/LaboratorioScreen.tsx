@@ -27,7 +27,7 @@ const labButtons = [
 
 export default function LaboratorioScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.324;
+  const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
 

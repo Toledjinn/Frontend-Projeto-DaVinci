@@ -3,8 +3,8 @@ import { COLORS, FONTS } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
   itemContainer: {
-    paddingVertical: 14,
     borderBottomWidth: 1,
+    paddingVertical: 14,
     borderBottomColor: COLORS.gray_200,
     width: '100%',
   },
@@ -24,7 +24,8 @@ export const styles = StyleSheet.create({
     ...FONTS.body10,
     color: COLORS.secondary,
     textAlign: 'right',
-    flexShrink: 1,            
+    flexShrink: 1,
+    width: '60%'            
   },
   valueWrapper: {
     alignItems: 'flex-end',

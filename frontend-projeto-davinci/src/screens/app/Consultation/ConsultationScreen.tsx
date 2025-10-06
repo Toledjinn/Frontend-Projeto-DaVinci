@@ -18,7 +18,7 @@ import TreatmentPlanForm from '@/components/features/TreatmentPlanForm';
 
 export default function ConsultationScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.29;
   const { appointmentId } = useLocalSearchParams<{ appointmentId: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);

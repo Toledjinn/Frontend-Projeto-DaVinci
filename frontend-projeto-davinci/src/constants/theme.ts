@@ -10,6 +10,7 @@ export const COLORS = {
   gray_200: '#D1D5DB',
   gray_400: '#4B5563',
   blue: '#007BFF',
+  pendente: '#FFA400',
 };
 
 export const SIZES = {
@@ -23,8 +24,11 @@ export const FONTS = {
   h1: { fontFamily: 'trajan-pro-3-bold', fontSize: 20, lineHeight: 24 },
   ph1: { fontFamily: 'Poppins-Bold', fontSize: 20, lineHeight: 22 },
   h2: { fontFamily: 'trajan-pro-3-bold', fontSize: 17, lineHeight: 22 },
+  ph2: { fontFamily: 'Poppins-Bold', fontSize: 17, lineHeight: 22 },
   h3: { fontFamily: 'trajan-pro-3-bold', fontSize: 13, lineHeight: 20 },  
+  ph3: { fontFamily: 'Poppins-SemiBold', fontSize: 22, lineHeight: 22 },
   h4: { fontFamily: 'trajan-pro-3-bold', fontSize: 15, lineHeight: 20 },  
+  ph4: { fontFamily: 'Poppins-SemiBold', fontSize: 28, lineHeight: 28 },
   h5: { fontFamily: 'trajan-pro-3-bold', fontSize: 24, lineHeight: 28 },  
   
   body1: { fontFamily: 'trajan-pro-3-bold', fontSize: 15, lineHeight: 22 },

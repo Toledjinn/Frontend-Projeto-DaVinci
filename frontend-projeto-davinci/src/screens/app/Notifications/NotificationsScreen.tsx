@@ -14,7 +14,7 @@ import { useNotificationStore, Notification } from '@/state/notificationStore';
 export default function NotificationsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.216;
+  const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const notifications = useNotificationStore((state) => state.notifications);
 

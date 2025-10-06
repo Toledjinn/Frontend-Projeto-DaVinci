@@ -64,6 +64,15 @@ export default function SaudeGeralScreen() {
       >
         <SaudeGeralForm />
       </ScrollView>
+      <ScreenFooter 
+        buttons={[
+          {
+            title: "Salvar",
+            onPress: router.back,
+            variant: 'secondary', 
+          }
+
+        ]}/>
     </SafeAreaView>
   );
 }

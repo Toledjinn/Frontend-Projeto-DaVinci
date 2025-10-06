@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -35,6 +36,7 @@ export default function EditLaboratorioContentScreen() {
 
   const [editableSlides, setEditableSlides] = useState<CarouselSlide[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { height } = useWindowDimensions();
 
   useEffect(() => {
     if (pageContent?.slides) {
@@ -100,7 +102,7 @@ export default function EditLaboratorioContentScreen() {
   
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={{paddingTop: height * 0.29}}>
         {editableSlides.map((slide, index) => (
           <View key={slide.id} style={styles.editorCard}>
             <TouchableOpacity onPress={() => toggleExpand(slide.id)}>
@@ -172,8 +174,8 @@ export default function EditLaboratorioContentScreen() {
       </ScrollView>
       <ScreenFooter
         buttons={[
-          { title: "Salvar", onPress: handleSaveChanges, variant: 'primary' },
           { title: "Cancelar", onPress: () => router.back(), variant: 'secondary' },
+          { title: "Salvar", onPress: handleSaveChanges, variant: 'primary' },
         ]}
       />
     </SafeAreaView>

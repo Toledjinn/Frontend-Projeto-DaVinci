@@ -37,7 +37,7 @@ export default function Header() {
     pageHeaderBadgeVariant,
   } = headerConfig;
 
-  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.30;
+  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.28;
 
   const notificationCircle = height * 0.12;
   const border = 3;

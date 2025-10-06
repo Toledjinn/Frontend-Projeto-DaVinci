@@ -64,6 +64,14 @@ export default function SaudeBucalScreen() {
       >
         <SaudeGeralForm />
       </ScrollView>
+      <ScreenFooter buttons={[
+        {
+          title: "Salvar",
+          onPress: router.back,
+          variant: 'secondary', 
+        }
+
+      ]}/>
     </SafeAreaView>
   );
 }

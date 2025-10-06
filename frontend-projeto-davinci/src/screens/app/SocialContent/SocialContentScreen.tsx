@@ -45,16 +45,16 @@ const convertToEmbedUrl = (url?: string | null) => {
 
 export default function SocialContentScreen() {
   const router = useRouter();
-  const { height } = useWindowDimensions();
   const params = useLocalSearchParams<{ pageName: string }>();
-
+  
   const pageName = isValidPageName(params.pageName) ? params.pageName : 'oQueE';
   const config = socialContentConfig[pageName];
-
+  
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const contentBlocks = useSocialStore((state) => state.pages[pageName]);
-
-  const headerHeight = height * 0.224;
+  
+  const { height } = useWindowDimensions();
+  const headerHeight = height * 0.29;
   const userType = 'admin';
 
   useFocusEffect(

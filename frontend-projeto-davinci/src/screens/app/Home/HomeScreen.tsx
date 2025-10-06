@@ -50,7 +50,7 @@ export default function HomeScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { height } = useWindowDimensions();
   const router = useRouter();
-  const headerHeight = height * 0.15;
+  const headerHeight = height * 0.23;
 
   useFocusEffect(
     React.useCallback(() => {

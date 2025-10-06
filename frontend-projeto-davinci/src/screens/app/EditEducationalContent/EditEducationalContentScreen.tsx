@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -419,6 +420,8 @@ export default function EditEducationalContentScreen() {
   const [editableSlides, setEditableSlides] = useState<CarouselSlide[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [expandedSlideId, setExpandedSlideId] = useState<string | null>(null);
+  const { height } = useWindowDimensions();
+  const headerHeight = height * 0.29;
 
   useEffect(() => {
     if (pageContent) {
@@ -536,7 +539,7 @@ export default function EditEducationalContentScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={{paddingTop: headerHeight}}>
         {editableSlides.map((slide, index) => (
           <View key={slide.id} style={styles.slideEditor}>
             <TouchableOpacity onPress={() => handleToggleSlide(slide.id)}>
@@ -586,15 +589,15 @@ export default function EditEducationalContentScreen() {
       <ScreenFooter
         buttons={[
           {
+            title: "Cancelar",
+            onPress: () => router.back(),
+            variant: 'secondary',
+          },
+          {
             title: "Salvar",
             onPress: handleSaveChanges,
             variant: 'primary',
           },
-          {
-            title: "Cancelar",
-            onPress: () => router.back(),
-            variant: 'secondary',
-          }
         ]}
       />
     </SafeAreaView>

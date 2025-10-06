@@ -20,7 +20,7 @@ const MOCK_DENTISTS = getUsers('dentist');
 
 export default function ScheduleAppointmentScreen() {
     const { height } = useWindowDimensions();
-    const headerHeight = height * 0.216;
+    const headerHeight = height * 0.29;
     const router = useRouter();
     const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
     
@@ -180,16 +180,16 @@ export default function ScheduleAppointmentScreen() {
                 </ScrollView>
                 <ScreenFooter
                     buttons={[
-                    {
-                        title: primaryButtonTitle(),
-                        onPress: handleSchedule,
-                        variant: 'primary',  
-                    },
-                    {
-                        title: "Cancelar",
-                        onPress: () => router.back(),
-                        variant: 'secondary',  
-                    }
+                        {
+                            title: "Cancelar",
+                            onPress: () => router.back(),
+                            variant: 'secondary',  
+                        },
+                        {
+                            title: primaryButtonTitle(),
+                            onPress: handleSchedule,
+                            variant: 'primary',  
+                        },
                     ]}
                 />
             </View>

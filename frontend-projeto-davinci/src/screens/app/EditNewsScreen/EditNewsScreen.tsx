@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,7 +23,7 @@ export default function EditNewsScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-
+  const { height } = useWindowDimensions();
   const { getNewsById, updateNews } = useNewsStore();
   const originalNewsItem = getNewsById(id!);
 
@@ -88,7 +89,7 @@ export default function EditNewsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView style={styles.scrollView}contentContainerStyle={{paddingTop: height * 0.29}}>
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Título</Text>
           <TextInput

@@ -8,10 +8,7 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-  },
-  contentContainer: {
-    paddingHorizontal: 24,
-    paddingTop: "44%",
+    paddingHorizontal: 12,
   },
   blockContainer: {
     backgroundColor: COLORS.white,

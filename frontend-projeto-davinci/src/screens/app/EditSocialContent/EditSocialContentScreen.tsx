@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -33,7 +34,8 @@ export default function EditSocialContentScreen() {
   const router = useRouter();
   const { pageName } = useLocalSearchParams<{ pageName?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-
+  const { height } = useWindowDimensions();
+  const headerHeight = height * 0.29;
   const page = isValidPageName(pageName) ? pageName : 'oQueE';
   const config = editContentConfig[page];
 
@@ -181,7 +183,7 @@ export default function EditSocialContentScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+      <ScrollView style={(styles.scrollView)} contentContainerStyle={ { paddingTop: headerHeight }}>
         {editableContent.map((item, index) => (
           <View key={item.id} style={styles.editorCard}>
             <TouchableOpacity onPress={() => toggleExpand(item.id)}>
@@ -230,8 +232,8 @@ export default function EditSocialContentScreen() {
       </ScrollView>
       <ScreenFooter
         buttons={[
-          { title: "Salvar", onPress: handleSaveChanges, variant: 'primary' },
           { title: "Cancelar", onPress: () => router.back(), variant: 'secondary' },
+          { title: "Salvar", onPress: handleSaveChanges, variant: 'primary' },
         ]}
       />
     </SafeAreaView>

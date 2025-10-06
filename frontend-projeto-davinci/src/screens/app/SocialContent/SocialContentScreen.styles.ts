@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   },
 
   paragraph: {
-    ...FONTS.body10,
+    ...FONTS.body9,
     color: COLORS.secondary,
     lineHeight: 22,
   },

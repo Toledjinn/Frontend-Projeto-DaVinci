@@ -87,7 +87,7 @@ export default function LaboratorioContentScreen() {
           style={styles.carousel}
           contentContainerStyle={[
             styles.carouselContent,
-            { paddingTop: height * 0.324 }, 
+            { paddingTop: height * 0.29 }, 
           ]}
         >
 
