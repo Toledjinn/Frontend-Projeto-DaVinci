@@ -10,15 +10,24 @@ type HeaderConfig = {
   CharacterSvg: React.FC<SvgProps> | null;
   showNotificationIcon: boolean;
   showBackground: boolean;
+
   userName?: string;
   UserImageSvg?: React.FC<SvgProps> | null;
+  userPhotoUri?: string | null;
+
   riskLevel?: 'baixo' | 'moderado' | 'alto';
-  pageHeaderBadgeVariant?: 'default' | 'store'; 
+  pageHeaderBadgeVariant?: 'default' | 'store';
+
+  showDeleteIcon?: boolean; 
+  userId?: string;         
 };
 
 type UIState = {
   headerConfig: HeaderConfig;
   setHeaderConfig: (config: Partial<HeaderConfig>) => void;
+
+  registerPhotoUri: string | null;
+  setRegisterPhotoUri: (uri: string | null) => void;
 };
 
 const initialConfig: HeaderConfig = {
@@ -29,15 +38,26 @@ const initialConfig: HeaderConfig = {
   CharacterSvg: null,
   showNotificationIcon: true,
   showBackground: true,
+
   userName: '',
   UserImageSvg: null,
-  pageHeaderBadgeVariant: 'default', 
+  userPhotoUri: null,
+
+  riskLevel: undefined,
+  pageHeaderBadgeVariant: 'default',
+
+  showDeleteIcon: false,
+  userId: undefined,
 };
 
 export const useUIStore = create<UIState>((set) => ({
   headerConfig: initialConfig,
+
   setHeaderConfig: (config) =>
     set(() => ({
       headerConfig: { ...initialConfig, ...config },
     })),
+
+  registerPhotoUri: null,
+  setRegisterPhotoUri: (uri) => set({ registerPhotoUri: uri }),
 }));

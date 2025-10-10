@@ -3,6 +3,8 @@ import { COLORS, FONTS } from '@/constants/theme';
 
 export const getUserListItemStyles = (height: number) => {
   const itemHeight = height * 0.1;
+  const imageSize = itemHeight * 0.7;
+
   return StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -16,14 +18,19 @@ export const getUserListItemStyles = (height: number) => {
       minHeight: itemHeight,
     },
     imageContainer: {
-      width: itemHeight * 0.7,
-      height: itemHeight * 0.7,
-      borderRadius: (itemHeight * 0.7) / 2,
+      width: imageSize,
+      height: imageSize,
+      borderRadius: imageSize / 2,
       overflow: 'hidden',
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: COLORS.gray_100,
       marginRight: 12,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: imageSize / 2,
     },
     infoContainer: {
       flex: 1,
@@ -40,7 +47,7 @@ export const getUserListItemStyles = (height: number) => {
     detailText: {
       ...FONTS.body11,
       color: COLORS.gray_400,
-      top: 4
+      top: 4,
     },
     alertIcon: {
       marginHorizontal: 8,

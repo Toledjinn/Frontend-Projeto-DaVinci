@@ -11,34 +11,50 @@ export const getStyledDatePickerStyles = (height: number, width: number) => {
       color: COLORS.secondary,
       marginBottom: 8,
     },
+    labelDisabled: {
+      ...FONTS.body7,
+      color: COLORS.gray_400,
+      marginBottom: 8,
+    },
     inputContainer: {
-      height: height * 0.0502, 
+      height: height * 0.0502,
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: COLORS.white,
       borderRadius: 8,
       borderWidth: 1,
       borderColor: COLORS.gray_200,
-      paddingHorizontal: width * 0.04, 
+      paddingHorizontal: width * 0.04,
+    },
+    inputContainerDisabled: {
+      backgroundColor: COLORS.gray_100,
     },
     icon: {
-      marginRight: width * 0.05, 
+      marginRight: width * 0.05,
     },
     dateText: {
       ...FONTS.body9,
       color: COLORS.secondary,
     },
+    dateTextDisabled: {
+      ...FONTS.body9,
+      color: COLORS.gray_400,
+    },
     placeholder: {
       ...FONTS.body9,
       color: COLORS.gray_400,
     },
+    placeholderDisabled: {
+      ...FONTS.body9,
+      color: COLORS.gray_200,
+    },
     errorText: {
       color: COLORS.red,
-      fontSize: height * 0.014, 
-      marginTop: height * 0.005, 
+      fontSize: height * 0.014,
+      marginTop: height * 0.005,
     },
     errorPlaceholder: {
-      height: height * 0.021, 
+      height: height * 0.021,
     },
   });
 };

@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { View, Text, TouchableOpacity, useWindowDimensions, Alert, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { getHeaderStyles } from './styles';
+
 import NotificacaoIcon from '@/assets/icons/notificacao.svg';
 import FotoPerfil from '@/assets/images/FotoPerfil.svg';
 import HeaderBackground from '@/assets/images/header.svg';
@@ -14,8 +15,10 @@ import ShoppingCartIcon from '@/assets/icons/shoppingcart.svg';
 
 import { COLORS } from '@/constants/theme';
 import { useUIStore as useUIStoreHeader } from '@/state/uiStore';
+import { useUsers } from '@/hooks/useUsers';
 import { badge } from '@/ui/badgePresets';
-import LogoBadge from '@/components/common/LogoBadge'; 
+import LogoBadge from '@/components/common/LogoBadge';
+import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 
 export default function Header() {
   const router = useRouter();
@@ -23,6 +26,8 @@ export default function Header() {
   const styles = getHeaderStyles(height);
 
   const { headerConfig } = useUIStoreHeader();
+  const { deleteById } = useUsers();
+
   const {
     visible,
     layout,
@@ -33,20 +38,55 @@ export default function Header() {
     showBackground,
     userName,
     UserImageSvg,
+    userPhotoUri,
     riskLevel,
     pageHeaderBadgeVariant,
-  } = headerConfig;
+    showDeleteIcon, 
+    userId,       
+  } = headerConfig as typeof headerConfig & {
+    showDeleteIcon?: boolean;
+    userId?: string;
+    userPhotoUri?: string | null;
+  };
 
-  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.28;
-
+  const headerHeight = layout === 'home' ? height * 0.226 : height * 0.29;
   const notificationCircle = height * 0.12;
   const border = 3;
-  const iconSize = notificationCircle - border * 2 
-  
+  const iconSize = notificationCircle - border * 2;
+
   if (!visible) return null;
 
   const headerBadgePreset =
     pageHeaderBadgeVariant === 'store' ? badge.headerStore : badge.header;
+
+  const handleDeleteUser = () => {
+    if (!userId) {
+      Alert.alert('Erro', 'ID do usuário não encontrado.');
+      return;
+    }
+    Alert.alert(
+      'Excluir usuário',
+      `Tem certeza que deseja excluir ${userName || 'o usuário'}?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteById(userId);
+              Alert.alert('Usuário excluído com sucesso!');
+              router.back();
+            } catch (err) {
+              console.error(err);
+              Alert.alert('Erro', 'Não foi possível excluir o usuário.');
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <View style={[styles.wrapper, { height: headerHeight }]} pointerEvents="box-none">
@@ -70,14 +110,19 @@ export default function Header() {
           />
         )}
 
-      {layout === 'profile' && UserImageSvg && userName && (
-        <ProfileHeader UserImageSvg={UserImageSvg} userName={userName} riskLevel={riskLevel} />
+      {layout === 'profile' && userName && (
+        <ProfileHeader
+          UserImageSvg={UserImageSvg || UserPlaceholder}
+          userName={userName}
+          riskLevel={riskLevel}
+          photoUri={userPhotoUri ?? null}
+        />
       )}
 
       {layout === 'register' && <ImagePickerHeader title={pageTitle} />}
 
       <View style={styles.headerContainer}>
-        <View className="leftSection" style={styles.leftSection}>
+        <View style={styles.leftSection}>
           {layout === 'home' && (
             <TouchableOpacity onPress={() => router.push('/(app)/profile')} activeOpacity={1}>
               <View style={styles.profileImageContainer}>
@@ -101,6 +146,12 @@ export default function Header() {
         </View>
 
         <View style={styles.rightSection}>
+          {layout === 'profile' && showDeleteIcon && (
+            <TouchableOpacity onPress={handleDeleteUser} activeOpacity={0.8} style={{ paddingHorizontal: 8 }}>
+              <Feather name="trash-2" size={32} color={COLORS.secondary} />
+            </TouchableOpacity>
+          )}
+
           {showNotificationIcon && layout !== 'loja' && (
             <TouchableOpacity
               style={[styles.notificationContainer]}

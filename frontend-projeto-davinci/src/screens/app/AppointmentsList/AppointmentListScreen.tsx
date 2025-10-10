@@ -10,68 +10,35 @@ import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import AppointmentListItem from '@/components/features/AppointmentListItem';
 import RecordFilterModal from '@/components/features/RecordFilterModal';
 
-import { getUsers, findUserById, UserProfile } from '@/data/mockUsers';
-import { getAllAppointments, getPendingAppointments, getAppointmentsByPatientId, getAppointmentsByDentistName, Appointment, APPOINTMENT_STATUSES } from '@/data/mockAppointments';
+import { useUsers } from '@/hooks/useUsers';
+import { useAppointments } from '@/hooks/useAppointments';
+import type { Appointment } from '@/data/appointmentsStore';
+import { APPOINTMENT_STATUSES } from '@/data/appointmentsStore';
 import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 
 import Chefinho from '@/assets/characters/chefinho.svg';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import { formatUserName } from '@/utils/nameUtils';
 
-const listTypeConfig = {
-  all: {
-    title: 'Consultas',
-    fetchData: () => getAllAppointments().filter(a => a.status !== 'pendente'),
-    searchPlaceholder: 'Pesquisar por paciente...',
-    showFooter: true,
-    footerButtonTitle: 'Agendar Consulta',
-    headerLayout: 'page' as const,
-  },
-  pending: {
-    title: 'Solicitações',
-    fetchData: getPendingAppointments,
-    searchPlaceholder: 'Pesquisar por paciente...',
-    showFooter: false,
-    footerButtonTitle: '', 
-    headerLayout: 'page' as const,
-  },
-  patient: {
-    title: 'Prontuário de',
-    fetchData: getAppointmentsByPatientId,
-    searchPlaceholder: 'Pesquisar por procedimento...',
-    showFooter: true,
-    footerButtonTitle: 'Nova Consulta',
-    headerLayout: 'profile' as const,
-  },
-  dentist: {
-    title: 'Consultas de',
-    fetchData: getAppointmentsByDentistName,
-    searchPlaceholder: 'Pesquisar por procedimento...',
-    showFooter: true,
-    footerButtonTitle: 'Nova Consulta',
-    headerLayout: 'profile' as const,
-  },
-};
-
-type ListType = keyof typeof listTypeConfig;
-
-const isValidListType = (value: any): value is ListType => {
-  return value in listTypeConfig;
-};
+type ListType = 'all' | 'pending' | 'patient' | 'dentist';
 
 export default function AppointmentListScreen() {
   const router = useRouter();
-  const { listType: rawListType, id } = useLocalSearchParams<{ listType?: string, id?: string }>();
-  
-  const listType: ListType = isValidListType(rawListType)
-    ? rawListType
-    : id ? 'patient' : 'all';
-
-  const config = listTypeConfig[listType];
+  const { listType: rawListType, id } = useLocalSearchParams<{ listType?: string; id?: string }>();
+  const listType: ListType = (
+    ['all', 'pending', 'patient', 'dentist'].includes(rawListType || '')
+      ? rawListType
+      : id
+      ? 'patient'
+      : 'all'
+  ) as ListType;
 
   const { height } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const headerHeight = height * 0.27;
+
+  const { list: users } = useUsers();
+  const { list: appointments, refresh } = useAppointments(); 
 
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,16 +48,22 @@ export default function AppointmentListScreen() {
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
-  
+
   useFocusEffect(
     useCallback(() => {
-      const user = (config.headerLayout === 'profile' && id) ? findUserById(id) : null;
+      refresh(); 
+    }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const user = id ? users.find((u) => u.id === id) : null;
 
       if (user) {
-        const formattedName = formatUserName(user.name);
+        const formatted = formatUserName(user.name);
         setHeaderConfig({
           layout: 'profile',
-          userName: `${config.title} ${formattedName}`,
+          userName: `${listType === 'patient' ? 'Prontuário de' : 'Consultas de'} ${formatted}`,
           UserImageSvg: user.image || UserPlaceholder,
           riskLevel: user.riskLevel,
           showNotificationIcon: true,
@@ -99,65 +72,80 @@ export default function AppointmentListScreen() {
       } else {
         setHeaderConfig({
           layout: 'page',
-          showPageHeaderElements: true, 
-          pageTitle: config.title,
+          showPageHeaderElements: true,
+          pageTitle: listType === 'pending' ? 'Solicitações' : 'Consultas',
           CharacterSvg: Chefinho,
           showNotificationIcon: true,
           showBackground: true,
         });
       }
 
-      let fetchedAppointments: Appointment[] = [];
-      if (listType === 'patient' && id) {
-        fetchedAppointments = (config.fetchData as (id: string) => Appointment[])(id);
-      } else if (listType === 'dentist' && user) {
-        fetchedAppointments = (config.fetchData as (name: string) => Appointment[])(user.name);
-      } else {
-        fetchedAppointments = (config.fetchData as () => Appointment[])();
-      }
-      setAllAppointments(fetchedAppointments || []);
-    }, [listType, id, config])
+      let filtered: Appointment[] = [];
+      if (listType === 'patient' && id) filtered = appointments.filter((a) => a.patientId === id);
+      else if (listType === 'dentist' && id) filtered = appointments.filter((a) => a.dentistId === id);
+      else if (listType === 'pending') filtered = appointments.filter((a) => a.status === 'pendente');
+      else filtered = appointments.filter((a) => a.status !== 'pendente');
+
+      setAllAppointments(filtered);
+    }, [listType, id, users, appointments])
   );
 
   const filteredAppointments = useMemo(() => {
-    const patients = getUsers('patient');
-    let appointmentsWithData = allAppointments.map(appt => {
-      const patient = patients.find(p => p.id === appt.patientId);
+    const patients = users.filter((u) => u.type === 'patient');
+    const dentists = users.filter((u) => u.type === 'dentist');
+
+    let enriched = allAppointments.map((appt) => {
+      const patient = patients.find((p) => p.id === appt.patientId);
+      const dentist = dentists.find((d) => d.id === appt.dentistId);
+
+      const patientImage = patient?.photoUri
+        ? { uri: patient.photoUri }
+        : patient?.image || null;
+
       return {
-          ...appt,
-          patientName: patient?.name || 'Paciente não encontrado',
-          patientImage: patient?.image || null,
-          hasAllergies: !!patient?.allergies?.length,
-      }
+        ...appt,
+        patientName: patient?.name || 'Paciente não encontrado',
+        patientImage,
+        dentistName: dentist?.name || 'Dentista não encontrado',
+        hasAllergies: !!patient?.allergies?.length,
+      };
     });
 
-    if (startDate) {
-        appointmentsWithData = appointmentsWithData.filter(appt => new Date(appt.date.split('/').reverse().join('-')) >= startDate);
-    }
+    if (startDate) enriched = enriched.filter((a) => new Date(a.date.split('/').reverse().join('-')) >= startDate);
     if (endDate) {
-        const inclusiveEndDate = new Date(endDate);
-        inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1);
-        appointmentsWithData = appointmentsWithData.filter(appt => new Date(appt.date.split('/').reverse().join('-')) < inclusiveEndDate);
+      const inclusiveEnd = new Date(endDate);
+      inclusiveEnd.setDate(inclusiveEnd.getDate() + 1);
+      enriched = enriched.filter((a) => new Date(a.date.split('/').reverse().join('-')) < inclusiveEnd);
     }
-    if (selectedDentists.length > 0) {
-        appointmentsWithData = appointmentsWithData.filter(appt => selectedDentists.includes(appt.dentist));
-    }
-    if (selectedSpecialties.length > 0) {
-        appointmentsWithData = appointmentsWithData.filter(appt => selectedSpecialties.includes(appt.specialty));
-    }
-    if (selectedStatus.length > 0) {
-        appointmentsWithData = appointmentsWithData.filter(appt => selectedStatus.includes(appt.status));
-    }
-    
+    if (selectedDentists.length) enriched = enriched.filter((a) => selectedDentists.includes(a.dentistId));
+    if (selectedSpecialties.length) enriched = enriched.filter((a) => selectedSpecialties.includes(a.specialty));
+    if (selectedStatus.length) enriched = enriched.filter((a) => selectedStatus.includes(a.status));
+
     if (searchQuery) {
-      const lowerQuery = searchQuery.toLowerCase();
-      appointmentsWithData = appointmentsWithData.filter(a => a.patientName?.toLowerCase().includes(lowerQuery));
+      const q = searchQuery.toLowerCase();
+      enriched = enriched.filter((a) => a.patientName.toLowerCase().includes(q));
     }
-    return appointmentsWithData;
-  }, [allAppointments, searchQuery, startDate, endDate, selectedDentists, selectedSpecialties, selectedStatus, listType]);
-  
-  const dentistOptions = useMemo(() => [...new Set(getAllAppointments().map(a => a.dentist))], []);
-  
+
+    enriched.sort((a, b) => {
+      const [dayA, monthA, yearA] = a.date.split('/').map(Number);
+      const [hourA, minuteA] = a.time.split(':').map(Number);
+      const dateA = new Date(yearA, monthA - 1, dayA, hourA, minuteA);
+
+      const [dayB, monthB, yearB] = b.date.split('/').map(Number);
+      const [hourB, minuteB] = b.time.split(':').map(Number);
+      const dateB = new Date(yearB, monthB - 1, dayB, hourB, minuteB);
+
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    return enriched;
+  }, [allAppointments, users, searchQuery, startDate, endDate, selectedDentists, selectedSpecialties, selectedStatus]);
+
+  const dentistOptions = useMemo(
+    () => users.filter((u) => u.type === 'dentist').map((u) => ({ label: u.name, value: u.id })),
+    [users]
+  );
+
   const handleApplyFilter = (filters: any) => {
     setStartDate(filters.start);
     setEndDate(filters.end);
@@ -166,7 +154,7 @@ export default function AppointmentListScreen() {
     setSelectedStatus(filters.status);
     setFilterModalVisible(false);
   };
-  
+
   const handleItemPress = (item: Appointment) => {
     router.push(`/(app)/appointment/${item.id}`);
   };
@@ -174,8 +162,8 @@ export default function AppointmentListScreen() {
   const handleFooterButtonPress = () => {
     const params: { patientId?: string; dentistId?: string } = {};
     if (id) {
-        if (listType === 'patient') params.patientId = id;
-        if (listType === 'dentist') params.dentistId = id;
+      if (listType === 'patient') params.patientId = id;
+      if (listType === 'dentist') params.dentistId = id;
     }
     router.push({ pathname: '/(app)/schedule-appointment', params });
   };
@@ -185,45 +173,44 @@ export default function AppointmentListScreen() {
       <FlatList
         data={filteredAppointments}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />
-        )}
+        renderItem={({ item }) => <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />}
         contentContainerStyle={[styles.listContentContainer, { paddingTop: headerHeight }]}
         ListHeaderComponent={
           <SearchAndFilterBar
             value={searchQuery}
-            placeholder={config.searchPlaceholder}
+            placeholder="Pesquisar consulta..."
             onSearchChange={setSearchQuery}
             onFilterPress={() => setFilterModalVisible(true)}
           />
         }
         ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
       />
-      {config.showFooter && (
-        <ScreenFooter
-          buttons={[{
-            title: config.footerButtonTitle, 
+
+      <ScreenFooter
+        buttons={[
+          {
+            title: listType === 'pending' ? 'Ver Consultas' : 'Nova Consulta',
             onPress: handleFooterButtonPress,
             variant: 'secondary',
-          }]}
-        />
-      )}
+          },
+        ]}
+      />
+
       <RecordFilterModal
         visible={isFilterModalVisible}
         onClose={() => setFilterModalVisible(false)}
         onApply={handleApplyFilter}
-        dentistOptions={listType === 'all' ? dentistOptions : []}
+        dentistOptions={dentistOptions}
         specialtyOptions={ALL_SPECIALTIES}
-        statusOptions={APPOINTMENT_STATUSES} 
-        initialFilters={{ 
-          start: startDate, 
-          end: endDate, 
-          dentists: selectedDentists, 
-          specialties: selectedSpecialties, 
-          status: selectedStatus 
+        statusOptions={APPOINTMENT_STATUSES}
+        initialFilters={{
+          start: startDate,
+          end: endDate,
+          dentists: selectedDentists,
+          specialties: selectedSpecialties,
+          status: selectedStatus,
         }}
       />
     </SafeAreaView>
   );
 }
-

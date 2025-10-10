@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import Header from '@/components/common/Header';
 import * as NavigationBar from 'expo-navigation-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { seedUsersFromLegacyMockOnce } from '@/data/usersStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,6 +27,7 @@ export default function RootLayout() {
     ['forgot-password', 'change-password'].includes(segments[1]);
 
   useEffect(() => {
+    seedUsersFromLegacyMockOnce().catch(console.error);
     if (Platform.OS === 'android') {
       NavigationBar.setVisibilityAsync('hidden'); 
     }

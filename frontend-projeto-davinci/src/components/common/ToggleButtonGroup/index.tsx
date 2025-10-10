@@ -2,36 +2,67 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from './styles';
 
+export type ToggleValue = 'sim' | 'não';
+
 type ToggleButtonGroupProps = {
   label: string;
-  value: 'sim' | 'não' | null;
-  onSelect: (value: 'sim' | 'não') => void;
+  value: ToggleValue | null;
+  onSelect: (value: ToggleValue) => void;
+  disabled?: boolean;
 };
 
-export default function ToggleButtonGroup({ label, value, onSelect }: ToggleButtonGroupProps) {
+export default function ToggleButtonGroup({
+  label,
+  value,
+  onSelect,
+  disabled = false,
+}: ToggleButtonGroupProps) {
+  const handlePress = (v: ToggleValue) => {
+    if (disabled) return;
+    onSelect(v);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
-      <View style={styles.buttonRow}>
+      {!!label && <Text style={styles.label}>{label}</Text>}
+
+      <View
+        style={[
+          styles.buttonRow,
+          disabled && { opacity: 0.5 },
+        ]}
+        accessibilityState={{ disabled }}
+      >
         <TouchableOpacity
           style={[
             styles.button,
             styles.leftButton,
             value === 'sim' ? styles.buttonSelected : styles.buttonUnselected,
           ]}
-          onPress={() => onSelect('sim')}
+          onPress={() => handlePress('sim')}
+          disabled={disabled}
+          accessibilityRole="button"
+          accessibilityLabel="Sim"
         >
-          <Text style={value === 'sim' ? styles.textSelected : styles.textUnselected}>Sim</Text>
+          <Text style={value === 'sim' ? styles.textSelected : styles.textUnselected}>
+            Sim
+          </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[
             styles.button,
             styles.rightButton,
             value === 'não' ? styles.buttonSelected : styles.buttonUnselected,
           ]}
-          onPress={() => onSelect('não')}
+          onPress={() => handlePress('não')}
+          disabled={disabled}
+          accessibilityRole="button"
+          accessibilityLabel="Não"
         >
-          <Text style={value === 'não' ? styles.textSelected : styles.textUnselected}>Não</Text>
+          <Text style={value === 'não' ? styles.textSelected : styles.textUnselected}>
+            Não
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

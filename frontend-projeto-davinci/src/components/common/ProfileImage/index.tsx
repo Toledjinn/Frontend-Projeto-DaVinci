@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, useWindowDimensions, TextLayoutEvent } from 'react-native';
+import React, { useState, memo } from 'react';
+import { View, Text, useWindowDimensions, TextLayoutEvent, Image } from 'react-native';
 import { SvgProps } from 'react-native-svg';
-import { getProfileHeaderStyles } from './styles'; 
+import { getProfileHeaderStyles } from './styles';
 import RiskLevelIndicator from '../RiskLevelIndicator';
 
 type RiskLevel = 'baixo' | 'moderado' | 'alto';
@@ -9,18 +9,17 @@ type RiskLevel = 'baixo' | 'moderado' | 'alto';
 type ProfileHeaderProps = {
   UserImageSvg: React.FC<SvgProps>;
   userName: string;
-  riskLevel?: RiskLevel; 
+  riskLevel?: RiskLevel;
+  photoUri?: string | null;
 };
 
-export default function ProfileHeader({ UserImageSvg, userName, riskLevel }: ProfileHeaderProps) {
-  const { width, height } = useWindowDimensions(); 
+function ProfileHeaderBase({ UserImageSvg, userName, riskLevel, photoUri }: ProfileHeaderProps) {
+  const { width, height } = useWindowDimensions();
   const [numberOfLines, setNumberOfLines] = useState(0);
-  
+
   const onTextLayout = (e: TextLayoutEvent) => {
     const lines = e.nativeEvent.lines.length;
-    if (lines > 0 && lines !== numberOfLines) {
-      setNumberOfLines(lines);
-    }
+    if (lines > 0 && lines !== numberOfLines) setNumberOfLines(lines);
   };
 
   const styles = getProfileHeaderStyles(width, height, !!riskLevel);
@@ -29,7 +28,16 @@ export default function ProfileHeader({ UserImageSvg, userName, riskLevel }: Pro
     <View style={styles.container}>
       <View style={styles.backgroundCircle}>
         <View style={styles.imageWrapper}>
-          <UserImageSvg width="100%" height="100%" />
+          {photoUri ? (
+            <Image
+              key={photoUri}
+              source={{ uri: photoUri }}
+              style={styles.image} 
+              resizeMode="cover"
+            />
+          ) : (
+            <UserImageSvg width="100%" height="100%" />
+          )}
         </View>
       </View>
 
@@ -46,3 +54,5 @@ export default function ProfileHeader({ UserImageSvg, userName, riskLevel }: Pro
     </View>
   );
 }
+
+export default memo(ProfileHeaderBase);

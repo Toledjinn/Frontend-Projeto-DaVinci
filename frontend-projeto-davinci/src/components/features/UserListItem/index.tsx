@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
-import { SvgProps } from 'react-native-svg';
+import { View, Text, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { SvgProps } from 'react-native-svg';
+
 import { getUserListItemStyles } from './styles';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
-import { User } from '../UserList';
 import { COLORS } from '@/constants/theme';
+import { User } from '../UserList'; 
 
 type UserListItemProps = {
   item: User;
@@ -15,24 +16,36 @@ type UserListItemProps = {
 const UserListItem = React.memo(({ item }: UserListItemProps) => {
   const { height } = useWindowDimensions();
   const styles = getUserListItemStyles(height);
+  const router = useRouter();
+
   const ImageComponent = item.image || UserPlaceholder;
-  const router = useRouter(); 
 
   const handlePress = () => {
     router.push({
-      pathname: "/user/[id]",
+      pathname: '/user/[id]',
       params: { id: item.id },
     });
   };
 
+  const hasPhoto = !!item.photoUri;
+
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.7}>
       <View style={styles.imageContainer}>
-        <ImageComponent width="100%" height="100%" />
+        {hasPhoto ? (
+          <Image
+            source={{ uri: item.photoUri! }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        ) : (
+          <ImageComponent width="100%" height="100%" />
+        )}
       </View>
+
       <View style={styles.infoContainer}>
         <Text style={styles.nameText}>{item.name}</Text>
-        
+
         <Text style={styles.detailText}>
           {item.detailLabel ? (
             <>
@@ -44,7 +57,7 @@ const UserListItem = React.memo(({ item }: UserListItemProps) => {
           )}
         </Text>
       </View>
-      
+
       {item.hasAllergies && (
         <Feather name="alert-triangle" size={24} color={COLORS.red} style={styles.alertIcon} />
       )}

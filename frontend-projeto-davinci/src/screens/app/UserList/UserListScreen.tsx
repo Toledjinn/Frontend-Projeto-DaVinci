@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { styles } from './UserListScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import UserList from '@/components/features/UserList';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
@@ -11,20 +12,22 @@ import PatientFilterModal from '@/components/features/PatientFilterModal';
 import DentistFilterModal from '@/components/features/DentistFilterModal';
 import AdminFilterModal from '@/components/features/AdminFilterModal';
 
-import { getUsers, UserProfile } from '@/data/mockUsers';
+import { useUsers } from '@/hooks/useUsers';
+import type { UserProfile } from '@/data/mockUsers';
+
 import { getAppointmentsByPatientId, getAllAppointments } from '@/data/mockAppointments';
 import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 
-import Paciente from '@/assets/characters/chefinho.svg'; 
+import Paciente from '@/assets/characters/chefinho.svg';
 import Dentista from '@/assets/characters/chefinho.svg';
 import Administrador from '@/assets/characters/chefinho.svg';
-
-const ALL_APPOINTMENTS = getAllAppointments();
 
 const parseDate = (dateStr: string): Date => {
   const [day, month, year] = dateStr.split('/');
   return new Date(Number(year), Number(month) - 1, Number(day));
 };
+
+const ALL_APPOINTMENTS = getAllAppointments();
 
 const userTypeConfig = {
   patient: {
@@ -36,17 +39,17 @@ const userTypeConfig = {
       const now = new Date();
       now.setHours(0, 0, 0, 0);
       const appointments = getAppointmentsByPatientId(user.id);
-      
+
       const futureAppointments = appointments
-        .filter(appt => appt.status === 'agendada' && parseDate(appt.date) >= now)
+        .filter((appt) => appt.status === 'agendada' && parseDate(appt.date) >= now)
         .sort((a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime());
 
       if (futureAppointments.length > 0) return `Próxima consulta: ${futureAppointments[0].date}`;
-      
+
       const pastAppointments = appointments
-        .filter(appt => appt.status === 'realizada')
+        .filter((appt) => appt.status === 'realizada')
         .sort((a, b) => parseDate(b.date).getTime() - parseDate(a.date).getTime());
-        
+
       if (pastAppointments.length > 0) return `Última consulta: ${pastAppointments[0].date}`;
 
       return 'Nenhuma consulta';
@@ -75,9 +78,10 @@ export default function UserListScreen() {
   const { userType } = useLocalSearchParams<{ userType: 'patient' | 'dentist' | 'admin' }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
+  const { list } = useUsers();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
-  
   const [filters, setFilters] = useState<any>({
     genders: [],
     specialties: [],
@@ -86,8 +90,12 @@ export default function UserListScreen() {
   });
 
   const config = userType ? userTypeConfig[userType] : userTypeConfig.patient;
-  const MOCK_USERS = getUsers(userType || 'patient');
-  
+
+  const SOURCE_USERS = useMemo(
+    () => list.filter((u) => u.type === (userType || 'patient')),
+    [list, userType]
+  );
+
   useFocusEffect(
     useCallback(() => {
       setHeaderConfig({
@@ -97,11 +105,11 @@ export default function UserListScreen() {
         CharacterSvg: config.CharacterSvg,
         showNotificationIcon: true,
       });
-    }, [config])
+    }, [config, setHeaderConfig])
   );
-  
+
   const handleRegisterPress = () => {
-    router.push({ pathname: '/(app)/register', params: { userType }});
+    router.push({ pathname: '/(app)/register', params: { userType } });
   };
 
   const handleApplyFilter = (newFilters: any) => {
@@ -109,49 +117,99 @@ export default function UserListScreen() {
   };
 
   const filteredUsers = useMemo(() => {
-    let users = MOCK_USERS;
+    let users = SOURCE_USERS as UserProfile[];
 
     if (userType === 'patient') {
       users = users
-        .filter(u => filters.allergy === 'all' || (filters.allergy === 'yes' && u.allergies && u.allergies.length > 0) || (filters.allergy === 'no' && (!u.allergies || u.allergies.length === 0)))
-        .filter(u => filters.genders.length === 0 || filters.genders.includes(u.details.find(d => d.label === 'Gênero')?.value))
-        .filter(u => {
-            if (filters.specialties.length === 0) return true;
-            const patientAppointments = ALL_APPOINTMENTS.filter(a => a.patientId === u.id);
-            const patientSpecialties = [...new Set(patientAppointments.map(a => a.specialty))];
-            return patientSpecialties.some(spec => filters.specialties.includes(spec));
+        .filter(
+          (u) =>
+            filters.allergy === 'all' ||
+            (filters.allergy === 'yes' && u.allergies && u.allergies.length > 0) ||
+            (filters.allergy === 'no' && (!u.allergies || u.allergies.length === 0))
+        )
+        .filter(
+          (u) =>
+            filters.genders.length === 0 ||
+            filters.genders.includes(u.details.find((d) => d.label === 'Gênero')?.value)
+        )
+        .filter((u) => {
+          if (filters.specialties.length === 0) return true;
+          const patientAppointments = ALL_APPOINTMENTS.filter((a) => a.patientId === u.id);
+          const patientSpecialties = [...new Set(patientAppointments.map((a) => a.specialty))];
+          return patientSpecialties.some((spec) => filters.specialties.includes(spec));
         });
     } else if (userType === 'dentist') {
-        users = users
-            .filter(u => filters.genders.length === 0 || filters.genders.includes(u.details.find(d => d.label === 'Gênero')?.value))
-            .filter(u => filters.specialties.length === 0 || u.specialties?.some(s => filters.specialties.includes(s)));
+      users = users
+        .filter(
+          (u) =>
+            filters.genders.length === 0 ||
+            filters.genders.includes(u.details.find((d) => d.label === 'Gênero')?.value)
+        )
+        .filter(
+          (u) => filters.specialties.length === 0 || u.specialties?.some((s) => filters.specialties.includes(s))
+        );
     } else if (userType === 'admin') {
-        users = users
-            .filter(u => filters.genders.length === 0 || filters.genders.includes(u.details.find(d => d.label === 'Gênero')?.value))
-            .filter(u => filters.roles.length === 0 || (u.role && filters.roles.includes(u.role)));
-    }
-    
-    if (searchQuery) {
-      users = users.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      users = users
+        .filter(
+          (u) =>
+            filters.genders.length === 0 ||
+            filters.genders.includes(u.details.find((d) => d.label === 'Gênero')?.value)
+        )
+        .filter((u) => filters.roles.length === 0 || (u.role && filters.roles.includes(u.role)));
     }
 
-    return users.map(user => ({
+    if (searchQuery) {
+      users = users.filter((u) => u.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+
+    return users.map((user) => ({
       ...user,
       detailLine1: config.getDetailLine(user),
       hasAllergies: user.type === 'patient' && user.allergies && user.allergies.length > 0,
     }));
-  }, [searchQuery, filters, userType]);
+  }, [SOURCE_USERS, searchQuery, filters, userType, config]);
+
+  const specialtyOptionsForDentist = useMemo(
+    () => [...new Set(SOURCE_USERS.flatMap((d: any) => d.specialties || []))],
+    [SOURCE_USERS]
+  );
+  const roleOptionsForAdmin = useMemo(
+    () => [...new Set(SOURCE_USERS.map((a: any) => a.role || '').filter(Boolean))],
+    [SOURCE_USERS]
+  );
 
   const renderFilterModal = () => {
     switch (userType) {
       case 'patient':
-        return <PatientFilterModal visible={isFilterModalVisible} onClose={() => setFilterModalVisible(false)} onApply={handleApplyFilter} specialtyOptions={ALL_SPECIALTIES} initialFilters={filters} />;
+        return (
+          <PatientFilterModal
+            visible={isFilterModalVisible}
+            onClose={() => setFilterModalVisible(false)}
+            onApply={handleApplyFilter}
+            specialtyOptions={ALL_SPECIALTIES}
+            initialFilters={filters}
+          />
+        );
       case 'dentist':
-        const specialtyOptions = [...new Set(MOCK_USERS.flatMap(d => d.specialties || []))];
-        return <DentistFilterModal visible={isFilterModalVisible} onClose={() => setFilterModalVisible(false)} onApply={handleApplyFilter} specialtyOptions={specialtyOptions} initialFilters={filters} />;
+        return (
+          <DentistFilterModal
+            visible={isFilterModalVisible}
+            onClose={() => setFilterModalVisible(false)}
+            onApply={handleApplyFilter}
+            specialtyOptions={specialtyOptionsForDentist}
+            initialFilters={filters}
+          />
+        );
       case 'admin':
-        const roleOptions = [...new Set(MOCK_USERS.map(a => a.role || ''))].filter(Boolean);
-        return <AdminFilterModal visible={isFilterModalVisible} onClose={() => setFilterModalVisible(false)} onApply={handleApplyFilter} roleOptions={roleOptions} initialFilters={filters} />;
+        return (
+          <AdminFilterModal
+            visible={isFilterModalVisible}
+            onClose={() => setFilterModalVisible(false)}
+            onApply={handleApplyFilter}
+            roleOptions={roleOptionsForAdmin}
+            initialFilters={filters}
+          />
+        );
       default:
         return null;
     }
@@ -167,6 +225,7 @@ export default function UserListScreen() {
             onSearchChange={setSearchQuery}
             onFilterPress={() => setFilterModalVisible(true)}
           />
+
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContentContainer}
@@ -175,16 +234,18 @@ export default function UserListScreen() {
             <UserList data={filteredUsers} />
           </ScrollView>
         </View>
+
         <ScreenFooter
-        buttons={[
+          buttons={[
             {
-              title: config.registerButtonTitle,    
+              title: config.registerButtonTitle,
               onPress: handleRegisterPress,
               variant: 'secondary',
-            }
-            ]}
+            },
+          ]}
         />
       </View>
+
       {renderFilterModal()}
     </SafeAreaView>
   );

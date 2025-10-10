@@ -12,6 +12,7 @@ export type User = {
   hasAllergies?: boolean; 
   specialties?: string[];
   role?: string;
+  photoUri?: string | null;
 };
 
 type UserListProps = {

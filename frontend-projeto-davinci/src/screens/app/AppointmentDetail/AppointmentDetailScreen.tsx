@@ -1,34 +1,35 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, useWindowDimensions, Text, View, Alert, StyleProp, ViewStyle } from 'react-native';
+import { ScrollView, useWindowDimensions, Text, View, Alert, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './AppointmentDetailScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import ScreenFooter from '@/components/common/ScreenFooter';
-import { findUserById, UserProfile, getUsers } from '@/data/mockUsers';
-import { getAppointmentById, Appointment, updateAppointmentStatus } from '@/data/mockAppointments';
-import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import AllergyWarning from '@/components/features/AllergyWarning';
 import ProfileDataItem from '@/components/features/ProfileDataItem';
-import { ALL_PROCEDURES } from '@/data/mockProcedures';
 import StyledButton from '@/components/common/StyledButton';
+import { COLORS } from '@/constants/theme';
 import { formatUserName } from '@/utils/nameUtils';
-import { COLORS, FONTS } from '@/constants/theme';
-import { getRecordForAppointment, ConsultationRecord } from '@/data/mockConsultationRecords';
 
-const MOCK_DENTISTS = getUsers('dentist');
+import { useAppointments } from '@/hooks/useAppointments';
+import { useUsers } from '@/hooks/useUsers';
+import type { Appointment } from '@/data/appointmentsStore';
+import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 
 export default function AppointmentDetailScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.28;
-  const { appointmentId, mode } = useLocalSearchParams<{ appointmentId: string, mode?: string }>();
+  const { appointmentId, mode } = useLocalSearchParams<{ appointmentId: string; mode?: string }>();
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
+  const { list: appointments, update, remove } = useAppointments();
+  const { list: users } = useUsers();
+
   const [appointment, setAppointment] = useState<Appointment | null>(null);
-  const [patient, setPatient] = useState<UserProfile | null>(null);
-  const [record, setRecord] = useState<ConsultationRecord | null>(null);
+  const [patient, setPatient] = useState<any | null>(null);
+  const [dentist, setDentist] = useState<any | null>(null);
 
   const isReviewMode = mode === 'review';
   const isCancelled = appointment?.status === 'cancelada';
@@ -36,235 +37,120 @@ export default function AppointmentDetailScreen() {
   const isRealizada = appointment?.status === 'realizada';
 
   useEffect(() => {
-  if (appointmentId) {
-    const foundAppointment = getAppointmentById(appointmentId);
-    setAppointment(foundAppointment ?? null); 
+    if (!appointmentId) return;
+    const found = appointments.find((a) => a.id === appointmentId);
+    setAppointment(found || null);
 
-    if (foundAppointment) {
-      const foundPatient = findUserById(foundAppointment.patientId);
-      setPatient(foundPatient ?? null); 
-
-      if (foundAppointment.status === 'realizada') {
-        const foundRecord = getRecordForAppointment(appointmentId);
-        setRecord(foundRecord ?? null); 
-      } else {
-        setRecord(null);
-      }
-    } else {
-      setPatient(null);
-      setRecord(null);
+    if (found) {
+      const p = users.find((u) => u.id === found.patientId);
+      const d = users.find((u) => u.id === found.dentistId);
+      setPatient(p || null);
+      setDentist(d || null);
     }
-  } else {
-    setAppointment(null);
-    setPatient(null);
-    setRecord(null);
-  }
-}, [appointmentId]);
+  }, [appointmentId, appointments, users]);
 
-
-  const hasAllergies = patient?.allergies && patient.allergies.length > 0;
+  const hasAllergies = !!patient?.allergies?.length;
 
   useFocusEffect(
     useCallback(() => {
       if (patient) {
-        const firstName = patient.name.split(' ')[0];
+        const firstName = formatUserName(patient.name);
         setHeaderConfig({
           layout: 'profile',
           showBackground: true,
-          userName: isReviewMode ? `Revisar Solicitação` : `Agendamento de ${firstName}`,
+          userName: isReviewMode ? `Revisar Solicitação` : `Consulta de ${firstName}`,
+          userPhotoUri: patient.photoUri ?? null,
           UserImageSvg: patient.image || UserPlaceholder,
-          showNotificationIcon: false,
           riskLevel: patient.riskLevel,
+          showNotificationIcon: false,
         });
       }
     }, [patient, isReviewMode])
   );
 
-  const handleGoToDiagnostic = () => {
-    if (patient) {
-      router.push({
-        pathname: '/(app)/diagnostico',
-        params: { patientId: patient.id },
-      });
-    }
-  };
-
   const handleCancelAppointment = () => {
+    if (!appointment) return;
     Alert.alert(
-      "Confirmar Cancelamento",
-      "Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.",
+      'Confirmar cancelamento',
+      'Tem certeza que deseja cancelar esta consulta?',
       [
-        { text: "Voltar", onPress: () => console.log("Cancelamento abortado"), style: "cancel" },
-        { 
-          text: "Confirmar", 
-          onPress: () => {
-            if (appointmentId) {
-              updateAppointmentStatus(appointmentId, 'cancelada');
-              router.push({
-              pathname: '/(app)/consultas-list',
-              params: { listType: 'pending' }
-            });
-            }
+        { text: 'Voltar', style: 'cancel' },
+        {
+          text: 'Confirmar',
+          style: 'destructive',
+          onPress: async () => {
+            await update(appointment.id, { status: 'cancelada' });
+            Alert.alert('Consulta cancelada.');
+            router.back();
           },
-          style: 'destructive'
-        }
+        },
       ]
     );
   };
 
   const handleReschedule = () => {
     if (!appointment || !patient) return;
-    const dentist = MOCK_DENTISTS.find(d => d.name === appointment.dentist);
-    const procedureValues = appointment.procedures.map(procLabel => {
-        const foundProc = ALL_PROCEDURES.find(p => p.label === procLabel);
-        return foundProc ? foundProc.value : null;
-    }).filter(Boolean);
     router.push({
-        pathname: '/(app)/schedule-appointment',
-        params: {
-            mode: 'reschedule',
-            appointmentId: appointment.id,
-            patientId: patient.id,
-            dentistId: dentist?.id || '',
-            specialty: appointment.specialty,
-            procedures: JSON.stringify(procedureValues),
-            date: appointment.date,
-            time: appointment.time,
-            observations: appointment.observations || '',
-        },
-    });
-  };
-  
-  const handleApproveRequest = () => {
-    if (!appointmentId) return;
-    updateAppointmentStatus(appointmentId, 'agendada');
-    Alert.alert('Sucesso!', 'Solicitação aprovada e agendamento confirmado.');
-    router.push({
-        pathname: '/(app)/consultas-list',
-        params: { listType: 'pending' }
-      });
-  };
-  
-  const handleRejectRequest = () => {
-    if (!appointment || !patient) return;
-    const dentist = MOCK_DENTISTS.find(d => d.name === appointment.dentist);
-    router.push({
-        pathname: '/(app)/schedule-appointment',
-        params: {
-            mode: 'repropose',
-            patientId: patient.id,
-            dentistId: dentist?.id || '',
-            specialty: appointment.specialty,
-            procedures: JSON.stringify(ALL_PROCEDURES.filter(p => appointment.procedures.includes(p.label)).map(p => p.value)),
-            observations: appointment.observations || '',
-            date: appointment.date,
-            time: appointment.time,
-        },
+      pathname: '/(app)/schedule-appointment',
+      params: {
+        mode: 'reschedule',
+        appointmentId: appointment.id,
+        patientId: patient.id,
+        dentistId: appointment.dentistId,
+        specialty: appointment.specialty,
+        date: appointment.date,
+        time: appointment.time,
+        observations: appointment.observations || '',
+      },
     });
   };
 
   if (!appointment || !patient) {
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <View style={styles.centered}>
-                <Text>Carregando agendamento...</Text>
-            </View>
-        </SafeAreaView>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.centered}>
+          <Text>Carregando consulta...</Text>
+        </View>
+      </SafeAreaView>
     );
   }
-  
-  const statusInfo: { [key in Appointment['status']]: { text: string; color: string; icon: React.ComponentProps<typeof Feather>['name'] } } = {
+
+  const statusInfo: Record<
+    Appointment['status'],
+    { text: string; color: string; icon: keyof typeof Feather.glyphMap }
+  > = {
     agendada: { text: 'Agendada', color: COLORS.primary, icon: 'calendar' },
     realizada: { text: 'Realizada', color: COLORS.green, icon: 'check-circle' },
     cancelada: { text: 'Cancelada', color: COLORS.red, icon: 'x-circle' },
     pendente: { text: 'Pendente', color: COLORS.gray_400, icon: 'alert-circle' },
   };
-  
   const currentStatus = statusInfo[appointment.status];
-  const appointmentDetails: Array<{
-    id: string;
-    label: string;
-    value: string | React.ReactNode;
-  }> = [
-    { id: '1', label: 'Paciente', value: patient.name },
-    { id: '2', label: 'Dentista', value: appointment.dentist },
+
+  const appointmentDetails = [
+    { id: 'paciente', label: 'Paciente', value: patient.name },
+    { id: 'dentista', label: 'Dentista', value: dentist?.name || 'Não informado' },
     {
       id: 'status',
       label: 'Status',
       value: (
         <View style={styles.statusContainer}>
           <Feather name={currentStatus.icon} size={14} color={currentStatus.color} />
-          <Text style={[styles.statusText, { color: currentStatus.color }]}>
-            {currentStatus.text}
-          </Text>
+          <Text style={[styles.statusText, { color: currentStatus.color }]}>{currentStatus.text}</Text>
         </View>
       ),
     },
-    { id: '3', label: 'Especialidade', value: appointment.specialty },
-    { id: '4', label: 'Procedimentos', value: appointment.procedures.join(', ') },
-    { id: '5', label: 'Data', value: appointment.date },
-    { id: '6', label: 'Horário', value: appointment.time },
-    { id: '7', label: 'Observações', value: appointment.observations || 'Nenhuma' },
+    { id: 'especialidade', label: 'Especialidade', value: appointment.specialty },
+    { id: 'data', label: 'Data', value: appointment.date },
+    { id: 'hora', label: 'Horário', value: appointment.time },
+    { id: 'obs', label: 'Observações', value: appointment.observations || 'Nenhuma' },
   ];
 
-  const RenderRealizadaView = () => {
-    const procedures = record?.proceduresPerformed ?? [];
-
-    return (
-      <View>
-        {record ? (
-          <>
-            <View style={styles.recordContainer}>
-              <Text style={styles.recordSectionTitle}>Procedimentos Realizados</Text>
-
-              {procedures.length === 0 ? (
-                <Text>Nenhum procedimento registrado.</Text>
-              ) : (
-                procedures.map((proc, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.procedureItem,
-                      index < procedures.length - 1 && styles.procedureSeparator
-                    ]}
-                  >
-                    <Text style={styles.procedureTitle}>{proc.procedure}</Text>
-                    <Text style={styles.procedureDescription}>{proc.description}</Text>
-                  </View>
-                ))
-              )}
-            </View>
-          </>
-        ) : (
-          <Text>Nenhum registro detalhado para este atendimento.</Text>
-        )}
-        {appointment.specialty === 'Periodontia' && (
-          <StyledButton title="Periograma" variant="secondary" style={{ top: 8 }} />
-        )}
-        <View style={{ flexDirection: 'row', top: 24 }}>
-          <StyledButton title="Imagens" variant="primary" style={{ flex: 1, marginRight: 8 }} />
-          <StyledButton title="Raios-X" variant="primary" style={{ flex: 1, marginLeft: 8 }} />
-        </View>
-      </View>
-    );
-  };
-
-  const RenderDefaultView = () => (
+  const RenderAppointmentDetails = () => (
     <>
-      {appointment?.specialty !== 'Primeira Consulta' && (
-      <View style={styles.buttonContainer}>
-        <StyledButton
-          title="Diagnósticos"
-          variant="primary"
-          onPress={handleGoToDiagnostic}
-        />
-      </View>
-    )}
-    
-    {hasAllergies && <AllergyWarning allergies={patient.allergies!} />}
-    {appointmentDetails.map(detail => (
-      <ProfileDataItem key={detail.id} label={detail.label} value={detail.value} />
-    ))}
+      {hasAllergies && <AllergyWarning allergies={patient.allergies} />}
+      {appointmentDetails.map((detail) => (
+        <ProfileDataItem key={detail.id} label={detail.label} value={detail.value} />
+      ))}
     </>
   );
 
@@ -274,58 +160,39 @@ export default function AppointmentDetailScreen() {
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
       >
-        {isRealizada ? <RenderRealizadaView /> : <RenderDefaultView />}
+        <RenderAppointmentDetails />
       </ScrollView>
 
       {!isRealizada && !isCancelled && !isPendente && (
         <View style={styles.actionButtonContainer}>
           <StyledButton
-              title="Iniciar Atendimento"
-              variant="secondary"
-              onPress={() => {
-                if (appointment) {
-                  router.push({
-                    pathname: '/(app)/consultation',
-                    params: { appointmentId: appointment.id },
-                  });
-                }
-              }}
+            title="Iniciar Atendimento"
+            variant="secondary"
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/consultation',
+                params: { appointmentId: appointment.id },
+              })
+            }
           />
         </View>
       )}
 
       {!isRealizada && (
-        isReviewMode ? (
-          <ScreenFooter
-            buttons={[
-              {
-                title: "Reprovar",
-                onPress: handleRejectRequest,
-                variant: 'secondary', 
-              },
-              {
-                title: "Aprovar",
-                onPress: handleApproveRequest,
-                variant: 'primary',
-              },
-            ]}
-          />
-        ) : !isCancelled ? (
-          <ScreenFooter
+        <ScreenFooter
           buttons={[
-              {
-                title: "Cancelar",
-                onPress: handleCancelAppointment,
-                variant: 'secondary', 
-              },
-              {
-                title: "Reagendar",
-                onPress: handleReschedule,
-                variant: 'primary',
-              },
-            ]}
-          />
-        ) : null
+            {
+              title: 'Cancelar',
+              onPress: handleCancelAppointment,
+              variant: 'secondary',
+            },
+            {
+              title: 'Reagendar',
+              onPress: handleReschedule,
+              variant: 'primary',
+            },
+          ]}
+        />
       )}
     </SafeAreaView>
   );

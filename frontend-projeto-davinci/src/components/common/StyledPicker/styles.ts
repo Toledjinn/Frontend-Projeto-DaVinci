@@ -3,14 +3,14 @@ import { COLORS, FONTS } from '@/constants/theme';
 
 export const getStyledPickerStyles = (height: number, width: number) => {
   return StyleSheet.create({
-    wrapper: {
-      width: '100%',
-    },
+    wrapper: { width: '100%' },
+
     label: {
       ...FONTS.body3,
       color: COLORS.secondary,
       marginBottom: 8,
     },
+
     inputContainer: {
       height: height * 0.055,
       flexDirection: 'row',
@@ -21,59 +21,77 @@ export const getStyledPickerStyles = (height: number, width: number) => {
       borderColor: COLORS.gray_200,
       paddingHorizontal: width * 0.04,
     },
-    icon: {
-      marginRight: width * 0.05,
+
+    inputContainerDisabled: {
+      backgroundColor: COLORS.gray_100,
+      borderColor: COLORS.gray_200,
+      borderWidth: 1
     },
+
+    icon: { marginRight: width * 0.05 },
+
     valueText: {
       ...FONTS.body9,
       color: COLORS.secondary,
       flex: 1,
     },
+
+    valueTextDisabled: {
+      ...FONTS.body9,
+      color: COLORS.gray_400,
+      flex: 1,
+    },
+
     placeholder: {
       ...FONTS.body9,
       color: COLORS.gray_400,
       flex: 1,
     },
-    chevronIcon: {
-        marginLeft: 'auto',
-    },
+
+    chevronIcon: { marginLeft: 'auto' },
+
     errorText: {
       color: COLORS.red,
       fontSize: height * 0.014,
       marginTop: height * 0.005,
     },
-    errorPlaceholder: {
-      height: 20,
-    },
+
+    errorPlaceholder: { height: 20 },
+
     modalOverlay: {
       flex: 1,
       justifyContent: 'flex-end',
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+
     modalContent: {
-      backgroundColor: 'white',
+      backgroundColor: COLORS.white,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       maxHeight: '50%',
       paddingBottom: 20,
     },
+
     modalHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: COLORS.gray_200,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.gray_200,
     },
+
     modalTitle: {
-        ...FONTS.body1,
-        color: COLORS.secondary,
+      ...FONTS.body1,
+      color: COLORS.secondary,
     },
+
     optionButton: {
       padding: 20,
       borderBottomWidth: 1,
       borderBottomColor: COLORS.gray_100,
     },
+
     optionText: {
       ...FONTS.body9,
       textAlign: 'center',

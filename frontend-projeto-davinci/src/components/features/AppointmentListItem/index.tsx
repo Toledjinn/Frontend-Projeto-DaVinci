@@ -2,11 +2,16 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { styles, getStatusStyle } from './styles';
-import { Appointment } from '@/data/mockAppointments';
+import type { Appointment } from '@/data/appointmentsStore';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 
 export type AppointmentListItemProps = {
-  item: Appointment & { patientName?: string; patientImage?: any };
+  item: Appointment & {
+    patientName?: string;
+    patientImage?: any;
+    dentistName?: string;
+    hasAllergies?: boolean;
+  };
   onPress: () => void;
 };
 
@@ -17,7 +22,13 @@ export default function AppointmentListItem({ item, onPress }: AppointmentListIt
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.imageContainer}>
         {item.patientImage ? (
-          <Image source={item.patientImage} style={styles.image} />
+          typeof item.patientImage === 'function' ? (
+            <item.patientImage width="100%" height="100%" />
+          ) : item.patientImage?.uri ? (
+            <Image source={{ uri: item.patientImage.uri }} style={styles.image} />
+          ) : (
+            <UserPlaceholder width="100%" height="100%" />
+          )
         ) : (
           <UserPlaceholder width="100%" height="100%" />
         )}
@@ -25,8 +36,10 @@ export default function AppointmentListItem({ item, onPress }: AppointmentListIt
 
       <View style={styles.contentContainer}>
         <View>
-          <Text style={styles.patientName} numberOfLines={1}>{item.patientName || 'Paciente'}</Text>
-          <Text style={styles.detailText}>{item.dentist}</Text>
+          <Text style={styles.patientName} numberOfLines={1}>
+            {item.patientName || 'Paciente'}
+          </Text>
+          <Text style={styles.detailText}>{item.dentistName || 'Dentista não informado'}</Text>
           <Text style={styles.detailText}>{item.specialty}</Text>
         </View>
 
@@ -41,12 +54,12 @@ export default function AppointmentListItem({ item, onPress }: AppointmentListIt
       <View style={styles.chevronContainer}>
         <Feather name="chevron-right" size={24} color={styles.chevron.color} />
       </View>
-          <View style={styles.dateTimeContainer}>
-            <Text style={styles.dateText}>{item.date}</Text>
-            <Text style={styles.timeText}> - </Text> 
-            <Text style={styles.timeText}>{item.time}</Text>
-          </View>
+
+      <View style={styles.dateTimeContainer}>
+        <Text style={styles.dateText}>{item.date}</Text>
+        <Text style={styles.timeText}> - </Text>
+        <Text style={styles.timeText}>{item.time}</Text>
+      </View>
     </TouchableOpacity>
   );
 }
-

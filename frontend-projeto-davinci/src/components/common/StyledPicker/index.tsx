@@ -26,6 +26,7 @@ interface StyledPickerProps {
   placeholder?: string;
   error?: string | null;
   reserveErrorSpace?: boolean;
+  disabled?: boolean;
 }
 
 export default function StyledPicker({
@@ -37,13 +38,30 @@ export default function StyledPicker({
   placeholder = 'Selecione',
   error,
   reserveErrorSpace = false,
+  disabled = false,
 }: StyledPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const { height, width } = useWindowDimensions();
   const styles = getStyledPickerStyles(height, width);
 
   const selectedLabel = items.find((item) => item.value === selectedValue)?.label;
-  const borderColor = error ? COLORS.red : COLORS.gray_200;
+  const borderColor = error
+    ? COLORS.red
+    : disabled
+    ? COLORS.gray_200
+    : COLORS.gray_200;
+
+  const textStyle = disabled
+    ? styles.valueTextDisabled
+    : selectedLabel
+    ? styles.valueText
+    : styles.placeholder;
+
+  const iconTint = COLORS.gray_400;
+
+  const openModal = () => {
+    if (!disabled) setModalVisible(true);
+  };
 
   const handleSelect = (item: PickerItem) => {
     onValueChange(item.value);
@@ -53,23 +71,33 @@ export default function StyledPicker({
   return (
     <View style={styles.wrapper}>
       {label && <Text style={styles.label}>{label}</Text>}
+
       <TouchableOpacity
-        onPress={() => setModalVisible(true)}
-        style={[styles.inputContainer, { borderColor }]}
+        onPress={openModal}
+        disabled={disabled}
+        style={[
+          styles.inputContainer,
+          disabled && styles.inputContainerDisabled,
+          { borderColor },
+        ]}
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
       >
         <Icon
           name={iconName}
           size={24}
-          color={COLORS.gray_400}
+          color={iconTint}
           style={styles.icon}
         />
-        <Text style={selectedLabel ? styles.valueText : styles.placeholder}>
+
+        <Text style={textStyle}>
           {selectedLabel || placeholder}
         </Text>
+
         <Icon
           name="chevron-down"
           size={20}
-          color={COLORS.gray_400}
+          color={iconTint}
           style={styles.chevronIcon}
         />
       </TouchableOpacity>
@@ -82,18 +110,19 @@ export default function StyledPicker({
 
       <Modal
         animationType="slide"
-        transparent={true}
-        visible={modalVisible}
+        transparent
+        visible={!disabled && modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
           <SafeAreaView style={styles.modalContent}>
             <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{label}</Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                    <Icon name="x" size={24} color={COLORS.secondary} />
-                </TouchableOpacity>
+              <Text style={styles.modalTitle}>{label}</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Icon name="x" size={24} color={COLORS.secondary} />
+              </TouchableOpacity>
             </View>
+
             <FlatList
               data={items}
               keyExtractor={(item) => item.value}

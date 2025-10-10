@@ -4,11 +4,10 @@ import {
   Text,
   TouchableOpacity,
   Platform,
-  useWindowDimensions
+  useWindowDimensions,
+  AccessibilityState,
 } from 'react-native';
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
 import { getStyledDatePickerStyles } from './styles';
 import { COLORS } from '@/constants/theme';
@@ -16,10 +15,13 @@ import { COLORS } from '@/constants/theme';
 interface StyledDatePickerProps {
   label: string;
   value: Date | null;
-  onChange: (date: Date) => void;
+  onChange: (date: Date | null) => void;
   error?: string | null;
   reserveErrorSpace?: boolean;
   placeholder?: string;
+  disabled?: boolean;
+  maximumDate?: Date;
+  minimumDate?: Date;
 }
 
 export default function StyledDatePicker({
@@ -29,56 +31,74 @@ export default function StyledDatePicker({
   error,
   reserveErrorSpace = false,
   placeholder = '--/--/----',
+  disabled = false,
+  maximumDate,
+  minimumDate,
 }: StyledDatePickerProps) {
   const [showPicker, setShowPicker] = useState(false);
-  const { height, width } = useWindowDimensions(); 
+  const { height, width } = useWindowDimensions();
   const styles = getStyledDatePickerStyles(height, width);
 
-  const handleDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate?: Date
-  ) => {
-    setShowPicker(Platform.OS === 'ios'); 
-    if (selectedDate) {
-      onChange(selectedDate);
-    }
+  const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    setShowPicker(Platform.OS === 'ios');
+    if (event.type === 'dismissed') return;
+    onChange(selectedDate ?? null);
   };
 
   const formattedDate = value ? value.toLocaleDateString('pt-BR') : '';
-  const borderColor = error ? COLORS.red : COLORS.gray_200;
+  const hasError = !!error;
+  const borderColor = hasError ? COLORS.red : disabled ? COLORS.gray_200 : COLORS.gray_200;
+
+  const accessibilityState: AccessibilityState = { disabled };
+
+  const iconColor = disabled ? COLORS.gray_400 : COLORS.gray_400;
+  const textStyle = formattedDate ? (disabled ? styles.dateTextDisabled : styles.dateText) : (disabled ? styles.placeholderDisabled : styles.placeholder);
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{label}</Text>
+      {!!label && (
+        <Text style={disabled ? styles.labelDisabled : styles.label}>
+          {label}
+        </Text>
+      )}
+
       <TouchableOpacity
-        onPress={() => setShowPicker(true)}
-        style={[styles.inputContainer, { borderColor }]}
+        activeOpacity={disabled ? 1 : 0.7}
+        onPress={() => !disabled && setShowPicker(true)}
+        disabled={disabled}
+        accessibilityState={accessibilityState}
+        style={[
+          styles.inputContainer,
+          { borderColor },
+          disabled && styles.inputContainerDisabled,
+        ]}
       >
         <Icon
           name="calendar"
           size={24}
-          color={COLORS.gray_400}
+          color={iconColor}
           style={styles.icon}
         />
-        <Text style={formattedDate ? styles.dateText : styles.placeholder}>
+        <Text style={textStyle}>
           {formattedDate || placeholder}
         </Text>
       </TouchableOpacity>
 
-      {error ? (
+      {hasError ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : reserveErrorSpace ? (
         <View style={styles.errorPlaceholder} />
       ) : null}
 
-      {showPicker && (
+      {showPicker && !disabled && (
         <DateTimePicker
           testID="dateTimePicker"
           value={value || new Date()}
           mode="date"
           display="default"
           onChange={handleDateChange}
-          maximumDate={new Date()}
+          maximumDate={maximumDate}
+          minimumDate={minimumDate}
         />
       )}
     </View>

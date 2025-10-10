@@ -43,6 +43,17 @@ export const getImagePickerHeaderStyles = (screenWidth: number, screenHeight: nu
       borderColor: COLORS.white,
       zIndex: 5, 
     },
+    editIconWrapper: {
+      position: 'absolute',
+      bottom: -2,
+      right: -2,
+      backgroundColor: COLORS.secondary,
+      borderRadius: 50,
+      padding: 6,
+      borderWidth: 2,
+      borderColor: COLORS.white,
+      zIndex: 5, 
+    },
     title: {
       position: 'absolute',
       width: '100%',
@@ -52,8 +63,8 @@ export const getImagePickerHeaderStyles = (screenWidth: number, screenHeight: nu
       color: COLORS.secondary,
     },
     image: {
-      width: '110%',
-      height: '110%',
+      width: '100%',
+      height: '100%',
     },
   });
 };

@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 import ProfileDataItem from '../ProfileDataItem'; 
 
 type ProfileDataItemType = {
-  id: string;
+  id?: string;
   label: string;
   value: string;
 };
@@ -24,11 +24,14 @@ export default function ProfileDataList({ data }: ProfileDataListProps) {
     <ProfileDataItem label={item.label} value={item.value} />
   );
 
-
   return (
     <FlatList
       data={data}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item, index) =>
+        item.id
+          ? String(item.id)
+          : `${item.label}-${index}` 
+      }
       renderItem={renderItem}
       showsVerticalScrollIndicator={false}
       scrollEnabled={false}

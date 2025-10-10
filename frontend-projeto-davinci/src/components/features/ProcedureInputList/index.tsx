@@ -48,15 +48,6 @@ export default function ProcedureInputList() {
             ]}
           >
             <View style={styles.inputsContainer}>
-              <View style={styles.pickerWrapper}>
-                <StyledPicker
-                  iconName="clipboard"
-                  items={ALL_PROCEDURES}
-                  selectedValue={proc.procedure}
-                  onValueChange={(value) => handleProcedureChange(value, proc.id, 'procedure')}
-                  placeholder="Selecione o procedimento"
-                />
-              </View>
               <TextInput
                 style={styles.descriptionInput}
                 value={proc.description}
