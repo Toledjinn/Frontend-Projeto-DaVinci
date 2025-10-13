@@ -74,19 +74,53 @@ export const ORAL_HEALTH_INITIAL: OralHealthForm = {
   avaliacaoRisco: { nivel: null },
 };
 
+export type GeneralHealthForm = any; 
+export const GENERAL_HEALTH_INITIAL: GeneralHealthForm = {} as any;
+
+export type PreventionType = 'primaria' | 'secundaria' | 'terciaria' | 'quaternaria';
+
+export type PreventionItem = { id: number; value: string };
+export type PreventionData = {
+  items: PreventionItem[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export const PREVENTION_INITIAL: PreventionData = {
+  items: [{ id: Date.now(), value: '' }],
+};
+
 type DiagnosticsState = {
   oralHealthByPatientId: Record<string, OralHealthForm>;
   getOrCreateOralHealth: (patientId: string) => OralHealthForm;
   saveOralHealth: (patientId: string, form: OralHealthForm) => void;
   updateOralHealth: (patientId: string, patch: Partial<OralHealthForm>) => void;
   clearOralHealth: (patientId: string) => void;
+
+  generalHealthByPatientId: Record<string, GeneralHealthForm>;
+  getOrCreateGeneralHealth: (patientId: string) => GeneralHealthForm;
+  saveGeneralHealth: (patientId: string, form: GeneralHealthForm) => void;
+  updateGeneralHealth: (patientId: string, patch: Partial<GeneralHealthForm>) => void;
+  clearGeneralHealth: (patientId: string) => void;
+
+  preventionByPatientId: Record<
+    string,
+    Partial<Record<PreventionType, PreventionData>>
+  >;
+  getOrCreatePrevention: (patientId: string, type: PreventionType) => PreventionData;
+  savePrevention: (patientId: string, type: PreventionType, data: PreventionData) => void;
+  updatePrevention: (
+    patientId: string,
+    type: PreventionType,
+    patch: Partial<PreventionData>
+  ) => void;
+  clearPrevention: (patientId: string, type: PreventionType) => void;
 };
 
 export const useDiagnosticsStore = create<DiagnosticsState>()(
   persist(
     (set, get) => ({
       oralHealthByPatientId: {},
-
       getOrCreateOralHealth: (patientId) => {
         const map = get().oralHealthByPatientId;
         const existing = map[patientId];
@@ -98,57 +132,140 @@ export const useDiagnosticsStore = create<DiagnosticsState>()(
         fresh.updatedAt = now;
 
         set((state) => ({
-          oralHealthByPatientId: {
-            ...state.oralHealthByPatientId,
-            [patientId]: fresh,
-          },
+          oralHealthByPatientId: { ...state.oralHealthByPatientId, [patientId]: fresh },
         }));
         return fresh;
       },
-
       saveOralHealth: (patientId, form) => {
         const now = new Date().toISOString();
-        const merged: OralHealthForm = {
-          ...form,
-          createdAt: form.createdAt ?? now,
-          updatedAt: now,
-        };
         set((state) => ({
           oralHealthByPatientId: {
             ...state.oralHealthByPatientId,
-            [patientId]: merged,
+            [patientId]: { ...form, createdAt: form.createdAt ?? now, updatedAt: now },
           },
         }));
       },
-
       updateOralHealth: (patientId, patch) => {
         const current = get().oralHealthByPatientId[patientId] ?? ORAL_HEALTH_INITIAL;
         const now = new Date().toISOString();
-        const merged: OralHealthForm = {
-          ...current,
-          ...patch,
-          updatedAt: now,
-          createdAt: current.createdAt ?? now,
-        };
         set((state) => ({
           oralHealthByPatientId: {
             ...state.oralHealthByPatientId,
-            [patientId]: merged,
+            [patientId]: { ...current, ...patch, createdAt: current.createdAt ?? now, updatedAt: now },
           },
         }));
       },
-
       clearOralHealth: (patientId) => {
         set((state) => {
           const { [patientId]: _, ...rest } = state.oralHealthByPatientId;
           return { oralHealthByPatientId: rest };
         });
       },
+
+      generalHealthByPatientId: {},
+      getOrCreateGeneralHealth: (patientId) => {
+        const map = get().generalHealthByPatientId;
+        const existing = map[patientId];
+        if (existing) return existing;
+
+        const fresh: GeneralHealthForm = JSON.parse(JSON.stringify(GENERAL_HEALTH_INITIAL));
+        const now = new Date().toISOString();
+        (fresh as any).createdAt = now;
+        (fresh as any).updatedAt = now;
+
+        set((state) => ({
+          generalHealthByPatientId: { ...state.generalHealthByPatientId, [patientId]: fresh },
+        }));
+        return fresh;
+      },
+      saveGeneralHealth: (patientId, form) => {
+        const now = new Date().toISOString();
+        set((state) => ({
+          generalHealthByPatientId: {
+            ...state.generalHealthByPatientId,
+            [patientId]: { ...form, createdAt: (form as any).createdAt ?? now, updatedAt: now },
+          },
+        }));
+      },
+      updateGeneralHealth: (patientId, patch) => {
+        const current = get().generalHealthByPatientId[patientId] ?? GENERAL_HEALTH_INITIAL;
+        const now = new Date().toISOString();
+        set((state) => ({
+          generalHealthByPatientId: {
+            ...state.generalHealthByPatientId,
+            [patientId]: { ...current, ...patch, createdAt: (current as any).createdAt ?? now, updatedAt: now },
+          },
+        }));
+      },
+      clearGeneralHealth: (patientId) => {
+        set((state) => {
+          const { [patientId]: _, ...rest } = state.generalHealthByPatientId;
+          return { generalHealthByPatientId: rest };
+        });
+      },
+
+      preventionByPatientId: {},
+      getOrCreatePrevention: (patientId, type) => {
+        const map = get().preventionByPatientId;
+        const existing = map[patientId]?.[type];
+        if (existing) return existing;
+
+        const fresh: PreventionData = JSON.parse(JSON.stringify(PREVENTION_INITIAL));
+        const now = new Date().toISOString();
+        fresh.createdAt = now;
+        fresh.updatedAt = now;
+
+        set((state) => ({
+          preventionByPatientId: {
+            ...state.preventionByPatientId,
+            [patientId]: { ...(state.preventionByPatientId[patientId] || {}), [type]: fresh },
+          },
+        }));
+        return fresh;
+      },
+      savePrevention: (patientId, type, data) => {
+        const now = new Date().toISOString();
+        set((state) => ({
+          preventionByPatientId: {
+            ...state.preventionByPatientId,
+            [patientId]: {
+              ...(state.preventionByPatientId[patientId] || {}),
+              [type]: { ...data, createdAt: data.createdAt ?? now, updatedAt: now },
+            },
+          },
+        }));
+      },
+      updatePrevention: (patientId, type, patch) => {
+        const current =
+          get().preventionByPatientId[patientId]?.[type] ?? PREVENTION_INITIAL;
+        const now = new Date().toISOString();
+        set((state) => ({
+          preventionByPatientId: {
+            ...state.preventionByPatientId,
+            [patientId]: {
+              ...(state.preventionByPatientId[patientId] || {}),
+              [type]: { ...current, ...patch, createdAt: current.createdAt ?? now, updatedAt: now },
+            },
+          },
+        }));
+      },
+      clearPrevention: (patientId, type) => {
+        set((state) => {
+          const patientMap = { ...(state.preventionByPatientId[patientId] || {}) };
+          delete patientMap[type];
+          return {
+            preventionByPatientId: {
+              ...state.preventionByPatientId,
+              [patientId]: patientMap,
+            },
+          };
+        });
+      },
     }),
     {
       name: 'diagnostics-store',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 1,
+      version: 2,
     }
   )
 );

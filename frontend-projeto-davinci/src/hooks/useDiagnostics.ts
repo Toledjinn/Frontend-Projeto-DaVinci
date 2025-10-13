@@ -1,40 +1,58 @@
-import { useCallback } from 'react';
-import { useDiagnosticsStore, ORAL_HEALTH_INITIAL, type OralHealthForm } from '@/data/diagnosticsStore';
+import {
+  useDiagnosticsStore,
+  ORAL_HEALTH_INITIAL,
+  type OralHealthForm,
+  GENERAL_HEALTH_INITIAL,
+  type GeneralHealthForm,
+  PREVENTION_INITIAL,
+  type PreventionData,
+  type PreventionType,
+} from '@/data/diagnosticsStore';
 
-export function useDiagnostics() {
-  const oralHealthByPatientId = useDiagnosticsStore((s) => s.oralHealthByPatientId);
-  const _getOrCreate = useDiagnosticsStore((s) => s.getOrCreateOralHealth);
-  const _save = useDiagnosticsStore((s) => s.saveOralHealth);
-  const _update = useDiagnosticsStore((s) => s.updateOralHealth);
+type UseDiagnosticsReturn = {
+  ORAL_HEALTH_INITIAL: OralHealthForm;
+  getOrCreateOralHealth: (patientId: string) => OralHealthForm;
+  saveOralHealth: (patientId: string, form: OralHealthForm) => void;
+  updateOralHealth: (patientId: string, patch: Partial<OralHealthForm>) => void;
+  clearOralHealth: (patientId: string) => void;
 
-  const getOrCreateOralHealth = useCallback(
-    (patientId: string): OralHealthForm => {
-      if (!patientId) return ORAL_HEALTH_INITIAL;
-      return oralHealthByPatientId[patientId] ?? _getOrCreate(patientId);
-    },
-    [oralHealthByPatientId, _getOrCreate]
-  );
+  GENERAL_HEALTH_INITIAL: GeneralHealthForm;
+  getOrCreateGeneralHealth: (patientId: string) => GeneralHealthForm;
+  saveGeneralHealth: (patientId: string, form: GeneralHealthForm) => void;
+  updateGeneralHealth: (patientId: string, patch: Partial<GeneralHealthForm>) => void;
+  clearGeneralHealth: (patientId: string) => void;
 
-  const saveOralHealth = useCallback(
-    (patientId: string, form: OralHealthForm) => {
-      if (!patientId) return;
-      _save(patientId, form);
-    },
-    [_save]
-  );
+  PREVENTION_INITIAL: PreventionData;
+  getOrCreatePrevention: (patientId: string, type: PreventionType) => PreventionData;
+  savePrevention: (patientId: string, type: PreventionType, data: PreventionData) => void;
+  updatePrevention: (
+    patientId: string,
+    type: PreventionType,
+    patch: Partial<PreventionData>
+  ) => void;
+  clearPrevention: (patientId: string, type: PreventionType) => void;
+};
 
-  const updateOralHealth = useCallback(
-    (patientId: string, patch: Partial<OralHealthForm>) => {
-      if (!patientId) return;
-      _update(patientId, patch);
-    },
-    [_update]
-  );
+export function useDiagnostics(): UseDiagnosticsReturn {
+  const store = useDiagnosticsStore();
 
   return {
     ORAL_HEALTH_INITIAL,
-    getOrCreateOralHealth,
-    saveOralHealth,
-    updateOralHealth,
+    getOrCreateOralHealth: store.getOrCreateOralHealth,
+    saveOralHealth: store.saveOralHealth,
+    updateOralHealth: store.updateOralHealth,
+    clearOralHealth: store.clearOralHealth,
+
+    GENERAL_HEALTH_INITIAL,
+    getOrCreateGeneralHealth: store.getOrCreateGeneralHealth,
+    saveGeneralHealth: store.saveGeneralHealth,
+    updateGeneralHealth: store.updateGeneralHealth,
+    clearGeneralHealth: store.clearGeneralHealth,
+
+    PREVENTION_INITIAL,
+    getOrCreatePrevention: store.getOrCreatePrevention,
+    savePrevention: store.savePrevention,
+    updatePrevention: store.updatePrevention,
+    clearPrevention: store.clearPrevention,
   };
 }

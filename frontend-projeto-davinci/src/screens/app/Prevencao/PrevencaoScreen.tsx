@@ -1,65 +1,93 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
+import { ScrollView, useWindowDimensions, Text, View, Alert } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+
 import { styles } from './PrevencaoScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { findUserById, UserProfile } from '@/data/mockUsers';
 import { formatUserName } from '@/utils/nameUtils';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import ScreenFooter from '@/components/common/ScreenFooter';
-import DynamicInputList from '@/components/features/DynamicInputList';
+import QuestionCard from '@/components/features/QuestionCard';
 
-const preventionTitles: { [key: string]: string } = {
+import DynamicInputList, { Item } from '@/components/features/DynamicInputList';
+import { useUsers } from '@/hooks/useUsers';
+import { UserWithPhoto } from '@/data/usersStore';
+
+import { useDiagnostics } from '@/hooks/useDiagnostics';
+import type { PreventionType } from '@/data/diagnosticsStore';
+
+const preventionTitles: Record<PreventionType, string> = {
   primaria: 'Prevenção Primária',
   secundaria: 'Prevenção Secundária',
   terciaria: 'Prevenção Terciária',
   quaternaria: 'Prevenção Quaternária',
 };
 
+const hasAnyFilled = (items: Item[]) =>
+  (items || []).some((i) => (i.value || '').trim().length > 0);
 
 export default function PrevencaoScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.29;
-  const { patientId, type } = useLocalSearchParams<{ patientId: string, type: string }>();
   const router = useRouter();
-  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const { patientId, type } = useLocalSearchParams<{ patientId: string; type: PreventionType }>();
+  const preventionType = (type || 'primaria') as PreventionType;
+  const title = preventionTitles[preventionType];
 
-  const [patient, setPatient] = useState<UserProfile | null>(null);
+  const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
+
+  const { list } = useUsers();
+  const patient = useMemo<UserWithPhoto | undefined>(
+    () => list.find((u) => String(u.id) === String(patientId)),
+    [list, patientId]
+  );
+
+  const { getOrCreatePrevention, savePrevention } = useDiagnostics();
+
+  const [items, setItems] = useState<Item[]>([{ id: Date.now(), value: '' }]);
+  const [createdAt, setCreatedAt] = useState<string | undefined>(undefined);
+  const [isEditing, setIsEditing] = useState(true);
 
   useEffect(() => {
-    console.log(`Carregando dados para: ${type}`);
-  }, [type]);
-
-  useEffect(() => {
-    if (patientId) {
-      const foundUser = findUserById(patientId);
-      setPatient(foundUser || null);
-    }
-  }, [patientId]);
+    if (!patient) return;
+    const saved = getOrCreatePrevention(String(patient.id), preventionType);
+    const list = saved.items && saved.items.length > 0 ? saved.items : [{ id: Date.now(), value: '' }];
+    setItems(list);
+    setCreatedAt(saved.createdAt);
+    setIsEditing(!hasAnyFilled(list)); 
+  }, [patient, preventionType, getOrCreatePrevention]);
 
   useFocusEffect(
-    useCallback(() => {
-      if (patient && type) {
-        const title = preventionTitles[type] || 'Prevenção';
-        setHeaderConfig({
-          layout: 'profile',
-          showBackground: true,
-          userName: `${title} de ${formatUserName(patient.name)}`,
-          UserImageSvg: patient.image || UserPlaceholder,
-          showNotificationIcon: false,
-          riskLevel: patient.riskLevel,
-        });
-      }
-    }, [patient, type])
+    React.useCallback(() => {
+      if (!patient) return;
+      setHeaderConfig({
+        layout: 'profile',
+        showBackground: true,
+        userName: `${title} de ${formatUserName(patient.name)}`,
+        UserImageSvg: patient.image || UserPlaceholder,
+        userPhotoUri: patient.photoUri ?? null,
+        showNotificationIcon: false,
+        riskLevel: patient.riskLevel,
+      });
+    }, [patient, title, setHeaderConfig])
   );
-  
+
   const handleSave = () => {
-    console.log("Salvando dados de Prevenção:", {type});
-    router.back();
+    if (!patient) return;
+    const cleaned = items.filter((i) => (i.value || '').trim().length > 0);
+    savePrevention(String(patient.id), preventionType, {
+      items: cleaned.length ? cleaned : [{ id: Date.now(), value: '' }],
+      createdAt: createdAt ?? new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+    setIsEditing(false);
+    Alert.alert('Sucesso', `${title} salva.`);
   };
 
- if (!patient) {
+  const toggleEdit = () => setIsEditing((p) => !p);
+
+  if (!patient) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -68,33 +96,37 @@ export default function PrevencaoScreen() {
       </SafeAreaView>
     );
   }
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        keyboardShouldPersistTaps="handled"
       >
-        <DynamicInputList
-            title="Diagnóstico"
+        <QuestionCard
+          number={1}
+          title="Diagnóstico"
+          isEditing={isEditing}
+          onEdit={toggleEdit}
+        >
+          <DynamicInputList
+            disabled={!isEditing}
+            title=""                
             inputIcon="check-square"
             placeholder="Diagnóstico"
             addMoreText="Adicionar Item"
-        />
+            initialItems={items}
+            onChangeItems={setItems}
+          />
+        </QuestionCard>
       </ScrollView>
 
       <ScreenFooter
         buttons={[
-          {
-            title: "Cancelar",
-            onPress: () => router.back(),
-            variant: 'secondary',  
-          },
-          {
-            title: "Salvar",
-            onPress: handleSave,
-            variant: 'primary',  
-          },
+          isEditing
+            ? { title: 'Salvar', onPress: handleSave, variant: 'primary' }
+            : { title: 'Editar', onPress: toggleEdit, variant: 'secondary' },
         ]}
       />
     </SafeAreaView>

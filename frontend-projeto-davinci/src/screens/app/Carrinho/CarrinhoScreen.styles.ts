@@ -15,7 +15,6 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
 
-  /* ===== Card principal (mesmo padrão Detalhes) ===== */
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
@@ -29,7 +28,6 @@ export default StyleSheet.create({
     maxWidth: 680,
   },
 
-  /* ===== Header do card (idêntico ao “Produtos”) ===== */
   sectionHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -46,7 +44,6 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
 
-  /* ===== Linhas dos itens (idêntico ao “Produtos”) ===== */
   productRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -119,7 +116,6 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
 
-  /* ===== Rodapé dentro do card ===== */
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -140,7 +136,6 @@ export default StyleSheet.create({
     color: COLORS.secondary,
   },
 
-  /* ===== Estado vazio ===== */
   emptyCartContainer: {
     alignItems: 'center',
     justifyContent: 'center',

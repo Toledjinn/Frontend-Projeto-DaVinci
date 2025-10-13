@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { View, Text, ScrollView, Alert, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 import { styles } from './SaudeBucalScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { findUserById, type UserProfile } from '@/data/mockUsers';
 import { formatUserName } from '@/utils/nameUtils';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 
@@ -15,7 +14,6 @@ import ToggleButtonGroup from '@/components/common/ToggleButtonGroup';
 import Checkbox from '@/components/common/Checkbox';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
 import StyledPicker from '@/components/common/StyledPicker';
-import StyledButton from '@/components/common/StyledButton';
 import ScreenFooter from '@/components/common/ScreenFooter';
 
 import { useDiagnostics } from '@/hooks/useDiagnostics';
@@ -30,7 +28,7 @@ const disableProps = (isEditing: boolean) => ({
 
 export default function SaudeBucalScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.21;
 
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
@@ -40,6 +38,18 @@ export default function SaudeBucalScreen() {
     () => list.find((u) => String(u.id) === String(patientId)),
     [list, patientId]
   );
+
+  const { getOrCreateOralHealth, saveOralHealth } = useDiagnostics();
+  const [formData, setFormData] = useState<OralHealthForm>(ORAL_HEALTH_INITIAL);
+  const [isEditing, setIsEditing] = useState(true);
+
+  useEffect(() => {
+    if (!patient) return;
+    const saved = getOrCreateOralHealth(String(patient.id));
+    const isNew = saved === ORAL_HEALTH_INITIAL || !saved?.createdAt;
+    setFormData(saved);
+    setIsEditing(isNew);
+  }, [patient, getOrCreateOralHealth]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -51,8 +61,8 @@ export default function SaudeBucalScreen() {
         showNotificationIcon: false,
         userId: String(patient.id),
         userName: `Saúde Bucal de ${formatUserName(patient.name)}`,
-        UserImageSvg: patient.image || UserPlaceholder, 
-        userPhotoUri: patient.photoUri ?? null,         
+        UserImageSvg: patient.image || UserPlaceholder,
+        userPhotoUri: patient.photoUri ?? null,
         riskLevel: patient.riskLevel,
       });
     }, [patient, setHeaderConfig])
@@ -68,15 +78,19 @@ export default function SaudeBucalScreen() {
     );
   }
 
-  if (!patient) {
-    return (
-      <SafeAreaView style={styles.safeArea}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Carregando...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  const handleSave = () => {
+    if (!patient) {
+      Alert.alert('Paciente não encontrado', 'Volte e selecione o paciente.');
+      return;
+    }
+    saveOralHealth(String(patient.id), {
+      ...formData,
+      updatedAt: new Date().toISOString(),
+      createdAt: formData.createdAt || new Date().toISOString(),
+    });
+    setIsEditing(false);
+    Alert.alert('Sucesso', 'Ficha de Saúde Bucal salva.');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -87,81 +101,41 @@ export default function SaudeBucalScreen() {
             contentContainerStyle={styles.scrollContentContainer}
             keyboardShouldPersistTaps="handled"
           >
-            <SaudeBucalFormInline patientId={patientId!} />
+            <SaudeBucalFormInline
+              formData={formData}
+              setFormData={setFormData}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+            />
           </ScrollView>
         </View>
 
-        <FormFooterBridge patientId={patientId!} />
+        <ScreenFooter
+          buttons={[
+            isEditing
+              ? { title: 'Salvar Ficha', onPress: handleSave, variant: 'secondary' }
+              : { title: 'Editar', onPress: () => setIsEditing(true), variant: 'secondary' },
+          ]}
+        />
       </View>
     </SafeAreaView>
   );
 }
 
-function FormFooterBridge({ patientId }: { patientId: string }) {
-  const { getOrCreateOralHealth, saveOralHealth } = useDiagnostics();
+type SaudeBucalFormInlineProps = {
+  formData: OralHealthForm;
+  setFormData: React.Dispatch<React.SetStateAction<OralHealthForm>>;
+  isEditing: boolean;
+  setIsEditing: (v: boolean) => void;
+};
 
-  const [formData, setFormData] = useState<OralHealthForm>(ORAL_HEALTH_INITIAL);
-  const [isEditing, setIsEditing] = useState(true);
-
-  useEffect(() => {
-    if (!patientId) return;
-    const saved = getOrCreateOralHealth(patientId);
-    const isNew = saved === ORAL_HEALTH_INITIAL || !saved.createdAt;
-    setFormData(saved);
-    setIsEditing(isNew);
-  }, [patientId, getOrCreateOralHealth]);
-
-  const handleSave = () => {
-    if (!patientId) {
-      Alert.alert('Paciente não encontrado', 'Volte e selecione o paciente.');
-      return;
-    }
-    saveOralHealth(patientId, {
-      ...formData,
-      updatedAt: new Date().toISOString(),
-      createdAt: formData.createdAt || new Date().toISOString(),
-    });
-    setIsEditing(false);
-    Alert.alert('Sucesso', 'Ficha de Saúde Bucal salva.');
-  };
-
-  const toggleEdit = () => setIsEditing((p) => !p);
-
-  return (
-    <>
-      <ScreenFooter
-        buttons={[
-          isEditing
-            ? {
-                title: 'Salvar Ficha',
-                onPress: handleSave,
-                variant: 'secondary',
-              }
-            : {
-                title: 'Editar',
-                onPress: toggleEdit,
-                variant: 'secondary',
-              },
-        ]}
-      />
-
-    </>
-  );
-}
-
-function SaudeBucalFormInline({ patientId }: { patientId: string }) {
-  const { getOrCreateOralHealth, saveOralHealth } = useDiagnostics();
-
-  const [formData, setFormData] = useState<OralHealthForm>(ORAL_HEALTH_INITIAL);
-  const [isEditing, setIsEditing] = useState(true);
-
-  useEffect(() => {
-    if (!patientId) return;
-    const saved = getOrCreateOralHealth(patientId);
-    const isNew = saved === ORAL_HEALTH_INITIAL || !saved.createdAt;
-    setFormData(saved);
-    setIsEditing(isNew);
-  }, [patientId, getOrCreateOralHealth]);
+function SaudeBucalFormInline({
+  formData,
+  setFormData,
+  isEditing,
+  setIsEditing,
+}: SaudeBucalFormInlineProps) {
+  const toggleEdit = () => setIsEditing(!isEditing);
 
   const handleValueChange = (section: keyof OralHealthForm, field: string, value: any) => {
     setFormData((prev: any) => ({
@@ -184,43 +158,6 @@ function SaudeBucalFormInline({ patientId }: { patientId: string }) {
       [section]: { ...(prev as any)[section], [field]: value },
     }));
   };
-
-  const handleExameChange = (text: string, id: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      examesSolicitados: prev.examesSolicitados.map((ex) => (ex.id === id ? { ...ex, value: text } : ex)),
-    }));
-  };
-
-  const addExameInput = () => {
-    setFormData((prev) => ({
-      ...prev,
-      examesSolicitados: [...prev.examesSolicitados, { id: Date.now(), value: '' }],
-    }));
-  };
-
-  const removeExameInput = (id: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      examesSolicitados: prev.examesSolicitados.filter((ex) => ex.id !== id),
-    }));
-  };
-
-  const handleInlineSave = () => {
-    if (!patientId) {
-      Alert.alert('Paciente não encontrado', 'Volte e selecione o paciente.');
-      return;
-    }
-    saveOralHealth(patientId, {
-      ...formData,
-      updatedAt: new Date().toISOString(),
-      createdAt: formData.createdAt || new Date().toISOString(),
-    });
-    setIsEditing(false);
-    Alert.alert('Sucesso', 'Ficha de Saúde Bucal salva.');
-  };
-
-  const toggleEdit = () => setIsEditing((p) => !p);
 
   return (
     <View style={styles.formContainer}>
@@ -720,7 +657,6 @@ function SaudeBucalFormInline({ patientId }: { patientId: string }) {
           </View>
         )}
       </QuestionCard>
-
     </View>
   );
 }
