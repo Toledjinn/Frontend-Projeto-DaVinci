@@ -6,27 +6,44 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
+
+  pageBody: {
     flex: 1,
-    paddingHorizontal: SIZES.padding,
+    minHeight: 0,
+  },
+
+  pageBodySidePadding: {
+    paddingHorizontal: 12,
   },
 
   editorCard: {
+    flex: 1,
+    minHeight: 0,
+    width: '100%',
+    overflow: 'hidden',
+    marginBottom: 12,
+
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
-    marginBottom: SIZES.padding,
+
+    paddingHorizontal: 12,
+    paddingVertical: 0,
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
-    overflow: 'hidden',
   },
+
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: SIZES.padding / 1.5,
+
+    paddingHorizontal: 12,
+    paddingVertical: SIZES.padding / 1.5,
+
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray_100,
     backgroundColor: COLORS.white,
@@ -42,9 +59,19 @@ export const styles = StyleSheet.create({
   removeButton: {
     padding: SIZES.base,
   },
-  cardContent: {
-    padding: SIZES.padding,
+
+  editorScroll: {
+    flex: 1,
+    minHeight: 0,
   },
+  editorScrollContent: {
+    paddingVertical: 16,
+  },
+
+  cardContent: {
+    paddingVertical: SIZES.padding,
+  },
+
   inputGroup: {
     marginBottom: SIZES.padding,
   },
@@ -82,6 +109,22 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  itemBox: {
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: COLORS.white,
+  },
+  itemBoxHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+
   addButtonsContainer: {
     marginTop: SIZES.padding,
   },
@@ -102,4 +145,3 @@ export const styles = StyleSheet.create({
     marginLeft: SIZES.base,
   },
 });
-

@@ -17,7 +17,7 @@ export const SIZES = {
   base: 8,
   font: 14,
   radius: 8,
-  padding: 24,
+  padding: 12,
 };
 
 export const FONTS = {
@@ -46,6 +46,7 @@ export const FONTS = {
   body12: { fontFamily: 'Poppins-Medium', fontSize: 10, lineHeight: 17 },
   body13: { fontFamily: 'Poppins-Regular', fontSize: 12, lineHeight: 17 },
   body14: { fontFamily: 'Poppins-Medium', fontSize: 15, lineHeight: 25 },
+  body15: { fontFamily: 'Poppins-Medium', fontSize: 17, lineHeight: 25 },
 };
 
 const appTheme = { COLORS, SIZES, FONTS };
