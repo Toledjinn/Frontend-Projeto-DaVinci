@@ -18,42 +18,7 @@ export type ConsultationRecord = {
 };
 
 const MOCK_RECORDS: ConsultationRecord[] = [
-  {
-    appointmentId: 'appt-7',
-    patientId: 'patient-1', 
-    specialty: 'Primeira Consulta',
-    date: '10/06/2025',
-    examRequests: [
-      { id: 1, value: 'Radiografia panorâmica' },
-      { id: 2, value: 'Tomografia do dente 16' },
-    ],
-    riskAssessment: 'Médio',
-    images: [require('@/assets/images/placeholder.png')],
-  },
-  {
-    appointmentId: 'appt-1',
-    patientId: 'patient-2', 
-    specialty: 'Periodontia',
-    date: '21/05/2025',
-    periogramId: 'perio1',
-    proceduresPerformed: [
-      { procedure: 'Limpeza', description: 'Profilaxia completa realizada.'},
-      { procedure: 'Aplicação de Flúor', description: 'Aplicação de flúor em gel.'}
-    ],
-    images: [],
-    xrays: [],
-  },
-  {
-    appointmentId: 'appt-14',
-    patientId: 'patient-1',
-    specialty: 'Clínica Geral',
-    date: '15/06/2025',
-    proceduresPerformed: [
-        { procedure: 'Restauração Dentária', description: 'Restauração realizada no dente 36.'}
-    ],
-    images: [],
-    xrays: [require('@/assets/images/placeholder.png')],
-  }
+  
 ];
 
 export const getRecordsForPatientBySpecialty = (patientId: string, specialty: string): ConsultationRecord[] => {

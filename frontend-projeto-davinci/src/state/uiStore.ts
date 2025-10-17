@@ -15,7 +15,7 @@ type HeaderConfig = {
   UserImageSvg?: React.FC<SvgProps> | null;
   userPhotoUri?: string | null;
 
-  riskLevel?: 'baixo' | 'moderado' | 'alto';
+  riskLevel?: 'baixo' | 'moderado' | 'alto' | 'a_definir';
   pageHeaderBadgeVariant?: 'default' | 'store';
 
   showDeleteIcon?: boolean; 

@@ -6,7 +6,6 @@ import {
   Modal,
   FlatList,
   useWindowDimensions,
-  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -21,12 +20,14 @@ export interface MultiSelectItem {
 
 interface StyledMultiSelectProps {
   label: string;
-  iconName: React.ComponentProps<typeof Feather>['name'];  items: MultiSelectItem[];
+  iconName: React.ComponentProps<typeof Feather>['name'];
+  items: MultiSelectItem[];
   selectedItems: string[];
   onSelectionChange: (selected: string[]) => void;
   placeholder?: string;
   error?: string | null;
   reserveErrorSpace?: boolean;
+  disabled?: boolean;
 }
 
 export default function StyledMultiSelect({
@@ -38,6 +39,7 @@ export default function StyledMultiSelect({
   placeholder = 'Selecione',
   error,
   reserveErrorSpace = false,
+  disabled = false,
 }: StyledMultiSelectProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const { height, width } = useWindowDimensions();
@@ -64,8 +66,9 @@ export default function StyledMultiSelect({
     onSelectionChange(tempSelected);
     setModalVisible(false);
   };
-  
+
   const handleOpen = () => {
+    if (disabled) return;
     setTempSelected(selectedItems);
     setModalVisible(true);
   };
@@ -73,9 +76,16 @@ export default function StyledMultiSelect({
   return (
     <View style={styles.wrapper}>
       <Text style={styles.label}>{label}</Text>
+
       <TouchableOpacity
         onPress={handleOpen}
-        style={[styles.inputContainer, { borderColor }]}
+        activeOpacity={disabled ? 1 : 0.7}
+        disabled={disabled}
+        style={[
+          styles.inputContainer,
+          { borderColor },
+          disabled && { opacity: 0.6 },
+        ]}
       >
         <Feather
           name={iconName}
@@ -83,7 +93,10 @@ export default function StyledMultiSelect({
           color={COLORS.gray_400}
           style={styles.icon}
         />
-        <Text style={selectedLabels ? styles.valueText : styles.placeholder} numberOfLines={1}>
+        <Text
+          style={selectedLabels ? styles.valueText : styles.placeholder}
+          numberOfLines={1}
+        >
           {selectedLabels || placeholder}
         </Text>
         <Feather
@@ -102,8 +115,8 @@ export default function StyledMultiSelect({
 
       <Modal
         animationType="slide"
-        transparent={true}
-        visible={modalVisible}
+        transparent
+        visible={modalVisible && !disabled}
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
@@ -114,6 +127,7 @@ export default function StyledMultiSelect({
                 <Feather name="x" size={24} color={COLORS.secondary} />
               </TouchableOpacity>
             </View>
+
             <FlatList
               data={items}
               keyExtractor={(item) => item.value}
@@ -123,7 +137,11 @@ export default function StyledMultiSelect({
                   onPress={() => toggleOption(item.value)}
                 >
                   <Feather
-                    name={tempSelected.includes(item.value) ? 'check-square' : 'square'}
+                    name={
+                      tempSelected.includes(item.value)
+                        ? 'check-square'
+                        : 'square'
+                    }
                     size={24}
                     color={COLORS.secondary}
                   />
@@ -132,8 +150,13 @@ export default function StyledMultiSelect({
               )}
               style={{ maxHeight: height * 0.4 }}
             />
+
             <View style={styles.modalFooter}>
-                <StyledButton title="Aplicar" onPress={handleApply} variant='secondary'/>
+              <StyledButton
+                title="Aplicar"
+                onPress={handleApply}
+                variant="secondary"
+              />
             </View>
           </SafeAreaView>
         </View>

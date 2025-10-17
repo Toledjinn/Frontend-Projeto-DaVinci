@@ -13,6 +13,7 @@ export type Appointment = {
   observations?: string;
   createdAt: string;
   updatedAt: string;
+  planStepId?: string;
 };
 
 export const APPOINTMENT_STATUSES = [

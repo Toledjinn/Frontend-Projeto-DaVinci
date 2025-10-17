@@ -47,4 +47,7 @@ export const styles = StyleSheet.create({
     ...FONTS.body7,
     marginLeft: 8,
   },
+  disabled: {
+    opacity: 0.6,
+  },
 });

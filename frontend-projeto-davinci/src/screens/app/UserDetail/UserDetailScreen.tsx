@@ -13,6 +13,7 @@ import StyledButton from '@/components/common/StyledButton';
 
 import { useUsers } from '@/hooks/useUsers';
 import type { UserWithPhoto } from '@/data/usersStore';
+import { formatUserName } from '@/utils/nameUtils'; 
 
 type ButtonConfig = {
   title: string;
@@ -20,9 +21,18 @@ type ButtonConfig = {
   variant: 'primary' | 'secondary';
 };
 
+function toTitleRisk(lvl?: string | null) {
+  const n = String(lvl ?? '').toLowerCase().replace(/\s+/g, '_');
+  if (n === 'baixo') return 'Baixo';
+  if (n === 'moderado') return 'Moderado';
+  if (n === 'alto') return 'Alto';
+  if (n === 'a_definir' || n === '' ) return 'A Definir';
+  return 'A Definir';
+}
+
 export default function UserDetailScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.31;
+  const headerHeight = height * 0.30;
 
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -50,9 +60,7 @@ export default function UserDetailScreen() {
       base.push({ id: detailId, label, value });
     };
 
-    if (user.type === 'admin' && user.role && !hasDetail('Cargo')) {
-      pushDetail('Cargo', user.role);
-    }
+    if (user.type === 'admin' && user.role && !hasDetail('Cargo')) pushDetail('Cargo', user.role);
     if (user.type === 'dentist' && user.specialties?.length && !hasDetail('Especialidades')) {
       pushDetail('Especialidades', user.specialties.join(', '));
     }
@@ -66,16 +74,19 @@ export default function UserDetailScreen() {
   useFocusEffect(
     React.useCallback(() => {
       if (!user) return;
+
+      const formattedName = formatUserName(user.name);
+
       setHeaderConfig({
         layout: 'profile',
         showBackground: true,
         showNotificationIcon: false,
         showDeleteIcon: true,
         userId: String(user.id),
-        userName: user.name,
+        userName: formattedName, 
         UserImageSvg: user.image || UserPlaceholder,
         userPhotoUri: user.photoUri ?? null,
-        riskLevel: user.riskLevel,
+        riskLevel: toTitleRisk(user.riskLevel) as any, 
       });
     }, [user, setHeaderConfig])
   );
@@ -141,7 +152,7 @@ export default function UserDetailScreen() {
           </View>
         )}
 
-        <View style={styles.mainContent}>
+        <View>
           {hasAllergies && <AllergyWarning allergies={user.allergies!} />}
           <ProfileDataList data={displayDetails} />
         </View>

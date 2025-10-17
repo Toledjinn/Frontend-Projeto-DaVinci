@@ -8,15 +8,18 @@ import { useUIStore } from '@/state/uiStore';
 import { useAppointments } from '@/hooks/useAppointments';
 import { useUsers } from '@/hooks/useUsers';
 import type { Appointment } from '@/data/appointmentsStore';
-
+import { setPlanForPatient, toStepsFromForm, updateStepStatus } from '@/data/treatmentPlansStore';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import AllergyWarning from '@/components/features/AllergyWarning';
 import StyledButton from '@/components/common/StyledButton';
 import ScreenFooter from '@/components/common/ScreenFooter';
-import ProcedureInputList from '@/components/features/ProcedureInputList';
-import DynamicInputList from '@/components/features/DynamicInputList';
+import ProcedureInputList, { ProcedureEntry } from '@/components/features/ProcedureInputList';
+import DynamicInputList, { Item as ExamItem } from '@/components/features/DynamicInputList';
 import RiskAssessmentCard from '@/components/features/RiskAssessmentCard';
-import TreatmentPlanForm from '@/components/features/TreatmentPlanForm';
+import TreatmentPlanForm, { PlanItem } from '@/components/features/TreatmentPlanForm';
+import { useDiagnostics } from '@/hooks/useDiagnostics';
+
+type LowerRisk = 'baixo' | 'moderado' | 'alto' | 'a_definir';
 
 export default function ConsultationScreen() {
   const { height } = useWindowDimensions();
@@ -25,17 +28,26 @@ export default function ConsultationScreen() {
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const { list: appointments, update } = useAppointments();
-  const { list: users } = useUsers();
+  const { list: appointments, update, getById } = useAppointments();
+  const { list: users, save: saveUser } = useUsers();
 
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [patient, setPatient] = useState<any | null>(null);
-  const [images, setImages] = useState<string[]>([]);
 
   const specialty = appointment?.specialty;
   const isPrimeiraConsulta = specialty === 'Primeira Consulta';
   const isSegundaConsulta = specialty === 'Segunda Consulta';
   const isPeriodontia = specialty === 'Periodontia';
+
+  const { getOrCreateAppointmentDiagnostics, saveAppointmentDiagnostics } = useDiagnostics();
+
+  const [requestedExams, setRequestedExams] = useState<ExamItem[]>([{ id: Date.now(), value: '' }]);
+  const [procedures, setProcedures] = useState<ProcedureEntry[]>([]);
+  const [plan, setPlan] = useState<PlanItem[]>([]);
+  const [images, setImages] = useState<string[]>([]);
+  const [xrays, setXrays] = useState<string[]>([]);
+
+  const [riskForThisConsult, setRiskForThisConsult] = useState<LowerRisk>('a_definir');
 
   useEffect(() => {
     if (!appointmentId) return;
@@ -48,6 +60,26 @@ export default function ConsultationScreen() {
     }
   }, [appointmentId, appointments, users]);
 
+  useEffect(() => {
+    if (!appointment || !patient) return;
+    const ad = getOrCreateAppointmentDiagnostics(appointment.id, String(patient.id));
+    setRequestedExams(
+      ad.requestedExams && ad.requestedExams.length ? ad.requestedExams : [{ id: Date.now(), value: '' }]
+    );
+    setProcedures(ad.procedures || []);
+    setPlan(ad.treatmentPlan || []);
+    const imgs = (ad.media || []).filter((m) => m.type === 'image').map((m) => m.uri);
+    const rxs = (ad.media || []).filter((m) => m.type === 'xray').map((m) => m.uri);
+    setImages(imgs);
+    setXrays(rxs);
+
+    const previousRisk = (ad as any)?.riskAssessment as ('Baixo'|'Médio'|'Alto'|null|undefined);
+    if (previousRisk === 'Baixo') setRiskForThisConsult('baixo');
+    else if (previousRisk === 'Médio') setRiskForThisConsult('moderado');
+    else if (previousRisk === 'Alto') setRiskForThisConsult('alto');
+    else setRiskForThisConsult('a_definir');
+  }, [appointment, patient, getOrCreateAppointmentDiagnostics]);
+
   useFocusEffect(
     useCallback(() => {
       if (patient) {
@@ -58,11 +90,11 @@ export default function ConsultationScreen() {
           userName: `Atendimento de ${firstName}`,
           userPhotoUri: patient.photoUri ?? null,
           UserImageSvg: patient.image || UserPlaceholder,
-          riskLevel: patient.riskLevel,
+          riskLevel: patient.riskLevel as any,
           showNotificationIcon: false,
         });
       }
-    }, [patient])
+    }, [patient, setHeaderConfig])
   );
 
   const handleImagePick = async (type: 'image' | 'xray') => {
@@ -78,7 +110,8 @@ export default function ConsultationScreen() {
         onPress: async () => {
           const result = await ImagePicker.launchCameraAsync({ quality: 0.6 });
           if (!result.canceled) {
-            setImages((prev) => [...prev, result.assets[0].uri]);
+            if (type === 'image') setImages((prev) => [...prev, result.assets[0].uri]);
+            else setXrays((prev) => [...prev, result.assets[0].uri]);
           }
         },
       },
@@ -87,7 +120,8 @@ export default function ConsultationScreen() {
         onPress: async () => {
           const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.6 });
           if (!result.canceled) {
-            setImages((prev) => [...prev, result.assets[0].uri]);
+            if (type === 'image') setImages((prev) => [...prev, result.assets[0].uri]);
+            else setXrays((prev) => [...prev, result.assets[0].uri]);
           }
         },
       },
@@ -96,13 +130,50 @@ export default function ConsultationScreen() {
   };
 
   const handleFinishConsultation = async () => {
-    if (!appointment) return;
+    if (!appointment || !patient) return;
+
+    const mediaPacked = [
+      ...images.map((uri) => ({ id: `${Date.now()}-${Math.random()}`, uri, type: 'image' as const })),
+      ...xrays.map((uri) => ({ id: `${Date.now()}-${Math.random()}`, uri, type: 'xray' as const })),
+    ];
+
+    const riskTitle =
+      riskForThisConsult === 'baixo' ? 'Baixo' :
+      riskForThisConsult === 'moderado' ? 'Médio' :
+      riskForThisConsult === 'alto' ? 'Alto' : null;
+
+    if (isSegundaConsulta && plan && plan.length > 0) {
+      const steps = toStepsFromForm(plan);
+      await setPlanForPatient(String(patient.id), steps);
+    }
+
+    saveAppointmentDiagnostics(appointment.id, {
+      appointmentId: appointment.id,
+      patientId: String(patient.id),
+      requestedExams,
+      procedures,
+      treatmentPlan: plan,          
+      riskAssessment: riskTitle,    
+      media: mediaPacked,
+      updatedAt: new Date().toISOString(),
+    });
+
+    if (isPrimeiraConsulta) {
+      const currentPatientRisk: LowerRisk = (patient.riskLevel ?? 'a_definir') as LowerRisk;
+      if (riskForThisConsult !== 'a_definir' && riskForThisConsult !== currentPatientRisk) {
+        await saveUser({ ...patient, riskLevel: riskForThisConsult });
+      }
+    }
+
     await update(appointment.id, { status: 'realizada', updatedAt: new Date().toISOString() });
+
+    const latest = getById(appointment.id) || appointment;
+    if (latest.planStepId) {
+      await updateStepStatus(latest.patientId, latest.planStepId, 'realizada', latest.id);
+    }
+
     Alert.alert('Atendimento Finalizado', 'A consulta foi marcada como realizada.');
-    router.push({
-        pathname: '/(app)/consultas-list',
-        params: { listType: 'all' }
-      });
+    router.push({ pathname: '/(app)/consultas-list', params: { listType: 'all' } });
   };
 
   if (!appointment || !patient) {
@@ -147,10 +218,15 @@ export default function ConsultationScreen() {
               inputIcon="file-text"
               placeholder="Digite o exame"
               addMoreText="Adicionar Exame"
+              initialItems={requestedExams}
+              onChangeItems={setRequestedExams}
             />
 
             <View style={{ marginTop: 24, marginBottom: 24 }}>
-              <RiskAssessmentCard />
+              <RiskAssessmentCard
+                initialRiskLevel={(patient.riskLevel ?? 'a_definir') as any}
+                onChange={(lvl) => setRiskForThisConsult(lvl as LowerRisk)}
+              />
             </View>
 
             <StyledButton
@@ -162,7 +238,6 @@ export default function ConsultationScreen() {
           </>
         ) : (
           <>
-            {patient.allergies?.length ? <AllergyWarning allergies={patient.allergies} /> : null}
             <View style={styles.topButtonContainer}>
               {isPeriodontia ? (
                 <View style={styles.buttonRow}>
@@ -184,7 +259,7 @@ export default function ConsultationScreen() {
                     onPress={() =>
                       router.push({
                         pathname: '/(app)/periogramas',
-                        params: { patientId: patient.id },
+                        params: { patientId: patient.id, appointmentId: appointment.id },
                       })
                     }
                   />
@@ -203,7 +278,11 @@ export default function ConsultationScreen() {
               )}
             </View>
 
-            {isSegundaConsulta ? <TreatmentPlanForm /> : <ProcedureInputList />}
+            {isSegundaConsulta ? (
+              <TreatmentPlanForm value={plan} onChange={setPlan} disabled={false} />
+            ) : (
+              <ProcedureInputList value={procedures} onChange={setProcedures} />
+            )}
 
             <View style={styles.mediaButtonsContainer}>
               <StyledButton
@@ -222,18 +301,36 @@ export default function ConsultationScreen() {
           </>
         )}
 
-        {images.length > 0 && (
+        {(images.length > 0 || xrays.length > 0) && (
           <View style={{ marginTop: 24 }}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Imagens capturadas:</Text>
-            <ScrollView horizontal>
-              {images.map((uri, i) => (
-                <Image
-                  key={i}
-                  source={{ uri }}
-                  style={{ width: 100, height: 100, borderRadius: 8, marginRight: 8 }}
-                />
-              ))}
-            </ScrollView>
+            {images.length > 0 && (
+              <>
+                <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Imagens capturadas:</Text>
+                <ScrollView horizontal>
+                  {images.map((uri, i) => (
+                    <Image
+                      key={`img-${i}`}
+                      source={{ uri }}
+                      style={{ width: 100, height: 100, borderRadius: 8, marginRight: 8 }}
+                    />
+                  ))}
+                </ScrollView>
+              </>
+            )}
+            {xrays.length > 0 && (
+              <>
+                <Text style={{ fontWeight: 'bold', marginVertical: 8 }}>Raios-X:</Text>
+                <ScrollView horizontal>
+                  {xrays.map((uri, i) => (
+                    <Image
+                      key={`rx-${i}`}
+                      source={{ uri }}
+                      style={{ width: 100, height: 100, borderRadius: 8, marginRight: 8 }}
+                    />
+                  ))}
+                </ScrollView>
+              </>
+            )}
           </View>
         )}
       </ScrollView>

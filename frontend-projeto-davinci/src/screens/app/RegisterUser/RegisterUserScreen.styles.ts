@@ -13,8 +13,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 20,
+    paddingHorizontal: 12,
   },
   formContainer: {
     width: '100%',

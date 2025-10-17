@@ -4,7 +4,7 @@ import { SvgProps } from 'react-native-svg';
 import { getProfileHeaderStyles } from './styles';
 import RiskLevelIndicator from '../RiskLevelIndicator';
 
-type RiskLevel = 'baixo' | 'moderado' | 'alto';
+type RiskLevel = 'baixo' | 'moderado' | 'alto' | 'a_definir';
 
 type ProfileHeaderProps = {
   UserImageSvg: React.FC<SvgProps>;
@@ -29,12 +29,7 @@ function ProfileHeaderBase({ UserImageSvg, userName, riskLevel, photoUri }: Prof
       <View style={styles.backgroundCircle}>
         <View style={styles.imageWrapper}>
           {photoUri ? (
-            <Image
-              key={photoUri}
-              source={{ uri: photoUri }}
-              style={styles.image} 
-              resizeMode="cover"
-            />
+            <Image key={photoUri} source={{ uri: photoUri }} style={styles.image} resizeMode="cover" />
           ) : (
             <UserImageSvg width="100%" height="100%" />
           )}

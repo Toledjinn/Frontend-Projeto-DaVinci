@@ -2,59 +2,73 @@ export type TreatmentPlanStep = {
   id: string;
   dentistId: string;
   specialty: string;
-  procedures: string[];
   observations: string;
   status: 'pendente' | 'agendada' | 'realizada';
-  appointmentId?: string; 
+  appointmentId?: string;
 };
 
 export type TreatmentPlan = {
   patientId: string;
   steps: TreatmentPlanStep[];
+  createdAt: string;
+  updatedAt: string;
 };
 
-const MOCK_PLANS: TreatmentPlan[] = [
-  {
-    patientId: 'patient-1', 
-    steps: [
-      {
-        id: 'step1',
-        dentistId: 'dentist-3', 
-        specialty: 'Endodontia',
-        procedures: ['canal'],
-        observations: 'Finalizar tratamento de canal do dente 16.',
-        status: 'realizada',
-        appointmentId: 'appt-6',
-      },
-      {
-        id: 'step2',
-        dentistId: 'dentist-4',
-        specialty: 'Implantodontia',
-        procedures: ['implante_cirurgia'],
-        observations: 'Instalação de implante no local do dente 25.',
-        status: 'agendada',
-        appointmentId: 'appt-10',
-      },
-      {
-        id: 'step3',
-        dentistId: 'dentist-1',
-        specialty: 'Prótese',
-        procedures: ['protese_avaliacao'],
-        observations: 'Coroa sobre implante do dente 25.',
-        status: 'pendente', 
-      },
-      {
-        id: 'step4',
-        dentistId: 'dentist-1', 
-        specialty: 'Prótese',
-        procedures: ['protese_avaliacao'],
-        observations: 'Prótese final sobre o dente 16.',
-        status: 'pendente', 
-      },
-    ],
-  },
+const MOCK_TREATMENT_PLANS: TreatmentPlan[] = [
+  
 ];
 
 export const getPlanForPatient = (patientId: string): TreatmentPlan | undefined => {
-  return MOCK_PLANS.find(p => p.patientId === patientId);
+  return MOCK_TREATMENT_PLANS.find((p) => p.patientId === patientId);
+};
+
+export const saveTreatmentPlanForPatient = (
+  patientId: string,
+  items: {
+    id: number | string;
+    dentistId: string | null;
+    specialty: string | null;
+    observations: string;
+  }[],
+) => {
+  const newSteps: TreatmentPlanStep[] = items.map((it) => ({
+    id: String(it.id),
+    dentistId: it.dentistId ?? '',
+    specialty: it.specialty ?? '',
+    observations: it.observations ?? '',
+    status: 'pendente',
+  }));
+
+  const existingPlan = getPlanForPatient(patientId);
+
+  if (existingPlan) {
+    existingPlan.steps = newSteps;
+    existingPlan.updatedAt = new Date().toISOString();
+  } else {
+    MOCK_TREATMENT_PLANS.push({
+      patientId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      steps: newSteps,
+    });
+  }
+};
+
+export const updateTreatmentPlanStep = (
+  patientId: string,
+  stepId: string,
+  updates: Partial<Pick<TreatmentPlanStep, 'status' | 'appointmentId'>>,
+) => {
+  const plan = getPlanForPatient(patientId);
+  if (!plan) return;
+
+  const step = plan.steps.find((s) => s.id === stepId);
+  if (!step) return;
+
+  Object.assign(step, updates);
+  plan.updatedAt = new Date().toISOString();
+};
+
+export const getAllTreatmentPlans = (): TreatmentPlan[] => {
+  return MOCK_TREATMENT_PLANS;
 };

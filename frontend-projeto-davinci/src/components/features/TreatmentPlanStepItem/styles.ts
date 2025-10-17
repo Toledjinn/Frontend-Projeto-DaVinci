@@ -42,7 +42,6 @@ export const styles = StyleSheet.create({
   statusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 12,
   },
   statusText: {
     ...FONTS.body8,

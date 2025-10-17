@@ -6,17 +6,15 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
-    flex: 1,
-  },
+  scrollView: { flex: 1 },
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingHorizontal: 12,
   },
   sectionTitle: {
-    ...FONTS.body1,
+    ...FONTS.body4,
     color: COLORS.secondary,
-    marginTop: 24,
-    marginBottom: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    textAlign: 'center',
   },
 });

@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, useWindowDimensions, Text, View } from 'react-native';
+import { FlatList, useWindowDimensions, Text } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { styles } from './TreatmentPlanScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { findUserById, UserProfile } from '@/data/mockUsers';
 import { formatUserName } from '@/utils/nameUtils';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
-import { getPlanForPatient, TreatmentPlan, TreatmentPlanStep } from '@/data/mockTreatmentPlans';
 import TreatmentPlanStepItem from '@/components/features/TreatmentPlanStepItem';
+import {
+  getPlanForPatient,
+  TreatmentPlan,
+  TreatmentPlanStep,
+} from '@/data/treatmentPlansStore';
 
 export default function TreatmentPlanScreen() {
   const { height } = useWindowDimensions();
@@ -21,61 +25,102 @@ export default function TreatmentPlanScreen() {
   const [plan, setPlan] = useState<TreatmentPlan | null>(null);
 
   useEffect(() => {
-    if (patientId) {
-      setPatient(findUserById(patientId) ?? null);
-      setPlan(getPlanForPatient(patientId) ?? null);
-    }
+    if (!patientId) return;
+    setPatient(findUserById(String(patientId)) ?? null);
   }, [patientId]);
-  
-  useFocusEffect(useCallback(() => {
-    if (patient) {
-      setHeaderConfig({
-        layout: 'profile',
-        showBackground: true,
-        userName: `Plano de Tratamento de ${formatUserName(patient.name)}`,
-        UserImageSvg: patient.image || UserPlaceholder,
-        riskLevel: patient.riskLevel,
-        showNotificationIcon: false
-      });
-    }
-  }, [patient]));
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      if (!patientId) return;
+      const p = await getPlanForPatient(String(patientId));
+      if (alive) setPlan(p);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [patientId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      let disposed = false;
+      (async () => {
+        if (!patientId) return;
+        const p = await getPlanForPatient(String(patientId));
+        if (!disposed) setPlan(p);
+      })();
+      return () => {
+        disposed = true;
+      };
+    }, [patientId])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (patient) {
+        setHeaderConfig({
+          layout: 'profile',
+          showBackground: true,
+          userName: `Plano de Tratamento de ${formatUserName(patient.name)}`,
+          UserImageSvg: patient.image || UserPlaceholder,
+          riskLevel: patient.riskLevel,
+          showNotificationIcon: false,
+        });
+      }
+    }, [patient, setHeaderConfig])
+  );
 
   const handleStepPress = (step: TreatmentPlanStep) => {
-    if (step.status === 'agendada' || step.status === 'realizada') {
+    if ((step.status === 'agendada' || step.status === 'realizada') && step.appointmentId) {
       router.push(`/(app)/appointment/${step.appointmentId}`);
-    } else { 
-      router.push({
-        pathname: '/(app)/schedule-appointment',
-        params: {
-          patientId: patient?.id,
-          dentistId: step.dentistId,
-          specialty: step.specialty,
-          procedures: JSON.stringify(step.procedures),
-          observations: step.observations,
-        }
-      });
+      return;
     }
+
+    router.push({
+      pathname: '/(app)/schedule-appointment',
+      params: {
+        patientId: patient?.id,
+        dentistId: step.dentistId,
+        specialty: step.specialty,
+        observations: step.observations,
+        planStepId: step.id, 
+      },
+    });
   };
 
-  const activeStepIndex = plan?.steps.findIndex(step => step.status !== 'realizada') ?? -1;
+  const activeStepIndex = plan?.steps?.findIndex((s) => s.status !== 'realizada') ?? -1;
 
-  if (!patient) return <SafeAreaView style={styles.safeArea}><Text>Carregando...</Text></SafeAreaView>;
+  if (!patient) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Text style={styles.emptyText}>Carregando paciente...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
-        data={plan?.steps || []}
-        keyExtractor={item => item.id}
+        data={plan?.steps ?? []}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
         renderItem={({ item, index }) => (
           <TreatmentPlanStepItem
             item={item}
             stepNumber={index + 1}
-            isLocked={item.status === 'pendente' && activeStepIndex !== -1 && index > activeStepIndex}
+            isLocked={
+              item.status === 'pendente' &&
+              activeStepIndex !== -1 &&
+              index > activeStepIndex
+            }
             onPress={() => handleStepPress(item)}
           />
         )}
-        ListEmptyComponent={<Text>Nenhum plano de tratamento encontrado para este paciente.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>
+            Nenhum plano de tratamento encontrado para este paciente.
+          </Text>
+        }
       />
     </SafeAreaView>
   );

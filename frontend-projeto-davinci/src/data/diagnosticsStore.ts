@@ -74,20 +74,57 @@ export const ORAL_HEALTH_INITIAL: OralHealthForm = {
   avaliacaoRisco: { nivel: null },
 };
 
-export type GeneralHealthForm = any; 
+export type GeneralHealthForm = any;
 export const GENERAL_HEALTH_INITIAL: GeneralHealthForm = {} as any;
 
 export type PreventionType = 'primaria' | 'secundaria' | 'terciaria' | 'quaternaria';
-
 export type PreventionItem = { id: number; value: string };
 export type PreventionData = {
   items: PreventionItem[];
   createdAt?: string;
   updatedAt?: string;
 };
-
 export const PREVENTION_INITIAL: PreventionData = {
   items: [{ id: Date.now(), value: '' }],
+};
+
+export type MediaType = 'image' | 'xray';
+export type MediaItem = { id: string; uri: string; type: MediaType };
+
+export type ProcedureEntry = { id: number; description: string };
+
+export type PlanItem = {
+  id: number;
+  dentistId: string | null;
+  specialty: string | null;
+  observations: string;
+};
+
+export type AppointmentDiagnostics = {
+  appointmentId: string;
+  patientId: string;
+
+  requestedExams?: { id: number; value: string }[]; 
+  riskLevel?: 'baixo' | 'moderado' | 'alto' | null; 
+  riskAssessment?: 'Baixo' | 'Médio' | 'Alto' | null; 
+
+  procedures?: ProcedureEntry[];    
+  treatmentPlan?: PlanItem[];        
+  media?: MediaItem[];             
+
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export const APPOINTMENT_DIAG_INITIAL: AppointmentDiagnostics = {
+  appointmentId: '',
+  patientId: '',
+  requestedExams: [{ id: Date.now(), value: '' }],
+  riskLevel: null,
+  riskAssessment: null, 
+  procedures: [],
+  treatmentPlan: [],
+  media: [],
 };
 
 type DiagnosticsState = {
@@ -103,18 +140,17 @@ type DiagnosticsState = {
   updateGeneralHealth: (patientId: string, patch: Partial<GeneralHealthForm>) => void;
   clearGeneralHealth: (patientId: string) => void;
 
-  preventionByPatientId: Record<
-    string,
-    Partial<Record<PreventionType, PreventionData>>
-  >;
+  preventionByPatientId: Record<string, Partial<Record<PreventionType, PreventionData>>>;
   getOrCreatePrevention: (patientId: string, type: PreventionType) => PreventionData;
   savePrevention: (patientId: string, type: PreventionType, data: PreventionData) => void;
-  updatePrevention: (
-    patientId: string,
-    type: PreventionType,
-    patch: Partial<PreventionData>
-  ) => void;
+  updatePrevention: (patientId: string, type: PreventionType, patch: Partial<PreventionData>) => void;
   clearPrevention: (patientId: string, type: PreventionType) => void;
+
+  appointmentDiagnosticsById: Record<string, AppointmentDiagnostics>;
+  getOrCreateAppointmentDiagnostics: (appointmentId: string, patientId: string) => AppointmentDiagnostics;
+  saveAppointmentDiagnostics: (appointmentId: string, data: AppointmentDiagnostics) => void;
+  updateAppointmentDiagnostics: (appointmentId: string, patch: Partial<AppointmentDiagnostics>) => void;
+  clearAppointmentDiagnostics: (appointmentId: string) => void;
 };
 
 export const useDiagnosticsStore = create<DiagnosticsState>()(
@@ -236,8 +272,7 @@ export const useDiagnosticsStore = create<DiagnosticsState>()(
         }));
       },
       updatePrevention: (patientId, type, patch) => {
-        const current =
-          get().preventionByPatientId[patientId]?.[type] ?? PREVENTION_INITIAL;
+        const current = get().preventionByPatientId[patientId]?.[type] ?? PREVENTION_INITIAL;
         const now = new Date().toISOString();
         set((state) => ({
           preventionByPatientId: {
@@ -261,11 +296,76 @@ export const useDiagnosticsStore = create<DiagnosticsState>()(
           };
         });
       },
+
+      appointmentDiagnosticsById: {},
+      getOrCreateAppointmentDiagnostics: (appointmentId, patientId) => {
+        const map = get().appointmentDiagnosticsById;
+        const existing = map[appointmentId];
+        if (existing) return existing;
+
+        const fresh: AppointmentDiagnostics = {
+          ...JSON.parse(JSON.stringify(APPOINTMENT_DIAG_INITIAL)),
+          appointmentId,
+          patientId,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        set((state) => ({
+          appointmentDiagnosticsById: {
+            ...state.appointmentDiagnosticsById,
+            [appointmentId]: fresh,
+          },
+        }));
+        return fresh;
+      },
+      saveAppointmentDiagnostics: (appointmentId, data) => {
+        const now = new Date().toISOString();
+        const current =
+          get().appointmentDiagnosticsById[appointmentId] ??
+          {
+            ...APPOINTMENT_DIAG_INITIAL,
+            appointmentId,
+            patientId: data.patientId,
+            createdAt: now,
+          };
+
+        const next: AppointmentDiagnostics = {
+          ...current,
+          ...data,                 
+          createdAt: current.createdAt ?? data.createdAt ?? now,
+          updatedAt: now,
+        };
+
+        set((state) => ({
+          appointmentDiagnosticsById: {
+            ...state.appointmentDiagnosticsById,
+            [appointmentId]: next,
+          },
+        }));
+      },
+      updateAppointmentDiagnostics: (appointmentId, patch) => {
+        const current = get().appointmentDiagnosticsById[appointmentId] ??
+          { ...APPOINTMENT_DIAG_INITIAL, appointmentId, patientId: '' };
+        const now = new Date().toISOString();
+        set((state) => ({
+          appointmentDiagnosticsById: {
+            ...state.appointmentDiagnosticsById,
+            [appointmentId]: { ...current, ...patch, updatedAt: now, createdAt: current.createdAt ?? now },
+          },
+        }));
+      },
+      clearAppointmentDiagnostics: (appointmentId) => {
+        set((state) => {
+          const { [appointmentId]: _, ...rest } = state.appointmentDiagnosticsById;
+          return { appointmentDiagnosticsById: rest };
+        });
+      },
     }),
     {
       name: 'diagnostics-store',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 2,
+      version: 3,
     }
   )
 );

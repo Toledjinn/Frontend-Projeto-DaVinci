@@ -10,8 +10,8 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingHorizontal: 12,
+    paddingBottom: 8,
   },
   topButtonContainer: {
     marginBottom: 12,

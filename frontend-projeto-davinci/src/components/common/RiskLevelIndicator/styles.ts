@@ -22,5 +22,8 @@ export const getRiskLevelIndicatorStyles = () => {
     alto: {
       backgroundColor: '#EF4444', 
     },
+    a_definir: {
+      backgroundColor: COLORS.gray_400,
+    }
   });
 };

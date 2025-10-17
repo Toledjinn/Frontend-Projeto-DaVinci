@@ -1,85 +1,104 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, useWindowDimensions, Text, View } from 'react-native';
+import { FlatList, Text, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+
 import { styles } from './PeriogramasListScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { findUserById, UserProfile } from '@/data/mockUsers';
+import { useUsers } from '@/hooks/useUsers';
 import { formatUserName } from '@/utils/nameUtils';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
-import { getPeriogramsForPatient, SavedPeriogram } from '@/data/mockPeriograms';
+
 import CollapsiblePeriogramItem from '@/components/features/CollapsiblePeriogramItem';
 import ScreenFooter from '@/components/common/ScreenFooter';
 
+import { usePeriograms } from '@/data/periogramsStore';
+import { useAuth } from '@/hooks/useAuth';
+
 export default function PeriogramasListScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
-  const { patientId } = useLocalSearchParams<{ patientId: string }>();
-  const router = useRouter();
-  const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
+  const headerHeight = height * 0.30;
 
-  const [patient, setPatient] = useState<UserProfile | null>(null);
-  const [periograms, setPeriograms] = useState<SavedPeriogram[]>([]);
+  const { patientId, appointmentId } =
+    useLocalSearchParams<{ patientId: string; appointmentId?: string }>();
+  const router = useRouter();
+  const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
+
+  const { list, fetchForPatient, loading } = usePeriograms();
+  const { list: users } = useUsers();
+  const { canManagePeriogram } = useAuth();
+
   const [openItemId, setOpenItemId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (patientId) {
-      setPatient(findUserById(patientId) ?? null);
-      setPeriograms(getPeriogramsForPatient(patientId));
-    }
-  }, [patientId]);
+  const patient = useMemo(
+    () => users.find((u) => String(u.id) === String(patientId)),
+    [users, patientId]
+  );
+  const patientName = patient?.name ?? '';
 
-  useFocusEffect(useCallback(() => {
-    if (patient) {
+  useFocusEffect(
+    useCallback(() => {
       setHeaderConfig({
         layout: 'profile',
         showBackground: true,
-        userName: `Periogramas de ${formatUserName(patient.name)}`,
-        UserImageSvg: patient.image || UserPlaceholder,
-        riskLevel: patient.riskLevel,
-        showNotificationIcon: false
+        userName: `Periogramas de ${formatUserName(patientName)}`,
+        UserImageSvg: patient?.image || UserPlaceholder,
+        userPhotoUri: patient?.photoUri ?? null,
+        riskLevel: patient?.riskLevel,
+        showNotificationIcon: false,
       });
-    }
-  }, [patient]));
+    }, [patientName, patient?.image, patient?.photoUri, patient?.riskLevel, setHeaderConfig])
+  );
 
-  const handleToggleItem = (itemId: string) => {
-    setOpenItemId(currentId => (currentId === itemId ? null : itemId));
+  useFocusEffect(
+    useCallback(() => {
+      if (patientId) fetchForPatient(String(patientId));
+    }, [patientId, fetchForPatient])
+  );
+
+  const handleToggleItem = (id: string) => {
+    setOpenItemId((prev) => (prev === id ? null : id));
+  };
+
+  const handleEdit = (periogramId: string) => {
+    router.push({
+      pathname: '/(app)/novo-periograma', 
+      params: { patientId, periogramId, appointmentId },
+    });
   };
 
   const handleNewPeriogram = () => {
-    if (patient) {
-      router.push({
-        pathname: '/(app)/novo-periograma',
-        params: { patientId: patient.id },
-      });
-    }
+    router.push({
+      pathname: '/(app)/novo-periograma',
+      params: { patientId, appointmentId }, 
+    });
   };
-
-  if (!patient) return <SafeAreaView style={styles.safeArea}><Text>Carregando...</Text></SafeAreaView>;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
-        data={periograms}
-        keyExtractor={item => item.id}
+        data={list}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        refreshing={loading}
+        onRefresh={() => fetchForPatient(String(patientId))}
         renderItem={({ item }) => (
           <CollapsiblePeriogramItem
             item={item}
             isOpen={openItemId === item.id}
             onToggle={() => handleToggleItem(item.id)}
+            canEdit={canManagePeriogram}
+            onEdit={() => handleEdit(item.id)}
           />
         )}
-        ListEmptyComponent={<Text style={styles.emptyText}>Nenhum periograma encontrado.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>Nenhum periograma encontrado.</Text>
+        }
       />
-      
+
       <ScreenFooter
         buttons={[
-          {
-            title: "Novo Periograma",
-            onPress: handleNewPeriogram,
-            variant: 'secondary',  
-          }
+          { title: 'Novo Periograma', onPress: handleNewPeriogram, variant: 'secondary' },
         ]}
       />
     </SafeAreaView>

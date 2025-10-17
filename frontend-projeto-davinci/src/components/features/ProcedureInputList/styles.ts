@@ -17,24 +17,18 @@ export const styles = StyleSheet.create({
     ...FONTS.body1,
     color: COLORS.secondary,
     marginBottom: 16,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   procedureEntry: {
     marginBottom: 16,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray_100, 
+    borderBottomColor: COLORS.gray_100,
   },
   lastProcedureEntry: {
     marginBottom: 0,
     paddingBottom: 0,
     borderBottomWidth: 0,
-  },
-  inputsContainer: {
-    flex: 1,
-  },
-  pickerWrapper: {
-    marginBottom: 8,
   },
   descriptionInput: {
     backgroundColor: COLORS.white,
@@ -46,7 +40,7 @@ export const styles = StyleSheet.create({
     ...FONTS.body9,
     color: COLORS.secondary,
     textAlignVertical: 'top',
-    height: 80,
+    minHeight: 80,
   },
   removeButton: {
     alignSelf: 'flex-end',
@@ -73,5 +67,11 @@ export const styles = StyleSheet.create({
     color: COLORS.secondary,
     ...FONTS.body7,
     marginLeft: 8,
+  },
+  disabledInput: {
+    backgroundColor: COLORS.gray_100,
+  },
+  disabledAddButton: {
+    opacity: 0.6,
   },
 });

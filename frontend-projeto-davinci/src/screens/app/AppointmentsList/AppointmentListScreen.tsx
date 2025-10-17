@@ -64,8 +64,8 @@ export default function AppointmentListScreen() {
         setHeaderConfig({
           layout: 'profile',
           userName: `${listType === 'patient' ? 'Prontuário de' : 'Consultas de'} ${formatted}`,
+          userPhotoUri: user.photoUri ?? null,
           UserImageSvg: user.image || UserPlaceholder,
-          riskLevel: user.riskLevel,
           showNotificationIcon: true,
           showBackground: true,
         });

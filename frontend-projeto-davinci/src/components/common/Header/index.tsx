@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, useWindowDimensions, Alert, Image } from 'react-native';
+import { View, Text, TouchableOpacity, useWindowDimensions, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { getHeaderStyles } from './styles';
@@ -20,6 +20,18 @@ import { badge } from '@/ui/badgePresets';
 import LogoBadge from '@/components/common/LogoBadge';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 
+type RiskLower = 'baixo' | 'moderado' | 'alto' | 'a_definir';
+
+function normalizeRiskToLower(
+  lvl?: string
+): RiskLower | undefined {
+  if (!lvl) return undefined;
+  const norm = String(lvl).toLowerCase().replace(/\s+/g, '_');
+  if (norm === 'baixo' || norm === 'moderado' || norm === 'alto') return norm as RiskLower;
+  if (norm === 'a_definir') return 'a_definir';
+  return 'a_definir';
+}
+
 export default function Header() {
   const router = useRouter();
   const { height } = useWindowDimensions();
@@ -39,10 +51,10 @@ export default function Header() {
     userName,
     UserImageSvg,
     userPhotoUri,
-    riskLevel,
+    riskLevel,               
     pageHeaderBadgeVariant,
-    showDeleteIcon, 
-    userId,       
+    showDeleteIcon,
+    userId,
   } = headerConfig as typeof headerConfig & {
     showDeleteIcon?: boolean;
     userId?: string;
@@ -88,6 +100,8 @@ export default function Header() {
     );
   };
 
+  const riskLower = normalizeRiskToLower(riskLevel);
+
   return (
     <View style={[styles.wrapper, { height: headerHeight }]} pointerEvents="box-none">
       {showBackground && (
@@ -114,7 +128,7 @@ export default function Header() {
         <ProfileHeader
           UserImageSvg={UserImageSvg || UserPlaceholder}
           userName={userName}
-          riskLevel={riskLevel}
+          riskLevel={riskLower as any}
           photoUri={userPhotoUri ?? null}
         />
       )}

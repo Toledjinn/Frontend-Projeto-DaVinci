@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export type PeriogramData = {
   [key: number]: { [key: string]: string };
 };
@@ -5,42 +7,72 @@ export type PeriogramData = {
 export type SavedPeriogram = {
   id: string;
   patientId: string;
-  date: string; 
+  date: string;       
   dentistName: string; 
   data: PeriogramData;
 };
 
-const MOCK_SAVED_PERIOGRAMS: SavedPeriogram[] = [
-  {
-    id: 'perio1',
-    patientId: 'patient-2',
-    date: '01/03/2025',
-    dentistName: 'Dr. Carlos Dias',
-    data: {
-      '16': { MV: '4', V: '3', DV: '4', 'MP/ML': '3', 'P/L': '2' },
-      '25': { MV: '2', V: '2', DV: '3' },
-      '46': { MV: '5', V: '4', DV: '5', MO: '1' },
-    },
-  },
-  {
-    id: 'perio2',
-    patientId: 'patient-2', 
-    date: '15/06/2025',
-    dentistName: 'Dr. Carlos Dias',
-    data: {
-      '16': { MV: '3', V: '2', DV: '3', 'MP/ML': '2', 'P/L': '2' },
-      '25': { MV: '2', V: '2', DV: '2' },
-      '46': { MV: '4', V: '3', DV: '4', MO: '1' },
-    },
-  },
-];
+const PERIOGRAMS_KEY = '@app/periograms_v1';
 
-export const getPeriogramsForPatient = (patientId: string): SavedPeriogram[] => {
-  return MOCK_SAVED_PERIOGRAMS
-    .filter(p => p.patientId === patientId)
-    .sort((a, b) => new Date(b.date.split('/').reverse().join('-')).getTime() - new Date(a.date.split('/').reverse().join('-')).getTime()); 
-};
+const genId = () => `perio_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-export const getPeriogramById = (id: string): SavedPeriogram | undefined => {
-  return MOCK_SAVED_PERIOGRAMS.find(p => p.id === id);
+async function loadAll(): Promise<SavedPeriogram[]> {
+  try {
+    const raw = await AsyncStorage.getItem(PERIOGRAMS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+async function saveAll(items: SavedPeriogram[]): Promise<void> {
+  await AsyncStorage.setItem(PERIOGRAMS_KEY, JSON.stringify(items));
+}
+
+export async function getPeriogramsForPatient(patientId: string): Promise<SavedPeriogram[]> {
+  const all = await loadAll();
+  return all
+    .filter((p) => String(p.patientId) === String(patientId))
+    .sort((a, b) => {
+      const da = a.date.split('/').reverse().join('-');
+      const db = b.date.split('/').reverse().join('-');
+      return new Date(db).getTime() - new Date(da).getTime();
+    });
+}
+
+export async function getPeriogramById(id: string): Promise<SavedPeriogram | undefined> {
+  const all = await loadAll();
+  return all.find((p) => p.id === id);
+}
+
+export async function addPeriogram(input: Omit<SavedPeriogram, 'id'>): Promise<SavedPeriogram> {
+  const all = await loadAll();
+  const item: SavedPeriogram = { ...input, id: genId() };
+  const next = [item, ...all];
+  await saveAll(next);
+  return item;
+}
+
+export async function updatePeriogram(
+  id: string,
+  patch: Partial<Pick<SavedPeriogram, 'data' | 'dentistName' | 'date'>>
+): Promise<SavedPeriogram | undefined> {
+  const all = await loadAll();
+  const idx = all.findIndex((p) => p.id === id);
+  if (idx === -1) return undefined;
+  const updated: SavedPeriogram = { ...all[idx], ...patch };
+  all[idx] = updated;
+  await saveAll(all);
+  return updated;
+}
+
+export async function deletePeriogram(id: string): Promise<void> {
+  const all = await loadAll();
+  await saveAll(all.filter((p) => p.id !== id));
+}
+
+export async function resetPeriograms(): Promise<void> {
+  await saveAll([]);
 }

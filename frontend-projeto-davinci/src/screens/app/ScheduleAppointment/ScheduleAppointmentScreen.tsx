@@ -7,7 +7,7 @@ import { styles } from './ScheduleAppointmentScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import Chefinho from '@/assets/characters/chefinho.svg';
-import StyledPicker, { PickerItem } from '@/components/common/StyledPicker';
+import StyledPicker from '@/components/common/StyledPicker';
 import StyledDatePicker from '@/components/common/StyledDatePicker';
 import StyledTimePicker from '@/components/common/StyledTimePicker';
 import StyledUserPicker from '@/components/common/StyledUserPicker';
@@ -16,6 +16,7 @@ import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 import { useUsers } from '@/hooks/useUsers';
 import { useAppointments } from '@/hooks/useAppointments';
 import type { Appointment } from '@/data/appointmentsStore';
+import { markStepScheduled } from '@/data/treatmentPlansStore';
 
 export default function ScheduleAppointmentScreen() {
   const { height } = useWindowDimensions();
@@ -34,6 +35,7 @@ export default function ScheduleAppointmentScreen() {
     date?: string;
     time?: string;
     observations?: string;
+    planStepId?: string;
   }>();
 
   const isRescheduleMode = params.mode === 'reschedule';
@@ -47,13 +49,15 @@ export default function ScheduleAppointmentScreen() {
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [observations, setObservations] = useState(params.observations || '');
 
-  const patients = users
-  .filter((u) => u.type === 'patient')
-  .map((u) => ({ id: u.id, name: u.name, image: u.image ?? null }));
+  const [editingApptPlanStepId, setEditingApptPlanStepId] = useState<string | undefined>(params.planStepId);
 
-const dentists = users
-  .filter((u) => u.type === 'dentist')
-  .map((u) => ({ id: u.id, name: u.name, image: u.image ?? null }));
+  const patients = users
+    .filter((u) => u.type === 'patient')
+    .map((u) => ({ id: u.id, name: u.name, image: u.image ?? null }));
+
+  const dentists = users
+    .filter((u) => u.type === 'dentist')
+    .map((u) => ({ id: u.id, name: u.name, image: u.image ?? null }));
 
   useFocusEffect(
     useCallback(() => {
@@ -70,7 +74,7 @@ const dentists = users
         CharacterSvg: Chefinho,
         showNotificationIcon: false,
       });
-    }, [isRescheduleMode, isReproposeMode, isEditing])
+    }, [isRescheduleMode, isReproposeMode, isEditing, setHeaderConfig])
   );
 
   useEffect(() => {
@@ -87,9 +91,10 @@ const dentists = users
         const t = new Date();
         t.setHours(+h, +min);
         setSelectedTime(t);
+        setEditingApptPlanStepId(existing.planStepId || params.planStepId);
       }
     }
-  }, [isEditing, params.appointmentId]);
+  }, [isEditing, params.appointmentId, params.planStepId, getById]);
 
   const handleSave = async () => {
     if (!selectedPatientId || !selectedDentistId || !selectedSpecialty || !selectedDate || !selectedTime) {
@@ -103,8 +108,10 @@ const dentists = users
       .toString()
       .padStart(2, '0')}`;
 
+    const newId = params.appointmentId || Date.now().toString();
+
     const payload: Appointment = {
-      id: params.appointmentId || Date.now().toString(),
+      id: newId,
       patientId: selectedPatientId,
       dentistId: selectedDentistId,
       specialty: selectedSpecialty,
@@ -114,10 +121,21 @@ const dentists = users
       status: 'agendada',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      planStepId: editingApptPlanStepId || params.planStepId,
     };
 
     try {
-      await save(payload);
+      if (isEditing) {
+        await update(newId, payload);
+      } else {
+        await save(payload);
+      }
+
+      const stepIdToMark = payload.planStepId;
+      if (stepIdToMark) {
+        await markStepScheduled(selectedPatientId, stepIdToMark, newId);
+      }
+
       Alert.alert('Sucesso', 'Consulta salva com sucesso!');
       router.back();
     } catch (err) {

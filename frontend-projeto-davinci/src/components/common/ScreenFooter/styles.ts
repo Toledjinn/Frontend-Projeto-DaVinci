@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
     paddingBottom: 12,
     paddingTop: 12,
     backgroundColor: COLORS.background,

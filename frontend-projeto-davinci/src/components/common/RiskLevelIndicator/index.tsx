@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { getRiskLevelIndicatorStyles } from './styles';
 
-type RiskLevel = 'baixo' | 'moderado' | 'alto';
+type RiskLevel = 'baixo' | 'moderado' | 'alto' | 'a_definir';
 
 type RiskLevelIndicatorProps = {
   level: RiskLevel;
@@ -15,6 +15,7 @@ export default function RiskLevelIndicator({ level }: RiskLevelIndicatorProps) {
     baixo: { text: 'Baixo Risco', style: styles.baixo },
     moderado: { text: 'Risco Moderado', style: styles.moderado },
     alto: { text: 'Alto Risco', style: styles.alto },
+    a_definir: { text: 'A Definir', style: styles.a_definir},
   };
 
   return (

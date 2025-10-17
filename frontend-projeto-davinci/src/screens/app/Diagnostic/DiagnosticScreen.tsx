@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback } from 'react';
-import { ScrollView, useWindowDimensions, Text, View } from 'react-native';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import { ScrollView, useWindowDimensions, Text, View, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -14,6 +14,8 @@ import { ALL_SPECIALTIES } from '@/data/mockSpecialties';
 import { formatUserName } from '@/utils/nameUtils';
 import RiskAssessmentCard from '@/components/features/RiskAssessmentCard';
 
+type LowerRisk = 'baixo' | 'moderado' | 'alto' | 'a_definir';
+
 export default function DiagnosticScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = height * 0.28;
@@ -22,11 +24,19 @@ export default function DiagnosticScreen() {
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const { list } = useUsers();
+  const { list, save } = useUsers();
   const patient = useMemo<UserWithPhoto | undefined>(
     () => list.find((u) => String(u.id) === String(patientId) && u.type === 'patient'),
     [list, patientId]
   );
+
+  const [isEditingRisk, setIsEditingRisk] = useState(false);
+  const [selectedRisk, setSelectedRisk] = useState<LowerRisk>('a_definir');
+
+  useEffect(() => {
+    const current = (patient?.riskLevel ?? 'a_definir') as LowerRisk;
+    setSelectedRisk(current);
+  }, [patient?.riskLevel]);
 
   useFocusEffect(
     useCallback(() => {
@@ -35,10 +45,10 @@ export default function DiagnosticScreen() {
         layout: 'profile',
         showBackground: true,
         showNotificationIcon: false,
-        userName: `Diagnóstico de ${formatUserName(patient.name)}`,
+        userName: `Diagnósticos de ${formatUserName(patient.name)}`,
         UserImageSvg: patient.image || UserPlaceholder,
         userPhotoUri: patient.photoUri ?? null,
-        riskLevel: patient.riskLevel,
+        riskLevel: patient.riskLevel as any,
         showDeleteIcon: false,
       });
     }, [patient, setHeaderConfig])
@@ -48,26 +58,12 @@ export default function DiagnosticScreen() {
     {
       id: 'saude_bucal',
       title: 'Saúde Bucal',
-      onPress: () => {
-        if (patient) {
-          router.push({
-            pathname: '/(app)/saude-bucal',
-            params: { patientId: String(patient.id) },
-          });
-        }
-      },
+      onPress: () => patient && router.push({ pathname: '/(app)/saude-bucal', params: { patientId: String(patient.id) } }),
     },
     {
       id: 'saude_geral',
       title: 'Saúde Geral',
-      onPress: () => {
-        if (patient) {
-          router.push({
-            pathname: '/(app)/saude-geral',
-            params: { patientId: String(patient.id) },
-          });
-        }
-      },
+      onPress: () => patient && router.push({ pathname: '/(app)/saude-geral', params: { patientId: String(patient.id) } }),
     },
   ];
 
@@ -75,78 +71,55 @@ export default function DiagnosticScreen() {
     {
       id: 'primaria',
       title: 'Primária',
-      onPress: () => {
-        if (patient) {
-          router.push({
-            pathname: '/(app)/prevencao/[type]',
-            params: { patientId: String(patient.id), type: 'primaria' },
-          });
-        }
-      },
+      onPress: () => patient && router.push({ pathname: '/(app)/prevencao/[type]', params: { patientId: String(patient.id), type: 'primaria' } }),
     },
     {
       id: 'secundaria',
       title: 'Secundária',
-      onPress: () => {
-        if (patient) {
-          router.push({
-            pathname: '/(app)/prevencao/[type]',
-            params: { patientId: String(patient.id), type: 'secundaria' },
-          });
-        }
-      },
+      onPress: () => patient && router.push({ pathname: '/(app)/prevencao/[type]', params: { patientId: String(patient.id), type: 'secundaria' } }),
     },
     {
       id: 'terciaria',
       title: 'Terciária',
-      onPress: () => {
-        if (patient) {
-          router.push({
-            pathname: '/(app)/prevencao/[type]',
-            params: { patientId: String(patient.id), type: 'terciaria' },
-          });
-        }
-      },
+      onPress: () => patient && router.push({ pathname: '/(app)/prevencao/[type]', params: { patientId: String(patient.id), type: 'terciaria' } }),
     },
     {
       id: 'quaternaria',
       title: 'Quaternária',
-      onPress: () => {
-        if (patient) {
-          router.push({
-            pathname: '/(app)/prevencao/[type]',
-            params: { patientId: String(patient.id), type: 'quaternaria' },
-          });
-        }
-      },
+      onPress: () => patient && router.push({ pathname: '/(app)/prevencao/[type]', params: { patientId: String(patient.id), type: 'quaternaria' } }),
     },
-    { id: 'imagens', title: 'Imagens', onPress: () => console.log('Imagens') },
-    { id: 'raio_x', title: 'Raio-X', onPress: () => console.log('Raio-X') },
+    {
+      id: 'imagens',
+      title: 'Imagens',
+      onPress: () =>
+        patient &&
+        router.push({ pathname: '/(app)/media-gallery', params: { patientId: String(patient.id), kind: 'image' } }),
+    },
+    {
+      id: 'raio_x',
+      title: 'Raio-X',
+      onPress: () =>
+        patient &&
+        router.push({ pathname: '/(app)/media-gallery', params: { patientId: String(patient.id), kind: 'xray' } }),
+    },
     {
       id: 'plano_de_tratamento',
       title: 'Plano de Tratamento',
-      onPress: () => {
-        if (patient) {
-          router.push({
-            pathname: '/(app)/plano-de-tratamento',
-            params: { patientId: String(patient.id) },
-          });
-        }
-      },
+      onPress: () =>
+        patient &&
+        router.push({ pathname: '/(app)/plano-de-tratamento', params: { patientId: String(patient.id) } }),
     },
   ];
 
   const specialtyButtons = ALL_SPECIALTIES.map((specialty) => ({
     id: specialty.toLowerCase().replace(/\s/g, '_'),
     title: specialty,
-    onPress: () => {
-      if (patient) {
-        router.push({
-          pathname: '/(app)/diagnosticos/[specialty]',
-          params: { patientId: String(patient.id), specialty },
-        });
-      }
-    },
+    onPress: () =>
+      patient &&
+      router.push({
+        pathname: '/(app)/diagnosticos/[specialty]',
+        params: { patientId: String(patient.id), specialty },
+      }),
   }));
 
   if (!patient) {
@@ -159,6 +132,18 @@ export default function DiagnosticScreen() {
     );
   }
 
+  const handleSaveRisk = async () => {
+    const current = (patient.riskLevel ?? 'a_definir') as LowerRisk;
+    if (selectedRisk === current) {
+      setIsEditingRisk(false);
+      Alert.alert('Sem alterações', 'Nenhuma mudança de risco para salvar.');
+      return;
+    }
+    await save({ ...patient, riskLevel: selectedRisk });
+    setIsEditingRisk(false);
+    Alert.alert('Risco salvo', 'O nível de risco do paciente foi atualizado.');
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -168,8 +153,15 @@ export default function DiagnosticScreen() {
         <HomeSection title="Históricos" buttons={historyButtons} />
         <HomeSection title="Diagnóstico Primário" buttons={preventionButtons} />
         <HomeSection title="Especialidades" buttons={specialtyButtons} />
+
         <View style={{ marginTop: 24 }}>
-          <RiskAssessmentCard initialRiskLevel={patient?.riskLevel} />
+          <RiskAssessmentCard
+            initialRiskLevel={selectedRisk}
+            isEditing={isEditingRisk}
+            onToggleEdit={() => setIsEditingRisk((v) => !v)}
+            onSave={handleSaveRisk}    
+            onChange={(lvl) => setSelectedRisk(lvl as LowerRisk)}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

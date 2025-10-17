@@ -8,34 +8,26 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    top: -20
   },
   contentContainer: {
-    paddingBottom: 40,
+    paddingHorizontal: 12,
   },
   centered: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
-  mainContent: {
-    paddingHorizontal: 24,
-    top: -24
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   inlineFooter: {
-    paddingTop: 0, 
     paddingBottom: 16, 
-    paddingHorizontal: 0,
     backgroundColor: 'transparent',
   },
   buttonActionsContainer: {
-    paddingHorizontal: 24,
-    marginBottom: 32,
+    paddingBottom: 12,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    paddingBottom: 12,
   },
   buttonInRow: {
     flex: 1, 

@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -88,7 +89,8 @@ export default function RegisterUserScreen() {
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
   const clearPhoto = useUIStore((s) => s.setRegisterPhotoUri);
   const registerPhotoUri = useUIStore((s) => s.registerPhotoUri);
-
+  const { height } = useWindowDimensions();
+  const headerHeight = height * 0.29;
   const { userType, userId } = useLocalSearchParams<{ userType: string; userId?: string }>();
   const isEditing = !!userId;
 
@@ -505,7 +507,7 @@ export default function RegisterUserScreen() {
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: 160 }]}
+          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: headerHeight }]}
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.formContainer}>{renderForm()}</View>

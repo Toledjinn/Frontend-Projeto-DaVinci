@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './styles';
@@ -8,19 +8,27 @@ import { COLORS } from '@/constants/theme';
 export type Item = { id: number; value: string };
 
 type Props = {
-  title: string; 
+  title: string;
   inputIcon: React.ComponentProps<typeof Feather>['name'];
   placeholder: string;
   addMoreText: string;
   initialItems?: Item[];
   onChangeItems?: (items: Item[]) => void;
-  disabled?: boolean; 
+  disabled?: boolean;
 };
 
-const disableProps = (isEditing: boolean) => ({
-  editable: isEditing,
-  disabled: !isEditing,
+const inputStateProps = (enabled: boolean) => ({
+  editable: enabled,
+  disabled: !enabled,
 });
+
+function isSameList(a: Item[] = [], b: Item[] = []) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i].id !== b[i].id || a[i].value !== b[i].value) return false;
+  }
+  return true;
+}
 
 export default function DynamicInputList({
   title,
@@ -31,16 +39,26 @@ export default function DynamicInputList({
   onChangeItems,
   disabled = false,
 }: Props) {
+  const defaultItem = useMemo<Item>(() => ({ id: Date.now(), value: '' }), []);
   const [items, setItems] = useState<Item[]>(
-    initialItems && initialItems.length > 0 ? initialItems : [{ id: Date.now(), value: '' }]
+    initialItems && initialItems.length > 0 ? initialItems : [defaultItem]
   );
 
+  const skipEmitRef = useRef(false);
+
   useEffect(() => {
-    const next = initialItems && initialItems.length > 0 ? initialItems : [{ id: Date.now(), value: '' }];
-    setItems(next);
+    if (!initialItems) return;
+    if (!isSameList(initialItems, items)) {
+      skipEmitRef.current = true;
+      setItems(initialItems.length > 0 ? initialItems : [defaultItem]);
+    }
   }, [initialItems]);
 
   useEffect(() => {
+    if (skipEmitRef.current) {
+      skipEmitRef.current = false;
+      return;
+    }
     onChangeItems?.(items);
   }, [items, onChangeItems]);
 
@@ -72,7 +90,7 @@ export default function DynamicInputList({
               placeholder={`${placeholder} ${index + 1}`}
               value={item.value}
               onChangeText={(text) => handleItemChange(text, item.id)}
-              {...disableProps(!disabled)} 
+              {...inputStateProps(!disabled)}
             />
           </View>
 

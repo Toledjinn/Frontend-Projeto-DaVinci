@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
   contentWrapper: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
   },
   scrollView: {
     flex: 1,
