@@ -10,11 +10,15 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import styles from './EditEstoqueProdutoScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { useEstoqueStore, CategoryName, ProductItem, ProductStatus } from '@/state/estoqueStore';
+import {
+  useEstoqueStore,
+  CategoryName,
+  ProductItem,
+  ProductStatus,
+} from '@/state/estoqueStore';
 import { COLORS } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SvgProps } from 'react-native-svg';
@@ -26,12 +30,13 @@ import DentalFlossIcon from '@/assets/icons/dental-floss.svg';
 import FluorIcon from '@/assets/icons/mouthwash1.svg';
 import ReveladorIcon from '@/assets/icons/dropper.svg';
 import EnxaguanteIcon from '@/assets/icons/mouthwash2.svg';
+import { openMediaChooser } from '@/utils/mediaPicker';
 
 const CATEGORY_ICON_MAP: Record<CategoryName, React.FC<SvgProps>> = {
-  'Escovas': ToothbrushIcon,
+  Escovas: ToothbrushIcon,
   'Pastas de Dente': ToothpasteIcon,
   'Fio Dental': DentalFlossIcon,
-  'Flúor': FluorIcon,
+  Flúor: FluorIcon,
   'Revelador de Placa': ReveladorIcon,
   'Enxaguante Bucal': EnxaguanteIcon,
 };
@@ -52,16 +57,18 @@ const getStatusColor = (status: ProductStatus) => {
 export default function EditEstoqueProdutoScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29; 
-  const { category, productId } = useLocalSearchParams<{ category: CategoryName; productId?: string }>();
+  const headerHeight = height * 0.30;
+  const { category, productId } =
+    useLocalSearchParams<{ category: CategoryName; productId?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const { categories, addProduct, updateProduct } = useEstoqueStore();
+  const { categories, addProduct, updateProduct, isHydrated, hydrate } = useEstoqueStore();
+
   const isEditMode = !!productId;
 
   const productToEdit = useMemo(
     () => (isEditMode ? categories[category!]?.find((p) => p.id === productId) : null),
-    [categories, category, productId, isEditMode],
+    [categories, category, productId, isEditMode]
   );
 
   const [formData, setFormData] = useState<
@@ -75,6 +82,10 @@ export default function EditEstoqueProdutoScreen() {
     status: 'Em falta',
     imageUri: null,
   });
+
+  useEffect(() => {
+    if (!isHydrated) hydrate();
+  }, [isHydrated, hydrate]);
 
   useEffect(() => {
     if (isEditMode && productToEdit) {
@@ -106,36 +117,23 @@ export default function EditEstoqueProdutoScreen() {
         (category && CATEGORY_ICON_MAP[category]) || (Chefinho as React.FC<SvgProps>);
 
       setHeaderConfig({
-        layout: 'page',                   
-        showPageHeaderElements: true,    
+        layout: 'page',
+        showPageHeaderElements: true,
         pageTitle: isEditMode ? 'Editar Produto' : 'Cadastrar Produto',
-        CharacterSvg,                     
-        showNotificationIcon: false,      
-        pageHeaderBadgeVariant: 'store', 
+        CharacterSvg,
+        showNotificationIcon: false,
+        pageHeaderBadgeVariant: 'store',
         visible: true,
       });
-    }, [category, isEditMode, setHeaderConfig]),
+    }, [category, isEditMode, setHeaderConfig])
   );
 
   const handleInputChange = (field: keyof typeof formData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleImagePick = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permissão necessária.', 'Conceda acesso à galeria para selecionar a imagem.');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-    if (!result.canceled) {
-      handleInputChange('imageUri', result.assets[0].uri);
-    }
+  const handleImagePick = () => {
+    openMediaChooser((uri) => handleInputChange('imageUri', uri));
   };
 
   const handleSaveChanges = () => {
@@ -151,7 +149,9 @@ export default function EditEstoqueProdutoScreen() {
       price: Number(formData.price) || 0,
       quantity: Number(formData.quantity) || 0,
       status: formData.status,
-      image: formData.imageUri ? { uri: formData.imageUri } : (productToEdit?.image as any),
+      image: formData.imageUri
+        ? ({ uri: formData.imageUri } as any)
+        : (productToEdit?.image as any),
     };
 
     if (isEditMode) {
@@ -164,97 +164,104 @@ export default function EditEstoqueProdutoScreen() {
     router.back();
   };
 
+  if (!isHydrated) return <SafeAreaView style={styles.safeArea} />;
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
-        showsVerticalScrollIndicator={false}
+      <View
+        style={[
+          styles.pageBody,
+          styles.pageBodySidePadding,
+          { paddingTop: headerHeight },
+        ]}
       >
-        <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
-          {formData.imageUri ? (
-            <Image source={{ uri: formData.imageUri }} style={styles.imagePreview} />
-          ) : productToEdit?.image ? (
-            <Image source={productToEdit.image as any} style={styles.imagePreview} />
-          ) : (
-            <Feather name="image" size={40} color={COLORS.gray_400} />
-          )}
-        </TouchableOpacity>
+        <View style={styles.editorCard}>
+          <ScrollView
+            style={styles.editorScroll}
+            contentContainerStyle={styles.editorScrollContent}
+            showsVerticalScrollIndicator
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+          >
+            <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
+              {formData.imageUri ? (
+                <Image source={{ uri: formData.imageUri }} style={styles.imagePreview} />
+              ) : productToEdit?.image ? (
+                <Image source={productToEdit.image as any} style={styles.imagePreview} />
+              ) : (
+                <Feather name="image" size={40} color={COLORS.gray_400} />
+              )}
+            </TouchableOpacity>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nome do Produto</Text>
-          <TextInput
-            value={formData.name}
-            onChangeText={(text) => handleInputChange('name', text)}
-            style={styles.textInput}
-            placeholder="Ex: Escova Colgate Pro"
-          />
-        </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nome do Produto</Text>
+              <TextInput
+                value={formData.name}
+                onChangeText={(text) => handleInputChange('name', text)}
+                style={styles.textInput}
+                placeholder="Ex: Escova Colgate Pro"
+              />
+            </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Marca</Text>
-          <TextInput
-            value={formData.brand}
-            onChangeText={(text) => handleInputChange('brand', text)}
-            style={styles.textInput}
-            placeholder="Ex: Colgate"
-          />
-        </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Marca</Text>
+              <TextInput
+                value={formData.brand}
+                onChangeText={(text) => handleInputChange('brand', text)}
+                style={styles.textInput}
+                placeholder="Ex: Colgate"
+              />
+            </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Descrição</Text>
-          <TextInput
-            value={formData.description}
-            onChangeText={(text) => handleInputChange('description', text)}
-            style={[styles.textInput, { height: 100 }]}
-            placeholder="Descreva o produto aqui..."
-            multiline
-          />
-        </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Descrição</Text>
+              <TextInput
+                value={formData.description}
+                onChangeText={(text) => handleInputChange('description', text)}
+                style={[styles.textInput, { height: 100 }]}
+                placeholder="Descreva o produto aqui..."
+                multiline
+              />
+            </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Preço (R$)</Text>
-          <TextInput
-            value={String(formData.price)}
-            onChangeText={(text) => handleInputChange('price', text)}
-            style={styles.textInput}
-            keyboardType="numeric"
-            placeholder="Ex: 19.99"
-          />
-        </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Preço (R$)</Text>
+              <TextInput
+                value={String(formData.price)}
+                onChangeText={(text) => handleInputChange('price', text)}
+                style={styles.textInput}
+                keyboardType="numeric"
+                placeholder="Ex: 19.99"
+              />
+            </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Quantidade em Estoque</Text>
-          <TextInput
-            value={String(formData.quantity)}
-            onChangeText={(text) => handleInputChange('quantity', text)}
-            style={styles.textInput}
-            keyboardType="number-pad"
-            placeholder="Ex: 50"
-          />
-        </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Quantidade em Estoque</Text>
+              <TextInput
+                value={String(formData.quantity)}
+                onChangeText={(text) => handleInputChange('quantity', text)}
+                style={styles.textInput}
+                keyboardType="number-pad"
+                placeholder="Ex: 50"
+              />
+            </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Status</Text>
-          <View style={styles.statusDisplay}>
-            <Text style={[styles.statusText, { color: getStatusColor(formData.status) }]}>
-              {formData.status}
-            </Text>
-          </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Status</Text>
+              <View style={styles.statusDisplay}>
+                <Text style={[styles.statusText, { color: getStatusColor(formData.status) }]}>
+                  {formData.status}
+                </Text>
+              </View>
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
+      </View>
 
       <ScreenFooter
         buttons={[
-          {
-            title: 'Cancelar',
-            onPress: () => router.back(),
-            variant: 'secondary',
-          },
-          {
-            title: 'Salvar',
-            onPress: handleSaveChanges,
-            variant: 'primary',
-          },
+          { title: 'Cancelar', onPress: () => router.back(), variant: 'secondary' },
+          { title: 'Salvar', onPress: handleSaveChanges, variant: 'primary' },
         ]}
       />
     </SafeAreaView>

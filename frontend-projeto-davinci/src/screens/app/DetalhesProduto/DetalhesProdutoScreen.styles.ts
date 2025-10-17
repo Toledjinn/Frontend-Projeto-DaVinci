@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export default StyleSheet.create({
   safeArea: {
@@ -8,40 +7,73 @@ export default StyleSheet.create({
     backgroundColor: COLORS.background,
   },
 
-  scrollView: {
+  pageBody: {
     flex: 1,
+    minHeight: 0,
   },
-
-  contentContainer: {
+  pageBodySidePadding: {
     paddingHorizontal: 12,
-    paddingBottom: 24,
-    alignItems: 'center',
   },
 
   card: {
+    flex: 1,
+    minHeight: 0,
+    width: '100%',
+    overflow: 'hidden',
+
     backgroundColor: COLORS.white,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: SIZES.radius,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    marginBottom: 16, 
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    width: '100%',
-    maxWidth: 680,
+  },
+
+  cardScroll: {
+    flex: 1,
+    minHeight: 0,
+  },
+  cardScrollContent: {
+    paddingBottom: 24,
   },
 
   productImage: {
     width: '100%',
     height: 260,
-    borderRadius: 12,
+    borderRadius: SIZES.radius,
+    marginBottom: 12,
   },
+
+  section: {
+    paddingVertical: 12,
+  },
+  sectionTitle: {
+    ...FONTS.h1,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderColor: COLORS.gray_200,
+    marginBottom: 8,
+  },
+  sectionContent: {
+    ...FONTS.body9,
+    color: COLORS.secondary,
+    textAlign: 'center',
+    lineHeight: 22,
+    paddingVertical: 8,
+  },
+
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 12,
-    paddingVertical: 12
+    paddingVertical: 8,
   },
   detailLabel: {
     ...FONTS.ph1,
@@ -51,6 +83,18 @@ export default StyleSheet.create({
     ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'right',
+  },
+
+  footerContainer: {
+    borderTopWidth: 1,
+    borderColor: COLORS.gray_200,
+    paddingTop: 16,
+  },
+  priceFooterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
   },
 
   quantityContainer: {
@@ -72,18 +116,6 @@ export default StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.secondary,
   },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: 1,
-    marginLeft: 12,
-    backgroundColor: COLORS.secondary,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    height: 48,
-  },
   decrementButton: {
     backgroundColor: COLORS.pendente,
   },
@@ -97,20 +129,14 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   addButtonCompact: {
-    flexGrow: 1,                 
+    flexGrow: 1,
     height: 48,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 14,
   },
-  priceFooterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 24,
-    gap: 8
-  },
+
   notFoundContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -119,24 +145,5 @@ export default StyleSheet.create({
   notFoundText: {
     ...FONTS.body9,
     color: COLORS.gray_400,
-  },
-  section: {
-    paddingVertical: 20
-  },
-  sectionTitle: {
-    ...FONTS.h1,
-    color: COLORS.secondary,
-    textAlign: 'center',
-    borderBottomWidth: 1,
-    borderColor: COLORS.gray_400, 
-    paddingTop: 24,
-    paddingBottom: 8
-  },
-  sectionContent: {
-    ...FONTS.body9,
-    color: COLORS.secondary,
-    textAlign: 'center',
-    lineHeight: 22,
-    paddingVertical: 12,
   },
 });

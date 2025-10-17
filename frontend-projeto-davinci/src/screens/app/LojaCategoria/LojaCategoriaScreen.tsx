@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import styles from './LojaCategoriaScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import { useLojaStore } from '@/state/lojaStore';
+import { useEstoqueStore, CategoryName } from '@/state/estoqueStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SvgProps } from 'react-native-svg';
 import Chefinho from '@/assets/characters/chefinho.svg';
@@ -24,22 +24,23 @@ const CATEGORY_ICON_MAP: Record<string, React.FC<SvgProps>> = {
   'Enxaguante Bucal': EnxaguanteIcon,
 };
 
+const isValidCategory = (c: any): c is CategoryName =>
+  ['Escovas', 'Pastas de Dente', 'Fio Dental', 'Flúor', 'Revelador de Placa', 'Enxaguante Bucal'].includes(c);
+
 export default function LojaCategoriaScreen() {
   const router = useRouter();
   const { category } = useLocalSearchParams<{ category: string }>();
   const { height } = useWindowDimensions();
+  const headerHeight = height * 0.30;
+
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
 
-  const { getProductsByCategory, cart } = useLojaStore();
-  const products = getProductsByCategory(category as any);
-  const totalCartItems = cart.reduce((t, i) => t + i.quantity, 0);
+  const hydrate = useEstoqueStore((s) => s.hydrate);
+  const isHydrated = useEstoqueStore((s) => s.isHydrated);
 
-  const handleProductPress = (productId: string) => {
-    router.push({
-          pathname: '/(app)/detalhes-produto',
-          params: { id: productId, category }, 
-        });
-  };
+  const products = useEstoqueStore((s) =>
+    isValidCategory(category) ? s.categories[category] : []
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -48,29 +49,46 @@ export default function LojaCategoriaScreen() {
 
       setHeaderConfig({
         visible: true,
-        layout: 'loja',                   
-        showPageHeaderElements: true,      
-        pageTitle: (category?.toUpperCase()) as string,
-        CharacterSvg,                      
-        showNotificationIcon: false,      
-        pageHeaderBadgeVariant: 'store',   
+        layout: 'loja',
+        showPageHeaderElements: true,
+        pageTitle: (category?.toUpperCase() || 'LOJA') as string,
+        CharacterSvg,
+        showNotificationIcon: false,
+        pageHeaderBadgeVariant: 'store',
       });
-    }, [category, totalCartItems, setHeaderConfig])
+
+      if (!isHydrated) hydrate();
+    }, [category, isHydrated, hydrate, setHeaderConfig])
   );
+
+  const validCategory = isValidCategory(category);
+  const list = useMemo(() => (validCategory ? products : []), [validCategory, products]);
+
+  const handleProductPress = (productId: string) => {
+    if (!validCategory) return;
+    router.push({
+      pathname: '/(app)/detalhes-produto',
+      params: { id: productId, category },
+    });
+  };
+
+  if (!isHydrated) return <SafeAreaView style={styles.safeArea} />;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: height * 0.29 }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
         showsVerticalScrollIndicator={false}
       >
-        {products.length === 0 ? (
+        {!validCategory || list.length === 0 ? (
           <View style={styles.noProductsContainer}>
-            <Text style={styles.noProductsText}>Nenhum produto encontrado nesta categoria.</Text>
+            <Text style={styles.noProductsText}>
+              {validCategory ? 'Nenhum produto encontrado nesta categoria.' : 'Categoria inválida.'}
+            </Text>
           </View>
         ) : (
-          products.map((product) => (
+          list.map((product) => (
             <ProductListItem
               key={product.id}
               product={product}

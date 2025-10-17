@@ -53,36 +53,42 @@ export default function EstoqueCategoriaScreen() {
   const router = useRouter();
   const { category } = useLocalSearchParams<{ category: CategoryName }>();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29; 
+  const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const allProducts = useEstoqueStore((state) => state.categories[category!]);
+  const hydrate = useEstoqueStore((s) => s.hydrate);
+  const isHydrated = useEstoqueStore((s) => s.isHydrated);
+  const allProducts = useEstoqueStore((s) => (category ? s.categories[category] : []));
   const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredProducts = useMemo(() => {
-    if (!allProducts) return [];
-    if (!searchQuery) return allProducts;
-    return allProducts.filter((p) =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [allProducts, searchQuery]);
 
   useFocusEffect(
     useCallback(() => {
       const CharacterSvg =
         (category && CATEGORY_ICON_MAP[category]) || (Chefinho as React.FC<SvgProps>);
-
       setHeaderConfig({
         visible: true,
-        layout: 'page',                  
-        showPageHeaderElements: true,    
+        layout: 'page',
+        showPageHeaderElements: true,
         pageTitle: (category?.toUpperCase() || 'PRODUTOS') as string,
-        CharacterSvg,                  
-        showNotificationIcon: false,      
+        CharacterSvg,
+        showNotificationIcon: false,
         pageHeaderBadgeVariant: 'store',
       });
-    }, [category, setHeaderConfig]),
+      if (!isHydrated) hydrate();
+    }, [category, setHeaderConfig, hydrate, isHydrated])
   );
+
+  const filteredProducts = useMemo(() => {
+    if (!allProducts) return [];
+    if (!searchQuery) return allProducts;
+    const q = searchQuery.toLowerCase();
+    return allProducts.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.brand ?? '').toLowerCase().includes(q) ||
+        (p.description ?? '').toLowerCase().includes(q)
+    );
+  }, [allProducts, searchQuery]);
 
   const handleEditPress = (productId: string) => {
     router.push({
@@ -92,11 +98,10 @@ export default function EstoqueCategoriaScreen() {
   };
 
   const handleAddPress = () => {
-    router.push({
-      pathname: '/(app)/editar-estoque-produto',
-      params: { category },
-    });
+    router.push({ pathname: '/(app)/editar-estoque-produto', params: { category } });
   };
+
+  if (!isHydrated) return <SafeAreaView style={styles.safeArea} />;
 
   if (!allProducts) {
     return (
@@ -119,7 +124,9 @@ export default function EstoqueCategoriaScreen() {
           <Feather name="list" size={20} color={COLORS.gray_400} />
           <TextInput
             style={styles.searchInput}
-            placeholder={`Digite a marca ou modelo d${category === 'Escovas' ? 'a' : 'o'} ${category?.slice(0, -1).toLowerCase()}`}
+            placeholder={`Digite a marca ou modelo d${
+              category === 'Escovas' ? 'a' : 'o'
+            } ${category?.slice(0, -1).toLowerCase()}`}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
@@ -137,9 +144,7 @@ export default function EstoqueCategoriaScreen() {
               <Text style={styles.productName}>{product.name}</Text>
               <View style={styles.row}>
                 <Text style={styles.label}>Preço</Text>
-                <Text style={styles.price}>
-                  R$ {product.price.toFixed(2).replace('.', ',')}
-                </Text>
+                <Text style={styles.price}>R$ {product.price.toFixed(2).replace('.', ',')}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Status</Text>
@@ -161,13 +166,7 @@ export default function EstoqueCategoriaScreen() {
 
       {userType === 'admin' && (
         <ScreenFooter
-          buttons={[
-            {
-              title: 'Adicionar Produto',
-              onPress: handleAddPress,
-              variant: 'secondary',
-            },
-          ]}
+          buttons={[{ title: 'Adicionar Produto', onPress: handleAddPress, variant: 'secondary' }]}
         />
       )}
     </SafeAreaView>
