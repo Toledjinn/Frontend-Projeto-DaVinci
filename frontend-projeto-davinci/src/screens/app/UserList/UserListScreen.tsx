@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -226,13 +226,14 @@ export default function UserListScreen() {
             onFilterPress={() => setFilterModalVisible(true)}
           />
 
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContentContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <UserList data={filteredUsers} />
-          </ScrollView>
+          <View style={{ flex: 1 }}>
+           <UserList
+              data={filteredUsers}
+              style={{ flex: 1 }}
+              contentContainerStyle={{ paddingBottom: 120 }}
+              keyboardShouldPersistTaps="handled"
+            />
+          </View>
         </View>
 
         <ScreenFooter

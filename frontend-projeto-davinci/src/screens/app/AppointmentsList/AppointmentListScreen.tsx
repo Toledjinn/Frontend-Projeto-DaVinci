@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, FlatList, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
+
 import { styles } from './AppointmentListScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 
@@ -38,7 +39,7 @@ export default function AppointmentListScreen() {
   const headerHeight = height * 0.27;
 
   const { list: users } = useUsers();
-  const { list: appointments, refresh } = useAppointments(); 
+  const { list: appointments, refresh } = useAppointments();
 
   const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,8 +52,8 @@ export default function AppointmentListScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      refresh(); 
-    }, [])
+      refresh();
+    }, [refresh])
   );
 
   useFocusEffect(
@@ -87,7 +88,7 @@ export default function AppointmentListScreen() {
       else filtered = appointments.filter((a) => a.status !== 'pendente');
 
       setAllAppointments(filtered);
-    }, [listType, id, users, appointments])
+    }, [listType, id, users, appointments, setHeaderConfig])
   );
 
   const filteredAppointments = useMemo(() => {
@@ -170,21 +171,29 @@ export default function AppointmentListScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <FlatList
-        data={filteredAppointments}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />}
-        contentContainerStyle={[styles.listContentContainer, { paddingTop: headerHeight }]}
-        ListHeaderComponent={
+      <View style={{ flex: 1, paddingTop: headerHeight }}>
+        <View style={styles.fixedHeaderContainer}>
           <SearchAndFilterBar
             value={searchQuery}
             placeholder="Pesquisar consulta..."
             onSearchChange={setSearchQuery}
             onFilterPress={() => setFilterModalVisible(true)}
           />
-        }
-        ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
-      />
+        </View>
+
+        <FlatList
+          data={filteredAppointments}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />
+          )}
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.listContentContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma consulta encontrada.</Text>}
+        />
+      </View>
 
       <ScreenFooter
         buttons={[

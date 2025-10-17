@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     justifyContent: 'space-between',
-    minHeight: 70, 
+    minHeight: 70,
   },
   patientName: {
     ...FONTS.body7,
@@ -77,12 +77,12 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
   },
   dateTimeContainer: {
-    position: 'absolute',
-    bottom: SIZES.padding / 2,
-    right: SIZES.padding / 2,
-    flexDirection: 'row',   
-    alignItems: 'center',     
-  },
+    position: 'absolute',
+    bottom: SIZES.padding / 2,
+    right: SIZES.padding / 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   dateText: {
     ...FONTS.body8,
     color: COLORS.secondary,
@@ -99,4 +99,3 @@ export const styles = StyleSheet.create({
     color: COLORS.gray_400,
   },
 });
-

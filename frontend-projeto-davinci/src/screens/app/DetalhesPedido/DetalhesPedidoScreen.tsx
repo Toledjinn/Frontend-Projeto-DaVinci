@@ -42,12 +42,15 @@ export default function DetalhesPedidoScreen() {
   const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const { getOrderById, updateOrderStatus } = usePedidosStore();
-  const order = useMemo(() => getOrderById(id!), [id, getOrderById]);
+  const updateOrderStatus = usePedidosStore((s) => s.updateOrderStatus);
+  const order = usePedidosStore(
+    useCallback((s) => (id ? s.orders.find((o) => o.id === id) : undefined), [id])
+  );
 
-  const [currentStatus, setCurrentStatus] = useState<OrderStatus | undefined>(order?.status);
   const [isEditingStatus, setIsEditingStatus] = useState(false);
-  const [tempSelectedStatus, setTempSelectedStatus] = useState<OrderStatus | undefined>(order?.status);
+  const [tempSelectedStatus, setTempSelectedStatus] = useState<OrderStatus | undefined>(
+    order?.status
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -62,10 +65,16 @@ export default function DetalhesPedidoScreen() {
     }, [])
   );
 
+  React.useEffect(() => {
+    if (order?.status) setTempSelectedStatus(order.status);
+  }, [order?.status]);
+
   if (!order) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.centeredMessage}><Text>Pedido não encontrado.</Text></View>
+        <View style={styles.centeredMessage}>
+          <Text>Pedido não encontrado.</Text>
+        </View>
       </SafeAreaView>
     );
   }
@@ -73,20 +82,21 @@ export default function DetalhesPedidoScreen() {
   const statusOptions: OrderStatus[] = ['Pendente', 'Aprovado', 'Enviado', 'Entregue', 'Cancelado'];
 
   const enterEditStatus = () => {
-    setTempSelectedStatus(currentStatus);
+    setTempSelectedStatus(order.status);
     setIsEditingStatus(true);
   };
 
   const saveStatusChange = () => {
-    if (!tempSelectedStatus || tempSelectedStatus === currentStatus) {
+    if (!tempSelectedStatus || tempSelectedStatus === order.status) {
       setIsEditingStatus(false);
       return;
     }
-    setCurrentStatus(tempSelectedStatus);
-    updateOrderStatus(id!, tempSelectedStatus);
+    updateOrderStatus(order.id, tempSelectedStatus);
     setIsEditingStatus(false);
     Alert.alert('Sucesso', `O status do pedido foi atualizado para "${tempSelectedStatus}".`);
   };
+
+  const formatBRL = (n: number) => n.toFixed(2).replace('.', ',');
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -95,14 +105,13 @@ export default function DetalhesPedidoScreen() {
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
         showsVerticalScrollIndicator={false}
       >
-
         <View style={styles.card}>
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.titleText}>Cliente</Text>
-          <View/>
+            <View />
           </View>
           <Text style={styles.customerName}>{order.customerName}</Text>
-          {order.address && <Text style={styles.customerAddress}>{order.address}</Text>}
+          {!!order.address && <Text style={styles.customerAddress}>{order.address}</Text>}
         </View>
 
         <View style={styles.card}>
@@ -112,26 +121,23 @@ export default function DetalhesPedidoScreen() {
           </View>
 
           {order.products.map((product, index) => {
-            const isMultiple = order.products.length > 1; 
+            const isMultiple = order.products.length > 1;
             const isLast = index === order.products.length - 1;
 
             return (
               <View
                 key={product.productId}
-                style={[
-                  styles.productRow,
-                  isMultiple && !isLast && styles.productItemList, 
-                ]}
+                style={[styles.productRow, isMultiple && !isLast && styles.productItemList]}
               >
                 <Image source={product.image} style={styles.productImage} />
                 <View style={styles.productInfo}>
                   <Text style={styles.productName}>{product.name}</Text>
                   <Text style={styles.productDetails}>
-                    Qtd: {product.quantity} - R$ {product.price.toFixed(2).replace('.', ',')}
+                    Qtd: {product.quantity} — R$ {formatBRL(product.price)}
                   </Text>
                 </View>
                 <Text style={styles.productTotal}>
-                  R$ {(product.quantity * product.price).toFixed(2).replace('.', ',')}
+                  R$ {formatBRL(product.quantity * product.price)}
                 </Text>
               </View>
             );
@@ -139,15 +145,13 @@ export default function DetalhesPedidoScreen() {
 
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Valor Total</Text>
-            <Text style={styles.summaryValue}>
-              R$ {order.totalValue.toFixed(2).replace('.', ',')}
-            </Text>
+            <Text style={styles.summaryValue}>R$ {formatBRL(order.totalValue)}</Text>
           </View>
         </View>
 
         <View style={styles.card}>
           <View style={styles.sectionHeaderRow}>
-              <Text style={styles.titleText}>Status</Text>
+            <Text style={styles.titleText}>Status</Text>
             {userType === 'admin' && (
               <TouchableOpacity
                 onPress={isEditingStatus ? saveStatusChange : enterEditStatus}
@@ -155,11 +159,7 @@ export default function DetalhesPedidoScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={isEditingStatus ? 'Salvar status' : 'Editar status'}
               >
-                <Feather
-                  name={isEditingStatus ? 'check' : 'edit-2'}
-                  size={25}
-                  color={COLORS.secondary}
-                />
+                <Feather name={isEditingStatus ? 'check' : 'edit-2'} size={25} color={COLORS.secondary} />
               </TouchableOpacity>
             )}
           </View>
@@ -167,13 +167,8 @@ export default function DetalhesPedidoScreen() {
           {!isEditingStatus && (
             <View style={styles.statusView}>
               <View style={styles.statusChip}>
-                <Text
-                  style={[
-                    styles.statusChipText,
-                    { color: getStatusColor(currentStatus || 'Pendente') },
-                  ]}
-                >
-                  {currentStatus}
+                <Text style={[styles.statusChipText, { color: getStatusColor(order.status) }]}>
+                  {order.status}
                 </Text>
               </View>
             </View>
@@ -181,7 +176,7 @@ export default function DetalhesPedidoScreen() {
 
           {isEditingStatus && (
             <View style={styles.statusContainer}>
-              {statusOptions.map(status => {
+              {statusOptions.map((status) => {
                 const selected = tempSelectedStatus === status;
                 return (
                   <TouchableOpacity
@@ -191,12 +186,7 @@ export default function DetalhesPedidoScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={`Selecionar status ${status}`}
                   >
-                    <Text
-                      style={[
-                        styles.statusButtonText,
-                        selected && styles.statusButtonTextSelected,
-                      ]}
-                    >
+                    <Text style={[styles.statusButtonText, selected && styles.statusButtonTextSelected]}>
                       {status}
                     </Text>
                   </TouchableOpacity>

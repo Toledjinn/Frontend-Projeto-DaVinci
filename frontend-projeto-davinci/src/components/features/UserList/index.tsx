@@ -1,4 +1,5 @@
-import { FlatList } from 'react-native';
+import React, { memo } from 'react';
+import { FlatList, StyleProp, ViewStyle } from 'react-native';
 import UserListItem from '../UserListItem';
 import { SvgProps } from 'react-native-svg';
 
@@ -9,7 +10,7 @@ export type User = {
   detailLabel?: string;
   detailValue?: string;
   image: React.FC<SvgProps> | null;
-  hasAllergies?: boolean; 
+  hasAllergies?: boolean;
   specialties?: string[];
   role?: string;
   photoUri?: string | null;
@@ -17,20 +18,40 @@ export type User = {
 
 type UserListProps = {
   data: User[];
+  style?: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  keyboardShouldPersistTaps?: 'always' | 'never' | 'handled';
+  onPressItem?: (user: User) => void;
+  showsVerticalScrollIndicator?: boolean;
 };
 
-export default function UserList({ data }: UserListProps) {
+function keyExtractor(item: User) {
+  return item.id;
+}
+
+function _UserList({
+  data,
+  style,
+  contentContainerStyle,
+  keyboardShouldPersistTaps = 'handled',
+  onPressItem,
+  showsVerticalScrollIndicator = false,
+}: UserListProps) {
   const renderItem = ({ item }: { item: User }) => (
-    <UserListItem item={item} />
+    <UserListItem item={item} onPressItem={onPressItem} />
   );
 
   return (
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={false} 
-      />
+    <FlatList
+      data={data}
+      keyExtractor={keyExtractor}
+      renderItem={renderItem}
+      style={style ?? { flex: 1 }}
+      contentContainerStyle={contentContainerStyle}
+      keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+      showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+    />
   );
 }
+
+export default memo(_UserList);

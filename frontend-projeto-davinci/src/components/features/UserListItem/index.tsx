@@ -7,20 +7,25 @@ import { SvgProps } from 'react-native-svg';
 import { getUserListItemStyles } from './styles';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
 import { COLORS } from '@/constants/theme';
-import { User } from '../UserList'; 
+import type { User } from '../UserList';
 
 type UserListItemProps = {
   item: User;
+  onPressItem?: (user: User) => void;
 };
 
-const UserListItem = React.memo(({ item }: UserListItemProps) => {
+const UserListItem = React.memo(({ item, onPressItem }: UserListItemProps) => {
   const { height } = useWindowDimensions();
   const styles = getUserListItemStyles(height);
   const router = useRouter();
 
-  const ImageComponent = item.image || UserPlaceholder;
+  const ImageComponent = (item.image as React.FC<SvgProps>) || UserPlaceholder;
 
   const handlePress = () => {
+    if (onPressItem) {
+      onPressItem(item);
+      return;
+    }
     router.push({
       pathname: '/user/[id]',
       params: { id: item.id },
@@ -33,11 +38,7 @@ const UserListItem = React.memo(({ item }: UserListItemProps) => {
     <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.7}>
       <View style={styles.imageContainer}>
         {hasPhoto ? (
-          <Image
-            source={{ uri: item.photoUri! }}
-            style={styles.image}
-            resizeMode="cover"
-          />
+          <Image source={{ uri: item.photoUri! }} style={styles.image} resizeMode="cover" />
         ) : (
           <ImageComponent width="100%" height="100%" />
         )}

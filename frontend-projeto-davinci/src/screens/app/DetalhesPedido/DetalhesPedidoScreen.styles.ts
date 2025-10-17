@@ -33,7 +33,7 @@ export default StyleSheet.create({
     justifyContent: 'center',  
     position: 'relative',     
     borderBottomWidth: 1,
-    borderColor: COLORS. gray_200, 
+    borderColor: COLORS.gray_200, 
     paddingBottom: 8 
   },
   iconButton: {

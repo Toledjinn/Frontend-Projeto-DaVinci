@@ -92,7 +92,7 @@ export const styles = StyleSheet.create({
   },
   footer: {
     borderTopWidth: 1,
-    borderTopColor: COLORS.secondary,
+    borderTopColor: COLORS.gray_200,
     paddingTop: SIZES.padding * 0.75,
     flexDirection: 'row',
     justifyContent: 'space-between',

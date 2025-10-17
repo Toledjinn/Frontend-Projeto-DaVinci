@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ImageSourcePropType } from 'react-native';
 
 export type OrderStatus = 'Pendente' | 'Aprovado' | 'Enviado' | 'Entregue' | 'Cancelado';
@@ -7,13 +9,13 @@ export type ProductInOrder = {
   productId: string;
   name: string;
   quantity: number;
-  price: number;               
-  image: ImageSourcePropType;
+  price: number;              
+  image: ImageSourcePropType;  
 };
 
 export type OrderItem = {
   id: string;
-  date: string;
+  date: string;                
   customerName: string;
   address?: string;
   totalValue: number;
@@ -21,61 +23,84 @@ export type OrderItem = {
   products: ProductInOrder[];
 };
 
-type PedidosState = {
-  orders: OrderItem[];
-  getOrderById: (orderId: string) => OrderItem | undefined;
-  updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+type CreateOrderOpts = {
+  customerName?: string;
+  address?: string;
 };
 
-const MOCK_DATA: OrderItem[] = [
-  {
-    id: 'ord1',
-    date: '2025/09/25',
-    customerName: 'Rafael Ferreira Resende',
-    address: 'Rua das Flores, 123, Bairro Jardim, Cidade-UF, CEP 12345-678',
-    totalValue: 59.99,
-    status: 'Pendente',
-    products: [
-      { productId: 'esc1', name: 'Escova Slim Soft', quantity: 2, price: 20.00, image: require('@/assets/images/produto-1.png') },
-      { productId: 'pas1', name: 'Pasta Total Care', quantity: 1, price: 19.99, image: require('@/assets/images/produto-2.png') },
-    ],
-  },
-  {
-    id: 'ord2',
-    date: '2025/10/01',
-    customerName: 'Bruce Wayne',
-    address: 'Mansão Wayne, Gotham City',
-    totalValue: 160.00,
-    status: 'Pendente',
-    products: [
-      { productId: 'esc2', name: 'Escova Infantil', quantity: 10, price: 16.00, image: require('@/assets/images/placeholder.png') },
-    ],
-  },
-  {
-    id: 'ord3',
-    date: '2025/10/02',
-    customerName: 'Anderson Silva',
-    address: 'Avenida Principal, 987, Centro, Cidade-UF, CEP 98765-432',
-    totalValue: 60.00,
-    status: 'Aprovado',
-    products: [
-      { productId: 'esc1', name: 'Escova Slim Soft', quantity: 2, price: 30.00, image: require('@/assets/images/produto-1.png') },
-    ],
-  },
-];
+export type CartSnapshotItem = {
+  id: string;                   
+  name: string;
+  quantity: number;
+  price: number;               
+  image: ImageSourcePropType;
+};
 
-export const usePedidosStore = create<PedidosState>((set, get) => ({
-  orders: MOCK_DATA,
+type PedidosState = {
+  orders: OrderItem[];
+  isHydrated: boolean;
+  hydrate: () => void;
 
-  getOrderById: (orderId) => {
-    return get().orders.find((order) => order.id === orderId);
-  },
+  getOrderById: (orderId: string) => OrderItem | undefined;
+  updateOrderStatus: (orderId: string, status: OrderStatus) => void;
 
-  updateOrderStatus: (orderId, status) => {
-    set((state) => ({
-      orders: state.orders.map((order) =>
-        order.id === orderId ? { ...order, status } : order
-      ),
-    }));
-  },
-}));
+  addOrderFromCart: (cart: CartSnapshotItem[], opts?: CreateOrderOpts) => OrderItem;
+  clearAllOrders: () => void;
+};
+
+const SEED: OrderItem[] = [];
+
+export const usePedidosStore = create<PedidosState>()(
+  persist(
+    (set, get) => ({
+      orders: SEED,
+      isHydrated: false,
+      hydrate: () => set({ isHydrated: true }),
+
+      getOrderById: (orderId) => get().orders.find((o) => o.id === orderId),
+
+      updateOrderStatus: (orderId, status) => {
+        set((state) => ({
+          orders: state.orders.map((o) => (o.id === orderId ? { ...o, status } : o)),
+        }));
+      },
+
+      addOrderFromCart: (cart, opts) => {
+        if (!cart || cart.length === 0) {
+          throw new Error('Carrinho vazio. Não é possível criar pedido.');
+        }
+
+        const now = new Date();
+        const totalValue = cart.reduce((acc, it) => acc + it.price * it.quantity, 0);
+        const order: OrderItem = {
+          id: `ord_${now.getTime()}`,
+          date: now.toISOString(),
+          customerName: opts?.customerName || 'Cliente',
+          address: opts?.address,
+          totalValue: Number(totalValue.toFixed(2)),
+          status: 'Pendente',
+          products: cart.map((it) => ({
+            productId: it.id,
+            name: it.name,
+            quantity: it.quantity,
+            price: it.price, 
+            image: it.image,
+          })),
+        };
+
+        set((state) => ({ orders: [order, ...state.orders] }));
+        return order;
+      },
+
+      clearAllOrders: () => set({ orders: [] }),
+    }),
+    {
+      name: 'davinci-pedidos-db',
+      storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (state) => {
+        state && state.hydrate();
+      },
+      partialize: (s) => ({ orders: s.orders }),
+    }
+  )
+);

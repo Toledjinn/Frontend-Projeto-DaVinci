@@ -6,10 +6,17 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+
+  
+  fixedHeaderContainer: {
+    paddingHorizontal: SIZES.padding,
+  },
+
   listContentContainer: {
     paddingHorizontal: SIZES.padding,
-    paddingBottom: 120, 
+    paddingBottom: 120,
   },
+
   emptyText: {
     ...FONTS.body10,
     color: COLORS.gray_400,

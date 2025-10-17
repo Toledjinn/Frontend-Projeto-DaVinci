@@ -103,8 +103,8 @@ export default function DentistFilterModal({
             ))}
           </ScrollView>
           <View style={styles.footer}>
-            <StyledButton title="Aplicar" onPress={handleApply} variant="primary" style={styles.button} />
             <StyledButton title="Limpar" onPress={handleClear} variant="secondary" style={styles.button} />
+            <StyledButton title="Aplicar" onPress={handleApply} variant="primary" style={styles.button} />
           </View>
         </View>
       </View>
