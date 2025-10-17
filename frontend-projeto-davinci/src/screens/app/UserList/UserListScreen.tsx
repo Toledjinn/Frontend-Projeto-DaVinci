@@ -74,7 +74,7 @@ const userTypeConfig = {
 export default function UserListScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.27;
+  const headerHeight = height * 0.28;
   const { userType } = useLocalSearchParams<{ userType: 'patient' | 'dentist' | 'admin' }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 

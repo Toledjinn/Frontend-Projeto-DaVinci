@@ -42,7 +42,7 @@ export default function EditSocialContentScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.22;
+  const headerHeight = height * 0.30;
 
   const page: PageName = isValidPageName(pageName) ? pageName! : 'oQueE';
   const config = editContentConfig[page];
@@ -61,7 +61,7 @@ export default function EditSocialContentScreen() {
         CharacterSvg: Chefinho,
         showNotificationIcon: false,
       });
-    }, [page, config])
+    }, [page, config, hydrate, setHeaderConfig])
   );
 
   useEffect(() => {
@@ -73,30 +73,69 @@ export default function EditSocialContentScreen() {
     }
   }, [isHydrated, page, pages]);
 
+  const openMediaChooser = (onPick: (uri: string) => void) => {
+    Alert.alert('Selecionar Imagem', 'Escolha uma opção', [
+      {
+        text: 'Tirar Foto',
+        onPress: async () => {
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert('Permissão necessária', 'Conceda acesso à câmera e à galeria.');
+            return;
+          }
+          const result = await ImagePicker.launchCameraAsync({ quality: 0.6 });
+          if (!result.canceled && result.assets?.[0]?.uri) {
+            onPick(result.assets[0].uri);
+          }
+        },
+      },
+      {
+        text: 'Escolher da Galeria',
+        onPress: async () => {
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert('Permissão necessária', 'Conceda acesso à galeria.');
+            return;
+          }
+          const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.6 });
+          if (!result.canceled && result.assets?.[0]?.uri) {
+            onPick(result.assets[0].uri);
+          }
+        },
+      },
+      { text: 'Cancelar', style: 'cancel' },
+    ]);
+  };
+
   const makeNewBlock = (type: 'text' | 'image' | 'video' | 'depoimento'): SocialContent => {
     const id = `${type}_${Date.now()}`;
+
     if (type === 'depoimento') {
       return {
         id,
         type: 'depoimento',
-        author: 'Novo Autor',
-        text: 'Novo depoimento...',
+        author: '',
+        text: '',
         videoUrl: '',
       } as DepoimentoItem;
     }
+
     if (type === 'text') {
       return {
         id,
         type: 'text',
-        content: 'Novo parágrafo...',
+        content: '',
       } as ContentBlock;
     }
+
     if (type === 'image') {
       return {
         id,
         type: 'image',
+        image: { uri: '' } as any,
       } as ContentBlock;
     }
+
     return {
       id,
       type: 'video',
@@ -106,6 +145,16 @@ export default function EditSocialContentScreen() {
 
   const addBlockLocal = (type: 'text' | 'image' | 'video' | 'depoimento') => {
     setEditableContent((prev) => [...prev, makeNewBlock(type)]);
+  };
+
+  const addImageBlock = () => {
+    const id = `image_${Date.now()}`;
+    openMediaChooser((uri) => {
+      setEditableContent((prev) => [
+        ...prev,
+        { id, type: 'image', image: { uri } } as unknown as ContentBlock,
+      ]);
+    });
   };
 
   const removeBlockLocal = (id: string) => {
@@ -118,19 +167,8 @@ export default function EditSocialContentScreen() {
     );
   };
 
-  const handleImageChange = async (id: string) => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permissão necessária', 'Precisamos de acesso às suas fotos para selecionar a imagem.');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.8,
-    });
-    if (result.canceled || !result.assets?.[0]?.uri) return;
-    handleItemChange(id, 'image', { uri: result.assets[0].uri });
+  const handlePickImageForBlock = (id: string) => {
+    openMediaChooser((uri) => handleItemChange(id, 'image', { uri }));
   };
 
   const handleSaveChanges = () => {
@@ -185,20 +223,25 @@ export default function EditSocialContentScreen() {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Parágrafo</Text>
             <TextInput
-              value={item.content}
+              value={item.content || ''}
               onChangeText={(text) => handleItemChange(item.id, 'content', text)}
               multiline
               style={[styles.textInput, { height: 150 }]}
             />
           </View>
         );
-      case 'image':
+
+      case 'image': {
+        const imgSrc = (item as ContentBlock).image as any;
+        const hasImage = !!imgSrc && (typeof imgSrc === 'number' || !!imgSrc.uri);
+        const hasValidUri = !!(imgSrc && imgSrc.uri && imgSrc.uri.length > 0);
+
         return (
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Imagem</Text>
-            <TouchableOpacity style={styles.imagePicker} onPress={() => handleImageChange(item.id)}>
-              {(item as ContentBlock).image ? (
-                <Image source={(item as ContentBlock).image as any} style={styles.imagePreview} />
+            <TouchableOpacity style={styles.imagePicker} onPress={() => handlePickImageForBlock(item.id)}>
+              {hasImage && hasValidUri ? (
+                <Image source={imgSrc} style={styles.imagePreview} />
               ) : (
                 <View style={[styles.imagePreview, { justifyContent: 'center', alignItems: 'center' }]}>
                   <Feather name="image" size={24} color={COLORS.gray_400} />
@@ -211,12 +254,14 @@ export default function EditSocialContentScreen() {
             </TouchableOpacity>
           </View>
         );
+      }
+
       case 'video':
         return (
           <View style={styles.inputGroup}>
             <Text style={styles.label}>URL do Vídeo</Text>
             <TextInput
-              value={(item as ContentBlock).videoUrl}
+              value={(item as ContentBlock).videoUrl || ''}
               onChangeText={(text) => handleItemChange(item.id, 'videoUrl', text)}
               placeholder="Cole o link do YouTube aqui"
               style={styles.textInput}
@@ -225,6 +270,7 @@ export default function EditSocialContentScreen() {
             />
           </View>
         );
+
       default:
         return null;
     }
@@ -296,7 +342,7 @@ export default function EditSocialContentScreen() {
                       <Text style={styles.addButtonText}>Adicionar Texto</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.addButton} onPress={() => addBlockLocal('image')}>
+                    <TouchableOpacity style={styles.addButton} onPress={addImageBlock}>
                       <Feather name="image" size={16} color={COLORS.secondary} />
                       <Text style={styles.addButtonText}>Adicionar Imagem</Text>
                     </TouchableOpacity>

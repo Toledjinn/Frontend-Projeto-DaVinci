@@ -44,7 +44,7 @@ const withDefaults = <T extends object>(defaults: T, value?: Partial<T>): T => {
 
 export default function SaudeGeralScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.22;
+  const headerHeight = height * 0.30;
 
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);

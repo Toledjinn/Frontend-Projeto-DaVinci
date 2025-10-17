@@ -1,26 +1,25 @@
-import React, { useCallback } from 'react';
-import {
-  FlatList,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import React, { useCallback, useEffect } from 'react';
+import { FlatList, useWindowDimensions, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './NewsScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useNewsStore } from '@/state/newsStore';
 import Chefinho from '@/assets/characters/chefinho.svg';
-import NewsListItem, { NewsItemProps } from '@/components/features/NewsListItem';
-import ScreenFooter from '@/components/common/ScreenFooter'; 
+import NewsListItem from '@/components/features/NewsListItem';
+import ScreenFooter from '@/components/common/ScreenFooter';
 
 const userType = 'admin';
 
 export default function NewsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.266;
+  const headerHeight = height * 0.28;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const news = useNewsStore((state) => state.news);
+
+  const hydrate = useNewsStore((s) => s.hydrate);
+  const isHydrated = useNewsStore((s) => s.isHydrated);
+  const news = useNewsStore((s) => s.news);
 
   useFocusEffect(
     useCallback(() => {
@@ -32,16 +31,30 @@ export default function NewsScreen() {
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
       });
-    }, [])
+    }, [setHeaderConfig])
   );
 
-  const handleNewsPress = (item: NewsItemProps) => {
-    router.push(`/(app)/novidades/${item.id}`);
+  useEffect(() => {
+    if (!isHydrated) hydrate();
+  }, [isHydrated, hydrate]);
+
+  const handleNewsPress = (id: string) => {
+    router.push(`/(app)/novidades/${id}`);
   };
 
   const handleAddPress = () => {
     router.push('/(app)/criar-novidade');
   };
+
+  if (!isHydrated) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.list, { justifyContent: 'center', alignItems: 'center' }]}>
+          <ActivityIndicator />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -49,7 +62,7 @@ export default function NewsScreen() {
         data={news}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <NewsListItem item={item} onPress={() => handleNewsPress(item)} />
+          <NewsListItem id={item.id} onPress={handleNewsPress} />
         )}
         style={styles.list}
         contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight + 20 }]}
@@ -59,7 +72,7 @@ export default function NewsScreen() {
         <ScreenFooter
           buttons={[
             {
-              title: "Adicionar Novidade",
+              title: 'Adicionar Novidade',
               onPress: handleAddPress,
               variant: 'secondary',
             },

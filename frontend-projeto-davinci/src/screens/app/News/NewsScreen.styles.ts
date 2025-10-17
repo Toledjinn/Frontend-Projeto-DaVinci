@@ -10,8 +10,8 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 100, 
+    paddingHorizontal: 12,
+    paddingBottom: 100,
   },
   fab: {
     position: 'absolute',

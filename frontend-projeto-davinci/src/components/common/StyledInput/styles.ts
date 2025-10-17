@@ -8,7 +8,7 @@ export const getStyledInputStyles = (height: number, width: number) => {
       marginBottom: 0,
     },
     label: {
-      ...FONTS.body4,
+      ...FONTS.body3,
       color: COLORS.secondary,
       marginBottom: 8,
       marginTop: 8

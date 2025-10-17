@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
 
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 0,
 
     shadowColor: '#000',
@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: SIZES.padding / 1.5,
 
     borderBottomWidth: 1,
@@ -89,6 +89,7 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.gray_200,
     color: COLORS.secondary,
   },
+
   imagePicker: {
     height: 200,
     borderRadius: SIZES.radius,
@@ -132,11 +133,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+
     padding: SIZES.padding / 1.5,
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
+
     marginBottom: SIZES.base * 1.5,
   },
   addButtonText: {

@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingBottom: 12,
-    paddingTop: 12,
+    paddingTop: 8,
     backgroundColor: COLORS.background,
   },
   footerContainerSingle: {

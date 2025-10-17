@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { FONTS, COLORS } from '@/constants/theme';
 
 export const getHeaderStyles = (height: number) => {
-  const circleDiameter = height * 0.12;
+  const circleDiameter = height * 0.11;
   const notificationCircle = height * 0.08;
 
   return StyleSheet.create({

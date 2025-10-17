@@ -29,7 +29,7 @@ const hasAnyFilled = (items: Item[]) =>
 
 export default function PrevencaoScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.30;
   const router = useRouter();
   const { patientId, type } = useLocalSearchParams<{ patientId: string; type: PreventionType }>();
   const preventionType = (type || 'primaria') as PreventionType;

@@ -33,7 +33,7 @@ const educationalItems = [
 export default function EducationalScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.266;
+  const headerHeight = height * 0.28;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   useFocusEffect(

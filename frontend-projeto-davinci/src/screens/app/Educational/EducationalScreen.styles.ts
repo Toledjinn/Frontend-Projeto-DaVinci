@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
   },
 
   descriptionCard: {
@@ -61,8 +61,9 @@ export const styles = StyleSheet.create({
   },
 
   itemText: {
-    ...FONTS.body9,
+    ...FONTS.body7,
     color: COLORS.secondary,
     textAlign: 'center',
+    marginTop: 8,
   },
 });

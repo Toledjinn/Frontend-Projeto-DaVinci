@@ -24,7 +24,7 @@ export default function ProfileScreen({ data }: ProfileDataListProps) {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.30;
   const user = findUserById('dentist-1');
 
   const handleLogout = () => {

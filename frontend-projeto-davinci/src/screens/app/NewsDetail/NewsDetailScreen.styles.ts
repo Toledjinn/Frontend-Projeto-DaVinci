@@ -1,32 +1,40 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
+import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
+
+  pageBody: {
     flex: 1,
+    minHeight: 0,
   },
-  contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+  pageBodySidePadding: {
+    paddingHorizontal: 12,
   },
 
+  scrollView: { flex: 1 },
+
   card: {
+    flex: 1,
+    minHeight: 0,
+    width: '100%',
+    overflow: 'hidden',
+    marginBottom: 12,
+
     backgroundColor: COLORS.white,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
+    borderRadius: SIZES.radius,
+
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    alignSelf: 'center',
-    width: '100%',
-    maxWidth: 680,
   },
 
   title: {
@@ -53,23 +61,21 @@ export const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 200,
-    borderRadius: 8,
-    marginBottom: 16,
+    borderRadius: SIZES.radius,
+    marginBottom: SIZES.base,
   },
   videoContainer: {
     width: '100%',
     aspectRatio: 16 / 9,
-    borderRadius: 8,
+    marginBottom: SIZES.base,
+    borderRadius: SIZES.radius,
     overflow: 'hidden',
-    marginBottom: 20,
-    backgroundColor: '#000',
+    backgroundColor: COLORS.black,
   },
-  video: {
-    flex: 1,
-  },
+  video: { flex: 1 },
 
   content: {
-    ...FONTS.body10,
+    ...FONTS.body15,
     color: COLORS.secondary,
     lineHeight: 22,
     textAlign: 'center',

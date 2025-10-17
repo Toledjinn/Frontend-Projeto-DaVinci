@@ -18,6 +18,17 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 12,
   },
+  placeholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    marginRight: 12,
+    backgroundColor: COLORS.gray_100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+  },
   infoContainer: {
     flex: 1,
     justifyContent: 'center',

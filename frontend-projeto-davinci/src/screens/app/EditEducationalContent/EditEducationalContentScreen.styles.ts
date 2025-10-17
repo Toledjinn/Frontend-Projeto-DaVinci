@@ -1,45 +1,111 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from '@/constants/theme';
+import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  container: {
+
+  pageBody: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    minHeight: 0, 
   },
-  scrollView: {
-    width: '100%',
-    paddingHorizontal: 12
+
+  pageBodySidePadding: {
+    paddingHorizontal: 12,
   },
-  slideEditor: {
+
+  editorCard: {
+    flex: 1,
+    minHeight: 0,
+    overflow: 'hidden',
+    marginBottom: 12,
+
     backgroundColor: COLORS.white,
-    borderRadius: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 10, 
-    marginBottom: 16, 
+    borderRadius: SIZES.radius,
+
+    paddingHorizontal: 16,
+    paddingVertical: 0,
+
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
     elevation: 2,
+
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 680, 
   },
-  slideTitle: {
-    ...FONTS.body5,
-    color: COLORS.secondary,
+
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
+    paddingHorizontal: 16,
+    paddingVertical: SIZES.padding / 1.5,
+
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray_100,
+    backgroundColor: COLORS.white,
   },
-  label: {
+  cardTitle: {
     ...FONTS.body3,
     color: COLORS.secondary,
-    marginBottom: 8,
-    marginTop: 16,
   },
+
+  editorScroll: {
+    flex: 1,
+    minHeight: 0,
+  },
+  editorScrollContent: {
+    paddingVertical: 16,
+  },
+
+  itemBox: {
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: COLORS.white,
+  },
+  itemBoxHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  removeIconTap: {
+    padding: 6,
+  },
+
+  label: {
+    ...FONTS.body3,
+    color: COLORS.gray_400,
+    marginBottom: SIZES.base,
+  },
+  manualInputContainer: {
+    marginTop: 12,
+  },
+  manualTextInputWrapper: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  manualTextInput: {
+    flex: 1,
+    ...FONTS.body9,
+    color: COLORS.secondary,
+    textAlignVertical: 'top',
+  },
+
   imagePicker: {
     width: '100%',
     height: 180,
@@ -48,6 +114,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
   },
   imagePreview: {
     width: '100%',
@@ -55,31 +123,15 @@ export const styles = StyleSheet.create({
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
   },
-  manualInputContainer: {
-    marginTop: 16,
-  },
-  manualTextInputWrapper: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  manualTextInput: {
-    flex: 1,
-    ...FONTS.body9,
-    color: COLORS.secondary,
-    textAlignVertical: 'top',
-  },
+
   imageRowEditor: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 10,
   },
   imageContainerEditor: {
     width: '48%',
@@ -87,6 +139,7 @@ export const styles = StyleSheet.create({
     height: 150,
     borderRadius: 8,
     overflow: 'hidden',
+    backgroundColor: COLORS.gray_100,
   },
   imageLabelEditor: {
     ...FONTS.body11,
@@ -97,81 +150,40 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: 12,
   },
   gridImageContainerEditor: {
-    width: '48%', 
+    width: '48%',
     height: 150,
-    marginBottom: 16,
     borderRadius: 8,
     overflow: 'hidden',
+    backgroundColor: COLORS.gray_100,
   },
-  slideHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
+
+  addButtonsContainer: {
+    marginTop: SIZES.padding,
   },
-  removeSlideButton: {
-    padding: 8,
-  },
-  addSlideButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
-    backgroundColor: COLORS.white,
-    marginTop: 8,
-  },
-  addSlideButtonText: {
-    ...FONTS.body7,
-    color: COLORS.secondary,
-    marginLeft: 8,
-  },
-  imageGridEditor: {
+  addRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
     gap: 10,
   },
-  gridImageContainer: {
-    width: '48%',
-    height: 100,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  collageContainerEditor: {
-    width: '100%',
-    height: 200,
-    flexDirection: 'row',
-    gap: 5,
-  },
-  collageMainImageContainer: {
-    flex: 1.5,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  collageSideContainerEditor: {
-    flex: 1,
-    justifyContent: 'space-between',
-    gap: 5,
-  },
-  collageSideImageContainer: {
-    flex: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  headerActions: {
+  addButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+
+    backgroundColor: COLORS.white,
+    borderRadius: SIZES.radius,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
   },
-  slideContent: {
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.gray_100,
-    marginTop: 10,
+  addButtonText: {
+    ...FONTS.body7,
+    color: COLORS.secondary,
+    marginLeft: SIZES.base,
   },
 });
-

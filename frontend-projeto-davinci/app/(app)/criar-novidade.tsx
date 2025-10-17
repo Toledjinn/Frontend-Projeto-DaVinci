@@ -1,3 +1,2 @@
-import CreateNewsScreen from '@/screens/app/CreateNewsScreen/CreateNewsScreen';
-
-export default CreateNewsScreen;
+import EditOrCreateNewsScreen from "@/screens/app/EditNewsScreen/EditNewsScreen";
+export default EditOrCreateNewsScreen;

@@ -6,67 +6,105 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
-    paddingHorizontal: 12,
+
+  pageBody: {
     flex: 1,
+    minHeight: 0,
+  },
+
+  pageBodySidePadding: {
+    paddingHorizontal: 12,
   },
 
   editorCard: {
+    flex: 1,
+    minHeight: 0,
+    overflow: 'hidden',
+    marginBottom: 12,
+
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
-    marginBottom: SIZES.padding,
+
+    paddingHorizontal: 16,
+    paddingVertical: 0,
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 3,
     elevation: 2,
-    overflow: 'hidden',
+
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 680,
   },
+
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: SIZES.padding,
+    justifyContent: 'space-between',
+
+    paddingHorizontal: 16,
+    paddingVertical: SIZES.padding / 1.5,
+
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray_100,
+    backgroundColor: COLORS.white,
   },
   cardTitle: {
-    ...FONTS.body6,
+    ...FONTS.body3,
     color: COLORS.secondary,
-    flex: 1,
   },
-  headerActions: {
+
+  editorScroll: {
+    flex: 1,
+    minHeight: 0,
+  },
+  editorScrollContent: {
+    paddingVertical: 16,
+  },
+
+  itemBox: {
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: COLORS.white,
+  },
+  itemBoxHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
   },
-  removeButton: {
-    padding: SIZES.base / 2,
-    marginRight: SIZES.base,
+  removeIconTap: {
+    padding: 6,
   },
-  cardContent: {
-    padding: SIZES.padding,
-  },
-  inputGroup: {
-    marginBottom: SIZES.padding,
-  },
+
   label: {
-    ...FONTS.body7,
+    ...FONTS.body3,
     color: COLORS.gray_400,
     marginBottom: SIZES.base,
   },
   textInput: {
     ...FONTS.body9,
+    color: COLORS.secondary,
+
     backgroundColor: COLORS.gray_100,
-    borderRadius: SIZES.radius,
-    paddingHorizontal: SIZES.padding,
-    paddingVertical: SIZES.base * 1.5,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
+
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    textAlignVertical: 'top',
   },
+
   imagePicker: {
     width: '100%',
     height: 180,
-    borderRadius: SIZES.radius,
+    borderRadius: 8,
     backgroundColor: COLORS.gray_100,
     justifyContent: 'center',
     alignItems: 'center',
@@ -80,25 +118,31 @@ export const styles = StyleSheet.create({
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
   },
+
   addButtonsContainer: {
     marginTop: SIZES.padding,
-    alignItems: 'flex-start',
+  },
+  addRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+
     backgroundColor: COLORS.white,
-    paddingVertical: SIZES.base * 1.2,
-    paddingHorizontal: SIZES.padding,
     borderRadius: SIZES.radius,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
-    marginBottom: SIZES.base,
-    alignSelf: 'flex-start',
   },
   addButtonText: {
     ...FONTS.body7,

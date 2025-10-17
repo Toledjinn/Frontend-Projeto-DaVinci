@@ -2,64 +2,59 @@ import { StyleSheet } from 'react-native';
 import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
+  safeArea: { flex: 1, backgroundColor: COLORS.background },
 
-  container: {
-    flex: 1,
-    paddingBottom: SIZES.padding,
-  },
+  pageBody: { flex: 1, minHeight: 0 },
 
-  carousel: {
-    flexGrow: 0,
-  },
-  carouselContent: {
-  },
-  slide: {
-    paddingHorizontal: SIZES.padding,
-  },
+  pageBodySidePadding: { paddingHorizontal: 12 },
 
   card: {
+    flex: 1,
+    minHeight: 0,
+    overflow: 'hidden',
+
     backgroundColor: COLORS.white,
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding,
-    marginBottom: SIZES.padding,
+    borderTopLeftRadius: SIZES.radius,
+    borderTopRightRadius: SIZES.radius,
+    borderBottomLeftRadius: SIZES.radius,
+    borderBottomRightRadius: SIZES.radius,
+
+    paddingHorizontal: 16,
+    paddingVertical: 0,
 
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
 
     alignSelf: 'center',
     width: '100%',
     maxWidth: 680,
   },
 
-  title: {
-    ...FONTS.h1,              
-    color: COLORS.secondary,  
-    textAlign: 'center',
-    fontWeight: '700',
-    marginBottom: 8,
+  slidePage: {
+    minHeight: 0,
   },
 
-  divider: {
-    height: 1,
-    backgroundColor: COLORS.gray_200 || '#E0E0E0',
-    marginVertical: 12,
-    alignSelf: 'center',
-    width: '100%',
+  slideScroll: { flex: 1, minHeight: 0 },
+  slideScrollContent: { paddingVertical: 16 },
+
+  title: {
+    ...FONTS.ph1,
+    color: COLORS.secondary,
+    textAlign: 'center',
   },
 
   image: {
     width: '100%',
     height: 220,
     borderRadius: SIZES.radius,
+    marginTop: 8,
     marginBottom: SIZES.base,
+    alignSelf: 'center',
   },
+
   videoContainer: {
     width: '100%',
     aspectRatio: 16 / 9,
@@ -68,28 +63,30 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.black,
     marginBottom: SIZES.base,
   },
-  video: {
-    flex: 1,
-  },
+  video: { flex: 1 },
 
   paragraph: {
-    ...FONTS.body9,          
+    ...FONTS.body9,
     color: COLORS.secondary,
     textAlign: 'center',
     lineHeight: 22,
+    marginBottom: 16,
+    marginTop: 8
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.gray_400,
+    marginVertical: 12,
+    alignSelf: 'center',
+    width: '100%',
   },
 
   paginationContainer: {
-    flexDirection: 'row',
+    height: 56,
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    marginTop: 8,
-    marginBottom: 8,
   },
-  paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 999,
-    backgroundColor: '#D1D5DB',
-  },
+  dotsRow: { flexDirection: 'row', alignItems: 'center' },
+  dotBase: { marginHorizontal: 6 },
 });

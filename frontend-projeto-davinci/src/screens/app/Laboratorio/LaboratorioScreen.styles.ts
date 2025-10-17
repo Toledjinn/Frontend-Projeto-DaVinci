@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: COLORS.gray_200 || '#E0E0E0',
-    marginVertical: 12,
+    marginBottom: 12,
     alignSelf: 'center',
     width: '100%',
   },
@@ -74,9 +74,8 @@ export const styles = StyleSheet.create({
   },
 
   itemText: {
-    ...FONTS.body8,
+    ...FONTS.body7,
     color: COLORS.secondary,
     textAlign: 'center',
-    fontWeight: 'bold',
   },
 });

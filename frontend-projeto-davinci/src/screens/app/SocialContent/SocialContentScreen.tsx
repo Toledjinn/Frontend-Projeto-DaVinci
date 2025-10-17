@@ -56,7 +56,7 @@ export default function SocialContentScreen() {
   const contentBlocks = useSocialStore((s) => s.pages[pageName]);
 
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.22;
+  const headerHeight = height * 0.30;
   const userType = 'admin';
 
   useFocusEffect(
