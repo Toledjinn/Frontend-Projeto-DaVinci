@@ -1,11 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, useWindowDimensions, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './EducationalScreen.styles';
@@ -33,7 +27,8 @@ const educationalItems = [
 export default function EducationalScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.28;
+  const headerHeight = height * 0.18;
+  const bodyOffset = headerHeight + 8;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   useFocusEffect(
@@ -45,6 +40,7 @@ export default function EducationalScreen() {
         pageTitle: 'DaVinci Educacional',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
+        showBackground: true,
       });
     }, [])
   );
@@ -59,7 +55,7 @@ export default function EducationalScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
-        contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 24 }}
+        contentContainerStyle={{ paddingTop: bodyOffset, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.container}>
@@ -78,6 +74,8 @@ export default function EducationalScreen() {
                 style={styles.gridItem}
                 onPress={() => handleItemPress(item)}
                 activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel={item.title}
               >
                 <LogoBadge {...badge.educationalButton(item.SvgComponent)} />
                 <Text style={styles.itemText}>{item.title}</Text>

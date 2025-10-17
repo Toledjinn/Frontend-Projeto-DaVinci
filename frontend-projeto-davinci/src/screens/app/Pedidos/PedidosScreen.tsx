@@ -15,7 +15,7 @@ const ALL_STATUSES: OrderStatus[] = ['Pendente', 'Aprovado', 'Enviado', 'Entregu
 export default function PedidosScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.266;
+  const headerHeight = height * 0.20;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const allOrders = usePedidosStore((state) => state.orders);

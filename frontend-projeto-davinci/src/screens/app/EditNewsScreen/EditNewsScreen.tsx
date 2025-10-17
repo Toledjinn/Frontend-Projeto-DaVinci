@@ -35,7 +35,7 @@ export default function EditOrCreateNewsScreen() {
 
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.21;
   const topOffset = headerHeight + 8;
 
   const hydrate = useNewsStore((s) => s.hydrate);

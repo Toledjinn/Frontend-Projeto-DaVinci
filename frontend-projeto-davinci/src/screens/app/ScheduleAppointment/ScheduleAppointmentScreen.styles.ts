@@ -9,12 +9,11 @@ export const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
   },
-  scrollView: {
+  bodyScroll: {
     flex: 1,
   },
-  scrollContentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 20,
+  bodyContent: {
+    paddingHorizontal: 16,
   },
   inputWrapper: {
     marginBottom: 16,

@@ -15,20 +15,19 @@ export const styles = StyleSheet.create({
   pageBodySidePadding: {
     paddingHorizontal: 12,
   },
-  
+
   scrollView: { flex: 1 },
-  
+
   card: {
-    flex: 1,               
+    flex: 1,
     minHeight: 0,
-    width: '100%',         
+    width: '100%',
     overflow: 'hidden',
     marginBottom: 12,
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
-    paddingHorizontal: 12, 
-    paddingVertical: 16,    
-
+    paddingHorizontal: 12,
+    paddingVertical: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -49,6 +48,7 @@ export const styles = StyleSheet.create({
     borderRadius: SIZES.radius,
     marginBottom: SIZES.base,
   },
+
   videoContainer: {
     width: '100%',
     aspectRatio: 16 / 9,

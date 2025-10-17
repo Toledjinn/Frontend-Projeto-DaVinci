@@ -36,7 +36,7 @@ export default function EditLaboratorioContentScreen() {
   const { pageName } = useLocalSearchParams<{ pageName?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.21;
   const topOffset = headerHeight + 8;
 
   const page: PageName = isValidPageName(pageName) ? pageName! : 'nossaFilosofia';

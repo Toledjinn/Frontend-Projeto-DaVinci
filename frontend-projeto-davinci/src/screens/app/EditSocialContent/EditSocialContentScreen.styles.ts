@@ -22,13 +22,10 @@ export const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     marginBottom: 12,
-
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
-
     paddingHorizontal: 16,
     paddingVertical: 0,
-
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -40,10 +37,8 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
     paddingHorizontal: 16,
     paddingVertical: SIZES.padding / 1.5,
-
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray_100,
     backgroundColor: COLORS.white,
@@ -133,13 +128,11 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-
     padding: SIZES.padding / 1.5,
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
-
     marginBottom: SIZES.base * 1.5,
   },
   addButtonText: {

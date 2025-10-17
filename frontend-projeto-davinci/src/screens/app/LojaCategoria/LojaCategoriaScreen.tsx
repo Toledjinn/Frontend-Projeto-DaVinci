@@ -31,7 +31,7 @@ export default function LojaCategoriaScreen() {
   const router = useRouter();
   const { category } = useLocalSearchParams<{ category: string }>();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.22;
 
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
 

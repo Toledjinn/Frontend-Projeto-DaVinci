@@ -1,11 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, useWindowDimensions, ScrollView } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styles } from './SocialScreen.styles';
 import { useUIStore } from '@/state/uiStore';
@@ -25,10 +19,11 @@ const actionButtons = [
 
 export default function SocialScreen() {
   const router = useRouter();
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
 
   useFocusEffect(
     useCallback(() => {
@@ -39,6 +34,7 @@ export default function SocialScreen() {
         pageTitle: 'DaVinci Social',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
+        showBackground: true,
       });
     }, [])
   );
@@ -54,25 +50,20 @@ export default function SocialScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: bodyOffset }]}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.cardContainer}>
-
-          <Text style={styles.subtitle}>
-            Um dos maiores escritores da literatura russa e mundial, disse um dia:
-          </Text>
-
+          <Text style={styles.subtitle}>Um dos maiores escritores da literatura russa e mundial, disse um dia:</Text>
           <View style={styles.quoteBox}>
             <Text style={styles.quoteText}>{'“ A beleza salvará o mundo ”'}</Text>
           </View>
-          <Text style={styles.title}>
-            - Fiódor Dostoiévski
-          </Text>
-
+          <Text style={styles.title}>- Fiódor Dostoiévski</Text>
           <Text style={styles.paragraph}>
-            Beleza essa, não só a de um sorriso bonito, mas num sentido mais amplo, como a atitude da Gratone Odontologia Especializada com o projeto Da Vinci Social.
+            Beleza essa, não só a de um sorriso bonito, mas num sentido mais amplo, como a atitude da Gratone
+            Odontologia Especializada com o projeto Da Vinci Social.
           </Text>
-
           <Text style={styles.salutation}>Salve a Odontologia!</Text>
         </View>
 

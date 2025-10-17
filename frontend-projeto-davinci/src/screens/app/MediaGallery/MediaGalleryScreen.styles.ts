@@ -6,11 +6,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  contentContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 40,
+  bodyList: {
+    flex: 1,
   },
-
+  bodyContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
   sectionCard: {
     backgroundColor: COLORS.white,
     borderRadius: 8,
@@ -21,7 +23,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 16,
   },
-
   sectionHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -38,7 +39,6 @@ export const styles = StyleSheet.create({
     ...FONTS.body9,
     color: COLORS.gray_400,
   },
-
   sectionBody: {
     paddingTop: 10,
     flexDirection: 'row',
@@ -52,7 +52,6 @@ export const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
   },
-
   emptyContainer: {
     paddingTop: 24,
     alignItems: 'center',
@@ -67,7 +66,6 @@ export const styles = StyleSheet.create({
     color: COLORS.gray_400,
     textAlign: 'center',
   },
-
   viewerBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.95)',
@@ -77,7 +75,7 @@ export const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    paddingTop: 28, 
+    paddingTop: 28,
     paddingHorizontal: 16,
     height: 72,
     flexDirection: 'row',
@@ -96,7 +94,6 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
   viewerPager: { flex: 1 },
-
   viewerSlideBox: {
     justifyContent: 'center',
     alignItems: 'center',

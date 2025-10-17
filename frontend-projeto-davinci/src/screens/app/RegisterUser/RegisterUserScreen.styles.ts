@@ -6,15 +6,20 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+
   outerContainer: {
     flex: 1,
   },
-  scrollView: {
+
+  bodyScroll: {
     flex: 1,
   },
-  scrollContentContainer: {
-    paddingHorizontal: 12,
+
+  bodyContent: {
+    paddingHorizontal: 16,
+    gap: 8,
   },
+
   formContainer: {
     width: '100%',
     paddingTop: 8,
@@ -22,23 +27,32 @@ export const styles = StyleSheet.create({
 
   row: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     width: '100%',
     alignItems: 'center',
   },
+
   inputWrapper: {
     marginBottom: 8,
     width: '100%',
   },
+
   halfInputWrapper: {
-    width: '48%',
+    flexBasis: '48%',
+    minWidth: '48%',
     marginBottom: 8,
   },
+
+  croInput: { flexBasis: '48%', minWidth: '48%' },
+  ufPicker: { flexBasis: '48%', minWidth: '48%' },
+
   cepLoading: {
     position: 'absolute',
     right: 15,
     top: 36,
   },
+
   allergyInputRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -48,6 +62,7 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
     paddingTop: 8,
   },
+
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -65,6 +80,4 @@ export const styles = StyleSheet.create({
     ...FONTS.body7,
     marginLeft: 6,
   },
-  croInput: { width: '48%' },
-  ufPicker: { width: '48%' },
 });

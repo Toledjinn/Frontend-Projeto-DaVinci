@@ -18,7 +18,8 @@ type LowerRisk = 'baixo' | 'moderado' | 'alto' | 'a_definir';
 
 export default function DiagnosticScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.28;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
 
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const router = useRouter();
@@ -147,19 +148,19 @@ export default function DiagnosticScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        style={[styles.bodyScroll, { marginTop: bodyOffset }]}
+        contentContainerStyle={styles.bodyContent}
+        showsVerticalScrollIndicator={false}
       >
         <HomeSection title="Históricos" buttons={historyButtons} />
         <HomeSection title="Diagnóstico Primário" buttons={preventionButtons} />
         <HomeSection title="Especialidades" buttons={specialtyButtons} />
-
         <View style={{ marginTop: 24 }}>
           <RiskAssessmentCard
             initialRiskLevel={selectedRisk}
             isEditing={isEditingRisk}
             onToggleEdit={() => setIsEditingRisk((v) => !v)}
-            onSave={handleSaveRisk}    
+            onSave={handleSaveRisk}
             onChange={(lvl) => setSelectedRisk(lvl as LowerRisk)}
           />
         </View>

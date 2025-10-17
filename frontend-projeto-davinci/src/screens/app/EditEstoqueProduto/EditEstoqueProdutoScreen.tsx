@@ -57,7 +57,7 @@ const getStatusColor = (status: ProductStatus) => {
 export default function EditEstoqueProdutoScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.22;
   const { category, productId } =
     useLocalSearchParams<{ category: CategoryName; productId?: string }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);

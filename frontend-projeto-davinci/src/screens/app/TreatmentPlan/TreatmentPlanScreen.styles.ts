@@ -7,8 +7,8 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingHorizontal: 12,
+    paddingBottom: 16,
   },
   emptyText: {
     textAlign: 'center',

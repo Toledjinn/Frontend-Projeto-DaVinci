@@ -9,18 +9,13 @@ export const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
   },
-  contentWrapper: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingBottom: 8, 
-  },
-  scrollView: {
+  bodyScroll: {
     flex: 1,
   },
-  scrollContentContainer: {
-    paddingBottom: 24,
+  bodyContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
-
   formContainer: {
     width: '100%',
   },
@@ -35,7 +30,6 @@ export const styles = StyleSheet.create({
     borderBottomColor: COLORS.gray_200,
     paddingBottom: 4,
   },
-
   checkboxContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -43,5 +37,64 @@ export const styles = StyleSheet.create({
   },
   conditionalInput: {
     marginTop: 16,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 8,
+  },
+  removeButton: {
+    marginLeft: 10,
+    paddingTop: 20,
+  },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.white,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    alignSelf: 'flex-end',
+    marginTop: 8,
+  },
+  addButtonText: {
+    color: COLORS.secondary,
+    ...FONTS.body7,
+    marginLeft: 8,
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  lockedValueRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 8,
+  },
+  lockedChip: {
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    backgroundColor: COLORS.gray_100,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  lockedChipText: {
+    ...FONTS.body7,
+    color: COLORS.secondary,
+  },
+  lockedText: {
+    ...FONTS.body6,
+    color: COLORS.gray_200,
+    marginTop: 8,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.gray_100,
+    marginVertical: 12,
   },
 });

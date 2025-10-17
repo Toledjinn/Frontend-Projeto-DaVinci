@@ -41,7 +41,7 @@ const categories = [
 export default function MenuLojaScreen({ mode }: Props) {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.34;
+  const headerHeight = height * 0.29;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const config = useMemo(() => {

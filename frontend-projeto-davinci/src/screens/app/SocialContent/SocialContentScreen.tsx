@@ -21,10 +21,7 @@ import Escova2 from '@/assets/characters/escova2.svg';
 import Escova3 from '@/assets/characters/escova3.svg';
 import Escova4 from '@/assets/characters/escova4.svg';
 
-const socialContentConfig: Record<
-  PageName,
-  { title: string; CharacterSvg: React.FC<any> }
-> = {
+const socialContentConfig: Record<PageName, { title: string; CharacterSvg: React.FC<any> }> = {
   oQueE: { title: 'O que é?', CharacterSvg: Escova4 },
   comoParticipar: { title: 'Como Participar?', CharacterSvg: Escova2 },
   depoimentos: { title: 'Depoimentos', CharacterSvg: Escova3 },
@@ -56,7 +53,8 @@ export default function SocialContentScreen() {
   const contentBlocks = useSocialStore((s) => s.pages[pageName]);
 
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
   const userType = 'admin';
 
   useFocusEffect(
@@ -68,6 +66,7 @@ export default function SocialContentScreen() {
         pageTitle: config.title,
         CharacterSvg: Chefinho,
         showNotificationIcon: true,
+        showBackground: true,
       });
     }, [pageName, config])
   );
@@ -100,14 +99,7 @@ export default function SocialContentScreen() {
     }
 
     if (cb.type === 'image' && cb.image) {
-      return (
-        <Image
-          key={cb.id ?? `i_${index}`}
-          source={cb.image}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      );
+      return <Image key={cb.id ?? `i_${index}`} source={cb.image} style={styles.image} resizeMode="contain" />;
     }
 
     if (cb.type === 'video' && cb.videoUrl) {
@@ -130,23 +122,21 @@ export default function SocialContentScreen() {
   if (isSimplePage(pageName)) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={[styles.pageBody, styles.pageBodySidePadding, { paddingTop: headerHeight }]}>
+        <View style={[styles.pageBody, styles.pageBodySidePadding, { paddingTop: bodyOffset }]}>
           <View style={styles.card}>
             <ScrollView
               style={{ flex: 1 }}
               contentContainerStyle={{ paddingVertical: 16 }}
-              showsVerticalScrollIndicator
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
             >
               {contentBlocks.map((b, i) => renderContentBlock(b, i))}
             </ScrollView>
           </View>
-
         </View>
 
         {userType === 'admin' && (
-          <ScreenFooter
-            buttons={[{ title: 'Editar Seção', onPress: handleEditPress, variant: 'secondary' }]}
-          />
+          <ScreenFooter buttons={[{ title: 'Editar Seção', onPress: handleEditPress, variant: 'secondary' }]} />
         )}
       </SafeAreaView>
     );
@@ -156,15 +146,15 @@ export default function SocialContentScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[{ paddingTop: headerHeight, paddingHorizontal: 12 }]}
+        contentContainerStyle={[{ paddingTop: bodyOffset, paddingHorizontal: 12 }]}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {contentBlocks.map((b, i) => renderContentBlock(b, i))}
       </ScrollView>
 
       {userType === 'admin' && (
-        <ScreenFooter
-          buttons={[{ title: 'Editar Seção', onPress: handleEditPress, variant: 'secondary' }]}
-        />
+        <ScreenFooter buttons={[{ title: 'Editar Seção', onPress: handleEditPress, variant: 'secondary' }]} />
       )}
     </SafeAreaView>
   );

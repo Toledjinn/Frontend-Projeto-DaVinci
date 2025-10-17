@@ -32,7 +32,7 @@ export default function NewsDetailScreen() {
 
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.22;
 
   useFocusEffect(
     useCallback(() => {

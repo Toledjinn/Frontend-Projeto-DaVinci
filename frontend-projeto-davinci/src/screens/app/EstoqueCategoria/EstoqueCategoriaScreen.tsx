@@ -53,7 +53,7 @@ export default function EstoqueCategoriaScreen() {
   const router = useRouter();
   const { category } = useLocalSearchParams<{ category: CategoryName }>();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.22;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const hydrate = useEstoqueStore((s) => s.hydrate);

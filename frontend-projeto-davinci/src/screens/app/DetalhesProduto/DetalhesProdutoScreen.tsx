@@ -46,7 +46,7 @@ export default function DetalhesProdutoScreen() {
   const router = useRouter();
   const { id, category } = useLocalSearchParams<{ id: string; category?: string }>();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.3;
+  const headerHeight = height * 0.22;
 
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { getProductById, addWithQuantity, cart } = useLojaStore();

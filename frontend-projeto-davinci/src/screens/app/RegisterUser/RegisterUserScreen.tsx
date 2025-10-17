@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   useWindowDimensions,
+  LayoutChangeEvent,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -90,7 +91,16 @@ export default function RegisterUserScreen() {
   const clearPhoto = useUIStore((s) => s.setRegisterPhotoUri);
   const registerPhotoUri = useUIStore((s) => s.registerPhotoUri);
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+
+  const headerHeight = height * 0.19;
+  const bodyOffset = headerHeight + 8;
+
+  const [footerHeight, setFooterHeight] = useState<number>(88); 
+  const onFooterLayout = (e: LayoutChangeEvent) => {
+    const h = e.nativeEvent.layout.height;
+    if (h > 0) setFooterHeight(h);
+  };
+
   const { userType, userId } = useLocalSearchParams<{ userType: string; userId?: string }>();
   const isEditing = !!userId;
 
@@ -293,6 +303,7 @@ export default function RegisterUserScreen() {
 
     return base as UserProfile & { photoUri?: string | null };
   }
+
   const handleCancel = () => router.back();
 
   const handleSave = () => {
@@ -506,19 +517,22 @@ export default function RegisterUserScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: headerHeight }]}
+          style={[styles.bodyScroll, { marginTop: bodyOffset }]}
+          contentContainerStyle={[styles.bodyContent, { paddingBottom: footerHeight + 16 }]}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.formContainer}>{renderForm()}</View>
         </ScrollView>
 
-        <ScreenFooter
-          buttons={[
-            { title: 'Cancelar', onPress: handleCancel, variant: 'secondary' },
-            { title: isEditing ? 'Salvar' : 'Cadastrar', onPress: handleSave, variant: 'primary' },
-          ]}
-        />
+        <View onLayout={onFooterLayout}>
+          <ScreenFooter
+            buttons={[
+              { title: 'Cancelar', onPress: handleCancel, variant: 'secondary' },
+              { title: isEditing ? 'Salvar' : 'Cadastrar', onPress: handleSave, variant: 'primary' },
+            ]}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

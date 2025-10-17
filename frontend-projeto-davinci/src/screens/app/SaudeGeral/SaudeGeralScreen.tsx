@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, ScrollView, Alert, useWindowDimensions } from 'react-native';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { View, Text, ScrollView, Alert, useWindowDimensions, LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
@@ -7,44 +7,29 @@ import { styles } from './SaudeGeralScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { formatUserName } from '@/utils/nameUtils';
 import UserPlaceholder from '@/assets/icons/user-placeholder.svg';
-import ScreenFooter from '@/components/common/ScreenFooter';
 
 import QuestionCard from '@/components/features/QuestionCard';
 import StyledInput from '@/components/common/StyledInput';
 import ToggleButtonGroup from '@/components/common/ToggleButtonGroup';
 import Checkbox from '@/components/common/Checkbox';
-
-import { useUsers } from '@/hooks/useUsers';
-import { UserWithPhoto } from '@/data/usersStore';
+import StyledDatePicker from '@/components/common/StyledDatePicker';
+import StyledPicker from '@/components/common/StyledPicker';
+import ScreenFooter from '@/components/common/ScreenFooter';
 
 import { useDiagnostics } from '@/hooks/useDiagnostics';
-import { GENERAL_HEALTH_INITIAL, type GeneralHealthForm } from '@/data/diagnosticsStore';
+import { ORAL_HEALTH_INITIAL, type OralHealthForm } from '@/data/diagnosticsStore';
+import { useUsers } from '@/hooks/useUsers';
+import { UserWithPhoto } from '@/data/usersStore';
 
 const disableProps = (isEditing: boolean) => ({
   editable: isEditing,
   disabled: !isEditing,
 });
 
-const deepClone = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
-
-const withDefaults = <T extends object>(defaults: T, value?: Partial<T>): T => {
-  const base: any = deepClone(defaults);
-  if (!value) return base;
-  const v: any = value;
-  for (const k of Object.keys(v)) {
-    const incoming = v[k];
-    if (incoming && typeof incoming === 'object' && !Array.isArray(incoming)) {
-      base[k] = { ...(base[k] ?? {}), ...incoming };
-    } else if (incoming !== undefined) {
-      base[k] = incoming;
-    }
-  }
-  return base;
-};
-
-export default function SaudeGeralScreen() {
+export default function SaudeBucalScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
 
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
@@ -55,18 +40,23 @@ export default function SaudeGeralScreen() {
     [list, patientId]
   );
 
-  const { getOrCreateGeneralHealth, saveGeneralHealth } = useDiagnostics();
-  const [formData, setFormData] = useState<GeneralHealthForm>(GENERAL_HEALTH_INITIAL);
+  const { getOrCreateOralHealth, saveOralHealth } = useDiagnostics();
+  const [formData, setFormData] = useState<OralHealthForm>(ORAL_HEALTH_INITIAL);
   const [isEditing, setIsEditing] = useState(true);
+
+  const [footerHeight, setFooterHeight] = useState<number>(88);
+  const onFooterLayout = (e: LayoutChangeEvent) => {
+    const h = e.nativeEvent.layout.height;
+    if (h > 0) setFooterHeight(h);
+  };
 
   useEffect(() => {
     if (!patient) return;
-    const saved = getOrCreateGeneralHealth(String(patient.id));
-    const merged = withDefaults(GENERAL_HEALTH_INITIAL, saved ?? undefined);
-    const isNew = !saved?.createdAt;
-    setFormData(merged);
+    const saved = getOrCreateOralHealth(String(patient.id));
+    const isNew = saved === ORAL_HEALTH_INITIAL || !saved?.createdAt;
+    setFormData(saved);
     setIsEditing(isNew);
-  }, [patient, getOrCreateGeneralHealth]);
+  }, [patient, getOrCreateOralHealth]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -76,7 +66,7 @@ export default function SaudeGeralScreen() {
         showBackground: true,
         showNotificationIcon: false,
         userId: String(patient.id),
-        userName: `Saúde Geral de ${formatUserName(patient.name)}`,
+        userName: `Saúde Bucal de ${formatUserName(patient.name)}`,
         UserImageSvg: patient.image || UserPlaceholder,
         userPhotoUri: patient.photoUri ?? null,
         riskLevel: patient.riskLevel,
@@ -99,693 +89,581 @@ export default function SaudeGeralScreen() {
       Alert.alert('Paciente não encontrado', 'Volte e selecione o paciente.');
       return;
     }
-    saveGeneralHealth(String(patient.id), {
+    saveOralHealth(String(patient.id), {
       ...formData,
       updatedAt: new Date().toISOString(),
       createdAt: formData.createdAt || new Date().toISOString(),
     });
     setIsEditing(false);
-    Alert.alert('Sucesso', 'Ficha de Saúde Geral salva.');
+    Alert.alert('Sucesso', 'Ficha de Saúde Bucal salva.');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
-        <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContentContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <SaudeGeralFormInline
-              formData={formData}
-              setFormData={setFormData}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-            />
-          </ScrollView>
-        </View>
+        <ScrollView
+          style={[styles.bodyScroll, { marginTop: bodyOffset }]}
+          contentContainerStyle={[styles.bodyContent, { paddingBottom: footerHeight + 16 }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <SaudeBucalFormInline
+            formData={formData}
+            setFormData={setFormData}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+          />
+        </ScrollView>
 
-        <ScreenFooter
-          buttons={[
-            isEditing
-              ? { title: 'Salvar Ficha', onPress: handleSave, variant: 'secondary' }
-              : { title: 'Editar', onPress: () => setIsEditing(true), variant: 'secondary' },
-          ]}
-        />
+        <View onLayout={onFooterLayout}>
+          <ScreenFooter
+            buttons={[
+              isEditing
+                ? { title: 'Salvar Ficha', onPress: handleSave, variant: 'secondary' }
+                : { title: 'Editar', onPress: () => setIsEditing(true), variant: 'secondary' },
+            ]}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
-type Props = {
-  formData: GeneralHealthForm;
-  setFormData: React.Dispatch<React.SetStateAction<GeneralHealthForm>>;
+type SaudeBucalFormInlineProps = {
+  formData: OralHealthForm;
+  setFormData: React.Dispatch<React.SetStateAction<OralHealthForm>>;
   isEditing: boolean;
   setIsEditing: (v: boolean) => void;
 };
 
-function SaudeGeralFormInline({ formData, setFormData, isEditing, setIsEditing }: Props) {
+function SaudeBucalFormInline({
+  formData,
+  setFormData,
+  isEditing,
+  setIsEditing,
+}: SaudeBucalFormInlineProps) {
   const toggleEdit = () => setIsEditing(!isEditing);
 
-  const handleInputChange = (
-    section: keyof GeneralHealthForm,
-    field: string,
-    value: any
-  ) => {
-    setFormData((prev: any) => {
-      const sectionPrev = (prev as any)[section] ?? {};
-      return { ...prev, [section]: { ...sectionPrev, [field]: value } };
-    });
+  const handleValueChange = (section: keyof OralHealthForm, field: string, value: any) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [section]: { ...(prev as any)[section], [field]: value },
+    }));
   };
 
-  const handleToggleChange = (
-    section: keyof GeneralHealthForm,
-    field: string,
-    value: 'sim' | 'não' | null
-  ) => {
+  const handleCheckboxChange = (section: keyof OralHealthForm, value: string) => {
     setFormData((prev: any) => {
-      const sectionPrev = (prev as any)[section] ?? {};
-      return { ...prev, [section]: { ...sectionPrev, [field]: value } };
-    });
-  };
-
-  const handleCheckboxChange = (section: keyof GeneralHealthForm, value: string) => {
-    setFormData((prev: any) => {
-      const sectionPrev = (prev as any)[section] ?? {};
-      const current: string[] = sectionPrev.selected ?? [];
+      const current: string[] = (prev as any)[section]?.selected || [];
       const next = current.includes(value) ? current.filter((i) => i !== value) : [...current, value];
-      return { ...prev, [section]: { ...sectionPrev, selected: next } };
+      return { ...prev, [section]: { ...(prev as any)[section], selected: next } };
     });
   };
 
-  const handleNeoplasiaTypeChange = (value: string) => {
-    setFormData((prev: any) => {
-      const neoPrev = (prev as any).neoplasia ?? {};
-      const current: string[] = neoPrev.tipo ?? [];
-      const next = current.includes(value) ? current.filter((i) => i !== value) : [...current, value];
-      return { ...prev, neoplasia: { ...neoPrev, tipo: next } };
-    });
+  const handleRadioCheckboxChange = (section: keyof OralHealthForm, field: string, value: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [section]: { ...(prev as any)[section], [field]: value },
+    }));
   };
 
   return (
     <View style={styles.formContainer}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Anamnese</Text>
-
-        <QuestionCard number={1} title="História Médica" isEditing={isEditing} onEdit={toggleEdit}>
+      <QuestionCard number={1} title="A quanto tempo foi ao dentista?" isEditing={isEditing} onEdit={toggleEdit}>
+        <StyledInput
+          label="Há quanto tempo?"
+          iconName="calendar"
+          value={formData.q1.haQuantoTempo}
+          onChangeText={(t) => handleValueChange('q1', 'haQuantoTempo', t)}
+          {...disableProps(isEditing)}
+        />
+        <View style={styles.conditionalInput}>
           <StyledInput
-            label=""
-            iconName="file-text"
-            placeholder="Descrição da história médica do paciente"
-            multiline
-            numberOfLines={4}
-            value={formData.historiaMedica ?? ''}
-            onChangeText={(t) => setFormData((p: any) => ({ ...p, historiaMedica: t }))}
+            label="Motivo"
+            iconName="info"
+            value={formData.q1.motivo}
+            onChangeText={(t) => handleValueChange('q1', 'motivo', t)}
             {...disableProps(isEditing)}
           />
-        </QuestionCard>
+        </View>
+      </QuestionCard>
 
-        <QuestionCard number={2} title="Está em tratamento médico atualmente?" isEditing={isEditing} onEdit={toggleEdit}>
-          <ToggleButtonGroup
-            label=""
-            value={formData.tratamentoMedico?.value ?? null}
-            onSelect={(val) => handleToggleChange('tratamentoMedico', 'value', val)}
-            disabled={!isEditing}
+      <QuestionCard number={2} title="Último exame radiográfico completo?" isEditing={isEditing} onEdit={toggleEdit}>
+        <StyledDatePicker
+          label=""
+          value={formData.q2.data ? new Date(formData.q2.data) : null}
+          onChange={(d) => handleValueChange('q2', 'data', d ? d.toISOString() : null)}
+          {...disableProps(isEditing)}
+        />
+        <View style={styles.conditionalInput}>
+          <StyledInput
+            label="Qual?"
+            iconName="info"
+            value={formData.q2.qual}
+            onChangeText={(t) => handleValueChange('q2', 'qual', t)}
+            {...disableProps(isEditing)}
           />
-          {formData.tratamentoMedico?.value === 'sim' && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label="Finalidade:"
-                iconName="info"
-                value={formData.tratamentoMedico?.finalidade ?? ''}
-                onChangeText={(t) => handleInputChange('tratamentoMedico', 'finalidade', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
+        </View>
+      </QuestionCard>
 
-        <QuestionCard number={3} title="Faz uso de algum medicamento?" isEditing={isEditing} onEdit={toggleEdit}>
-          <ToggleButtonGroup
-            label=""
-            value={formData.usoMedicamento?.value ?? null}
-            onSelect={(val) => handleToggleChange('usoMedicamento', 'value', val)}
-            disabled={!isEditing}
+      <QuestionCard number={3} title="Quantas vezes você escova os dentes por dia?" isEditing={isEditing} onEdit={toggleEdit}>
+        <StyledPicker
+          label=""
+          iconName="hash"
+          items={[
+            { label: '1x', value: '1' },
+            { label: '2x', value: '2' },
+            { label: '3x ou mais', value: '3+' },
+          ]}
+          selectedValue={formData.q3.quantidade}
+          onValueChange={(v) => handleValueChange('q3', 'quantidade', v)}
+          {...disableProps(isEditing)}
+        />
+        <View style={styles.conditionalInput}>
+          <StyledInput
+            label="Por quanto tempo?"
+            iconName="clock"
+            value={formData.q3.porQuantoTempo}
+            onChangeText={(t) => handleValueChange('q3', 'porQuantoTempo', t)}
+            {...disableProps(isEditing)}
           />
-          {formData.usoMedicamento?.value === 'sim' && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label="Finalidade:"
-                iconName="info"
-                value={formData.usoMedicamento?.finalidade ?? ''}
-                onChangeText={(t) => handleInputChange('usoMedicamento', 'finalidade', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-      </View>
+        </View>
+      </QuestionCard>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Inventário de Saúde</Text>
+      <QuestionCard number={4} title="Preferência de escova" isEditing={isEditing} onEdit={toggleEdit}>
+        <View style={styles.checkboxContainer}>
+          {['Dura', 'Média', 'Extra macia', 'Macia'].map((opt) => (
+            <Checkbox
+              key={opt}
+              label={opt}
+              checked={formData.q4.selected.includes(opt)}
+              onPress={() => handleCheckboxChange('q4', opt)}
+              disabled={!isEditing}
+            />
+          ))}
+        </View>
+      </QuestionCard>
 
-        <QuestionCard number={4} title="Sistema Cardiovascular" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Hipertensão', 'Febre Reumática', 'Angina', 'Endocardite Bacteriana', 'Infarto', 'Prótese Valvular'].map(
-              (opt) => (
+      <QuestionCard number={5} title="Sensibilidade em algum dente provocado por:" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q5.value}
+          onSelect={(v) => handleValueChange('q5', 'value', v)}
+          disabled={!isEditing}
+        />
+        {formData.q5.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <View style={styles.checkboxContainer}>
+              {['Gelado', 'Quente', 'Mastigar', 'Escovar'].map((opt) => (
                 <Checkbox
                   key={opt}
                   label={opt}
-                  checked={(formData.cardiovascular?.selected ?? []).includes(opt)}
-                  onPress={() => handleCheckboxChange('cardiovascular', opt)}
+                  checked={formData.q5.selected.includes(opt)}
+                  onPress={() => handleCheckboxChange('q5', opt)}
                   disabled={!isEditing}
                 />
-              )
+              ))}
+            </View>
+            <Checkbox
+              label="Outros:"
+              checked={formData.q5.selected.includes('Outros')}
+              onPress={() => handleCheckboxChange('q5', 'Outros')}
+              disabled={!isEditing}
+            />
+            {formData.q5.selected.includes('Outros') && (
+              <View style={styles.conditionalInput}>
+                <StyledInput
+                  label=""
+                  iconName="plus"
+                  value={formData.q5.outros}
+                  onChangeText={(t) => handleValueChange('q5', 'outros', t)}
+                  {...disableProps(isEditing)}
+                />
+              </View>
             )}
           </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.cardiovascular?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('cardiovascular', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.cardiovascular?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.cardiovascular?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('cardiovascular', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
+        )}
+      </QuestionCard>
 
-        <QuestionCard number={5} title="Sistema Respiratório" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Asma', 'Efisema', 'Bronquite'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.respiratorio?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('respiratorio', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.respiratorio?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('respiratorio', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.respiratorio?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.respiratorio?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('respiratorio', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={6} title="Sistema Gastrointestinal" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Úlcera', 'Gastrite', 'Refluxo', 'Colite', 'Cirrose'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.gastrointestinal?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('gastrointestinal', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.gastrointestinal?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('gastrointestinal', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.gastrointestinal?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.gastrointestinal?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('gastrointestinal', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={7} title="Sistema Neuromuscular" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Epilepsia', 'Convulsão', 'Desmaio', 'Mialgia'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.neuromuscular?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('neuromuscular', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.neuromuscular?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('neuromuscular', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.neuromuscular?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.neuromuscular?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('neuromuscular', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={8} title="Sistema Ósteo-Articular" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Artrites', 'Osteoporose'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.osteoArticular?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('osteoArticular', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.osteoArticular?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('osteoArticular', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.osteoArticular?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.osteoArticular?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('osteoArticular', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={9} title="Sistema Gênito-Urinário" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Cistites', 'Cálculo Renal'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.genitoUrinario?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('genitoUrinario', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.genitoUrinario?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('genitoUrinario', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.genitoUrinario?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.genitoUrinario?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('genitoUrinario', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={10} title="Sistema Endócrino" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Diabetes', 'Hiper, Hipo ou Paratireoidismo'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.endocrino?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('endocrino', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-
-          <View style={styles.conditionalInput}>
-            <ToggleButtonGroup
-              label="Fome Excessiva?"
-              value={formData.endocrino?.fome ?? null}
-              onSelect={(val) => handleToggleChange('endocrino', 'fome', val)}
-              disabled={!isEditing}
-            />
-            <ToggleButtonGroup
-              label="Sede, Boca Seca?"
-              value={formData.endocrino?.sede ?? null}
-              onSelect={(val) => handleToggleChange('endocrino', 'sede', val)}
-              disabled={!isEditing}
-            />
-            <ToggleButtonGroup
-              label="Fadiga?"
-              value={formData.endocrino?.fadiga ?? null}
-              onSelect={(val) => handleToggleChange('endocrino', 'fadiga', val)}
-              disabled={!isEditing}
-            />
-            <ToggleButtonGroup
-              label="Cicatrização Deficiente?"
-              value={formData.endocrino?.cicatrizacao ?? null}
-              onSelect={(val) => handleToggleChange('endocrino', 'cicatrizacao', val)}
-              disabled={!isEditing}
-            />
-            <ToggleButtonGroup
-              label="Visão Alterada?"
-              value={formData.endocrino?.visao ?? null}
-              onSelect={(val) => handleToggleChange('endocrino', 'visao', val)}
-              disabled={!isEditing}
-            />
-            <ToggleButtonGroup
-              label="Rins Alterados?"
-              value={formData.endocrino?.rins ?? null}
-              onSelect={(val) => handleToggleChange('endocrino', 'rins', val)}
-              disabled={!isEditing}
-            />
-          </View>
-        </QuestionCard>
-
-        <QuestionCard number={11} title="Alterações Hormonais" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {[
-              'Boca seca',
-              'Contraceptivos',
-              'Insônia',
-              'Ondas de calor',
-              'Ardência',
-              'Formigamento',
-              'Sudorese',
-              'Menopausa',
-              'Reposição Hormonal',
-              'Osteoporose',
-            ].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.alteracoesHormonais?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('alteracoesHormonais', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.alteracoesHormonais?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('alteracoesHormonais', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.alteracoesHormonais?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.alteracoesHormonais?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('alteracoesHormonais', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={12} title="Doenças Infectocontagiosas" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['DST', 'Tuberculose', 'AIDS', 'Hepatite'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.infectocontagiosas?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('infectocontagiosas', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.infectocontagiosas?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('infectocontagiosas', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.infectocontagiosas?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.infectocontagiosas?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('infectocontagiosas', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={13} title="Alergias" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Medicamentos', 'Alimentos', 'Substâncias Químicas'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.alergias?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('alergias', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.alergias?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('alergias', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.alergias?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.alergias?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('alergias', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={14} title="Já teve ou tem Neoplasia?" isEditing={isEditing} onEdit={toggleEdit}>
-          <ToggleButtonGroup
-            label=""
-            value={formData.neoplasia?.value ?? null}
-            onSelect={(val) => handleToggleChange('neoplasia', 'value', val)}
-            disabled={!isEditing}
-          />
-          {formData.neoplasia?.value === 'sim' && (
-            <View style={styles.conditionalInput}>
-              <View style={styles.checkboxContainer}>
-                {['Benigna', 'Maligna'].map((opt) => (
-                  <Checkbox
-                    key={opt}
-                    label={opt}
-                    checked={(formData.neoplasia?.tipo ?? []).includes(opt)}
-                    onPress={() => handleNeoplasiaTypeChange(opt)}
-                    disabled={!isEditing}
-                  />
-                ))}
-              </View>
-              <StyledInput
-                label="Qual?"
-                iconName="info"
-                value={formData.neoplasia?.qual ?? ''}
-                onChangeText={(t) => handleInputChange('neoplasia', 'qual', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={15} title="Distúrbios Sanguíneos" isEditing={isEditing} onEdit={toggleEdit}>
-          <View style={styles.checkboxContainer}>
-            {['Anemia', 'Hemorragia', 'Trombose', 'Púrpura'].map((opt) => (
-              <Checkbox
-                key={opt}
-                label={opt}
-                checked={(formData.disturbiosSanguineos?.selected ?? []).includes(opt)}
-                onPress={() => handleCheckboxChange('disturbiosSanguineos', opt)}
-                disabled={!isEditing}
-              />
-            ))}
-          </View>
-          <Checkbox
-            label="Outros:"
-            checked={(formData.disturbiosSanguineos?.selected ?? []).includes('Outros')}
-            onPress={() => handleCheckboxChange('disturbiosSanguineos', 'Outros')}
-            disabled={!isEditing}
-          />
-          {(formData.disturbiosSanguineos?.selected ?? []).includes('Outros') && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label=""
-                iconName="plus"
-                value={formData.disturbiosSanguineos?.outros ?? ''}
-                onChangeText={(t) => handleInputChange('disturbiosSanguineos', 'outros', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={16} title="Síndromes e Transplantes" isEditing={isEditing} onEdit={toggleEdit}>
-          <ToggleButtonGroup
-            label=""
-            value={formData.sindromesTransplantes?.value ?? null}
-            onSelect={(val) => handleToggleChange('sindromesTransplantes', 'value', val)}
-            disabled={!isEditing}
-          />
-          {formData.sindromesTransplantes?.value === 'sim' && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label="Qual?"
-                iconName="info"
-                value={formData.sindromesTransplantes?.qual ?? ''}
-                onChangeText={(t) => handleInputChange('sindromesTransplantes', 'qual', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-
-        <QuestionCard number={17} title="Cirurgia" isEditing={isEditing} onEdit={toggleEdit}>
-          <ToggleButtonGroup
-            label="Já fez alguma cirurgia na boca?"
-            value={formData.cirurgia?.value ?? null}
-            onSelect={(val) => handleToggleChange('cirurgia', 'value', val)}
-            disabled={!isEditing}
-          />
-          <ToggleButtonGroup
-            label="Teve hemorragia ou sangramento exagerado?"
-            value={formData.cirurgia?.hemorragia ?? null}
-            onSelect={(val) => handleToggleChange('cirurgia', 'hemorragia', val)}
-            disabled={!isEditing}
-          />
+      <QuestionCard number={6} title="Usa fio dental?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q6.value}
+          onSelect={(val) => handleValueChange('q6', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q6.value === 'sim' && (
           <View style={styles.conditionalInput}>
             <StyledInput
-              label="Como foi a cicatrização?"
+              label="Frequência:"
               iconName="info"
-              multiline
-              value={formData.cirurgia?.cicatrizacao ?? ''}
-              onChangeText={(t) => handleInputChange('cirurgia', 'cicatrizacao', t)}
+              value={formData.q6.frequencia}
+              onChangeText={(text) => handleValueChange('q6', 'frequencia', text)}
               {...disableProps(isEditing)}
             />
           </View>
-        </QuestionCard>
+        )}
+      </QuestionCard>
 
-        <QuestionCard
-          number={18}
-          title="Tem alergia a anestésicos odontológicos?"
-          isEditing={isEditing}
-          onEdit={toggleEdit}
-        >
-          <ToggleButtonGroup
-            label=""
-            value={formData.alergiaAnestesico?.value ?? null}
-            onSelect={(val) => handleToggleChange('alergiaAnestesico', 'value', val)}
-            disabled={!isEditing}
-          />
-          {formData.alergiaAnestesico?.value === 'sim' && (
+      <QuestionCard number={7} title="O fio dental agarra ou desfia?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q7.value}
+          onSelect={(val) => handleValueChange('q7', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q7.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Onde?"
+              iconName="info"
+              value={formData.q7.onde}
+              onChangeText={(text) => handleValueChange('q7', 'onde', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={8} title="Usa pasta dental?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q8.value}
+          onSelect={(val) => handleValueChange('q8', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q8.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Qual?"
+              iconName="info"
+              value={formData.q8.qual}
+              onChangeText={(text) => handleValueChange('q8', 'qual', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={9} title="Escovar os dentes é:" isEditing={isEditing} onEdit={toggleEdit}>
+        <View style={styles.checkboxContainer}>
+          {['Fácil', 'Difícil', 'Um pouco difícil'].map((opt) => (
+            <Checkbox
+              key={opt}
+              label={opt}
+              checked={formData.q9.value === opt}
+              onPress={() => handleRadioCheckboxChange('q9', 'value', opt)}
+              disabled={!isEditing}
+            />
+          ))}
+        </View>
+        {(formData.q9.value === 'Difícil' || formData.q9.value === 'Um pouco difícil') && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Por quê?"
+              iconName="info"
+              value={formData.q9.motivo}
+              onChangeText={(text) => handleValueChange('q9', 'motivo', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={10} title="Usa palito?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q10.value}
+          onSelect={(val) => handleValueChange('q10', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q10.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Frequência:"
+              iconName="info"
+              value={formData.q10.frequencia}
+              onChangeText={(text) => handleValueChange('q10', 'frequencia', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={11} title="Usa bochecho?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q11.value}
+          onSelect={(val) => handleValueChange('q11', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q11.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Qual?"
+              iconName="info"
+              value={formData.q11.qual}
+              onChangeText={(text) => handleValueChange('q11', 'qual', text)}
+              {...disableProps(isEditing)}
+            />
             <View style={styles.conditionalInput}>
               <StyledInput
-                label="Qual?"
-                iconName="info"
-                value={formData.alergiaAnestesico?.qual ?? ''}
-                onChangeText={(t) => handleInputChange('alergiaAnestesico', 'qual', t)}
+                label="Frequência:"
+                iconName="clock"
+                value={formData.q11.frequencia}
+                onChangeText={(text) => handleValueChange('q11', 'frequencia', text)}
                 {...disableProps(isEditing)}
               />
             </View>
-          )}
-        </QuestionCard>
+          </View>
+        )}
+      </QuestionCard>
 
-        <QuestionCard number={19} title="Tem sinusite?" isEditing={isEditing} onEdit={toggleEdit}>
-          <ToggleButtonGroup
-            label=""
-            value={formData.sinusite?.value ?? null}
-            onSelect={(val) => handleToggleChange('sinusite', 'value', val)}
-            disabled={!isEditing}
-          />
-          {formData.sinusite?.value === 'sim' && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label="Qual?"
-                iconName="info"
-                value={formData.sinusite?.qual ?? ''}
-                onChangeText={(t) => handleInputChange('sinusite', 'qual', t)}
-                {...disableProps(isEditing)}
+      <QuestionCard number={12} title="Seus dentes possuem restaurações de resina, coroas, prótese fixa ou outros?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q12.value}
+          onSelect={(val) => handleValueChange('q12', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q12.value === 'sim' && (
+          <View style={[styles.checkboxContainer, styles.conditionalInput]}>
+            {['Pouco', 'Moderado', 'Muito'].map((opt) => (
+              <Checkbox
+                key={opt}
+                label={opt}
+                checked={formData.q12.quantidade === opt}
+                onPress={() => handleRadioCheckboxChange('q12', 'quantidade', opt)}
+                disabled={!isEditing}
               />
-            </View>
-          )}
-        </QuestionCard>
+            ))}
+          </View>
+        )}
+      </QuestionCard>
 
-        <QuestionCard
-          number={20}
-          title="Sente dores de cabeça com frequência?"
-          isEditing={isEditing}
-          onEdit={toggleEdit}
-        >
-          <ToggleButtonGroup
-            label=""
-            value={formData.dorDeCabeca?.value ?? null}
-            onSelect={(val) => handleToggleChange('dorDeCabeca', 'value', val)}
-            disabled={!isEditing}
-          />
-        </QuestionCard>
+      <QuestionCard number={13} title="Quantos dentes naturais já perdeu?" isEditing={isEditing} onEdit={toggleEdit}>
+        <StyledPicker
+          label=""
+          iconName="hash"
+          items={[
+            { label: 'Nenhum', value: '0' },
+            { label: '1 a 3', value: '1-3' },
+            { label: '4 a 7', value: '4-7' },
+            { label: 'Mais de 8', value: '8+' },
+          ]}
+          selectedValue={formData.q13.quantidade}
+          onValueChange={(val) => handleValueChange('q13', 'quantidade', val)}
+          {...disableProps(isEditing)}
+        />
+      </QuestionCard>
 
-        <QuestionCard
-          number={21}
-          title="Tem algum outro problema de saúde não relacionado neste questionário?"
-          isEditing={isEditing}
-          onEdit={toggleEdit}
-        >
-          <ToggleButtonGroup
-            label=""
-            value={formData.outroProblema?.value ?? null}
-            onSelect={(val) => handleToggleChange('outroProblema', 'value', val)}
-            disabled={!isEditing}
-          />
-          {formData.outroProblema?.value === 'sim' && (
-            <View style={styles.conditionalInput}>
-              <StyledInput
-                label="Qual?"
-                iconName="info"
-                value={formData.outroProblema?.qual ?? ''}
-                onChangeText={(t) => handleInputChange('outroProblema', 'qual', t)}
-                {...disableProps(isEditing)}
-              />
-            </View>
-          )}
-        </QuestionCard>
-      </View>
+      <QuestionCard number={14} title="Tem implante?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q14.value}
+          onSelect={(val) => handleValueChange('q14', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q14.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledPicker
+              label="Quantos?"
+              iconName="hash"
+              items={[
+                { label: '1 a 3', value: '1-3' },
+                { label: '4 a 7', value: '4-7' },
+                { label: 'Mais de 8', value: '8+' },
+              ]}
+              selectedValue={formData.q14.quantidade}
+              onValueChange={(val) => handleValueChange('q14', 'quantidade', val)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={15} title="Mastiga com os dois lados da boca?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q15.value}
+          onSelect={(val) => handleValueChange('q15', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q15.value === 'não' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Se não, qual o motivo?"
+              iconName="info"
+              value={formData.q15.motivo}
+              onChangeText={(text) => handleValueChange('q15', 'motivo', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={16} title="Range ou aperta os dentes?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q16.value}
+          onSelect={(val) => handleValueChange('q16', 'value', val)}
+          disabled={!isEditing}
+        />
+      </QuestionCard>
+
+      <QuestionCard number={17} title="Já fez alguma cirurgia na boca?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q17.value}
+          onSelect={(val) => handleValueChange('q17', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q17.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Qual?"
+              iconName="info"
+              value={formData.q17.qual}
+              onChangeText={(text) => handleValueChange('q17', 'qual', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={18} title="Sente dor ou estalo na ATM?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q18.value}
+          onSelect={(val) => handleValueChange('q18', 'value', val)}
+          disabled={!isEditing}
+        />
+      </QuestionCard>
+
+      <QuestionCard number={19} title="Tem dente(s) mole(s)?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q19.value}
+          onSelect={(val) => handleValueChange('q19', 'value', val)}
+          disabled={!isEditing}
+        />
+      </QuestionCard>
+
+      <QuestionCard number={20} title="Os alimentos ficam presos entre os dentes durante a alimentação?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q20.value}
+          onSelect={(val) => handleValueChange('q20', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q20.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Onde?"
+              iconName="info"
+              value={formData.q20.onde}
+              onChangeText={(text) => handleValueChange('q20', 'onde', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={21} title="Açúcar na alimentação?" isEditing={isEditing} onEdit={toggleEdit}>
+        <View style={styles.checkboxContainer}>
+          {['Pouco', 'Médio', 'Muito'].map((opt) => (
+            <Checkbox
+              key={opt}
+              label={opt}
+              checked={formData.q21.nivel === opt}
+              onPress={() => handleRadioCheckboxChange('q21', 'nivel', opt)}
+              disabled={!isEditing}
+            />
+          ))}
+        </View>
+      </QuestionCard>
+
+      <QuestionCard number={22} title="Possui hábito ou vício de alguma coisa como roer unhas, fumar, etc?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q22.value}
+          onSelect={(val) => handleValueChange('q22', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q22.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Qual?"
+              iconName="info"
+              value={formData.q22.qual}
+              onChangeText={(text) => handleValueChange('q22', 'qual', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={23} title="Normalmente você dorme de boca fechada?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q23.value}
+          onSelect={(val) => handleValueChange('q23', 'value', val)}
+          disabled={!isEditing}
+        />
+      </QuestionCard>
+
+      <QuestionCard number={24} title="Você está satisfeito com a estética do seu sorriso?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q24.value}
+          onSelect={(val) => handleValueChange('q24', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q24.value === 'não' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="O que gostaria de mudar?"
+              iconName="info"
+              value={formData.q24.oQueMudar}
+              onChangeText={(text) => handleValueChange('q24', 'oQueMudar', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
+
+      <QuestionCard number={25} title="Você tem disponibilidade de tempo para o tratamento?" isEditing={isEditing} onEdit={toggleEdit}>
+        <View style={styles.checkboxContainer}>
+          {['Sim', 'Mais ou menos', 'Pouco tempo'].map((opt) => (
+            <Checkbox
+              key={opt}
+              label={opt}
+              checked={formData.q25.nivel === opt}
+              onPress={() => handleRadioCheckboxChange('q25', 'nivel', opt)}
+              disabled={!isEditing}
+            />
+          ))}
+        </View>
+      </QuestionCard>
+
+      <QuestionCard number={26} title="Tem algum outro problema não mencionado que você gostaria de relatar?" isEditing={isEditing} onEdit={toggleEdit}>
+        <ToggleButtonGroup
+          label=""
+          value={formData.q26.value}
+          onSelect={(val) => handleValueChange('q26', 'value', val)}
+          disabled={!isEditing}
+        />
+        {formData.q26.value === 'sim' && (
+          <View style={styles.conditionalInput}>
+            <StyledInput
+              label="Qual?"
+              iconName="info"
+              value={formData.q26.qual}
+              onChangeText={(text) => handleValueChange('q26', 'qual', text)}
+              {...disableProps(isEditing)}
+            />
+          </View>
+        )}
+      </QuestionCard>
     </View>
   );
 }

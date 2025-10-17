@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -14,9 +14,7 @@ import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { styles } from './EducationalContentScreen.styles';
 import { useUIStore } from '@/state/uiStore';
 import { useEducationalContentStore, CarouselSlide } from '@/state/educationalContentStore';
-
 import ScreenFooter from '@/components/common/ScreenFooter';
-
 import Chefinho from '@/assets/characters/chefinho.svg';
 import Escova1 from '@/assets/characters/escova1.svg';
 import Fio from '@/assets/characters/fio.svg';
@@ -35,44 +33,30 @@ const contentConfig = {
 
 type ContentType = keyof typeof contentConfig;
 const isValidContentType = (t: any): t is ContentType => t in contentConfig;
-
 const DOT_SIZE = 16;
 
 function SlideCard({ item }: { item: CarouselSlide }) {
   return (
-    <ScrollView
-      style={styles.slideScroll}
-      contentContainerStyle={styles.slideScrollContent}
-      showsVerticalScrollIndicator
-    >
+    <ScrollView style={styles.slideScroll} contentContainerStyle={styles.slideScrollContent} showsVerticalScrollIndicator>
       {item.title ? <Text style={styles.slideTitle}>{item.title}</Text> : null}
-
-      {item.image ? (
-        <Image source={item.image} style={styles.slideImage} resizeMode="contain" />
-      ) : null}
-
+      {item.image ? <Image source={item.image} style={styles.slideImage} resizeMode="contain" /> : null}
       {item.text?.map((p, i) => (
         <Text key={i} style={styles.slideText}>{p}</Text>
       ))}
-
       {item.quote ? <Text style={styles.slideQuote}>{item.quote}</Text> : null}
       {item.author ? <Text style={styles.slideAuthor}>{item.author}</Text> : null}
-
       {item.text1 ? <Text style={styles.slideText}>{item.text1}</Text> : null}
       {item.text2 ? <Text style={styles.slideText}>{item.text2}</Text> : null}
-
       {item.listTitle ? <Text style={styles.slideListTitle}>{item.listTitle}</Text> : null}
       {item.bulletPoints?.map((p, i) => (
         <Text key={i} style={styles.slideBullet}>• {p}</Text>
       ))}
-
       {item.beforeAfterImages ? (
         <View style={styles.beforeAfterContainer}>
           <Image source={item.beforeAfterImages.before} style={styles.beforeAfterImage} resizeMode="contain" />
           <Image source={item.beforeAfterImages.after} style={styles.beforeAfterImage} resizeMode="contain" />
         </View>
       ) : null}
-
       {item.images ? (
         <View style={styles.imageGallery}>
           {item.images.map((img, i) => (
@@ -80,7 +64,6 @@ function SlideCard({ item }: { item: CarouselSlide }) {
           ))}
         </View>
       ) : null}
-
       {item.collageImages ? (
         <View style={styles.imageGallery}>
           {item.collageImages.map((img, i) => (
@@ -88,7 +71,6 @@ function SlideCard({ item }: { item: CarouselSlide }) {
           ))}
         </View>
       ) : null}
-
       {item.imageGrid ? (
         <View style={styles.imageGridContainer}>
           {item.imageGrid.map((img, i) => (
@@ -105,21 +87,18 @@ export default function EducationalContentScreen() {
   const params = useLocalSearchParams<{ contentType: string }>();
   const contentType = isValidContentType(params.contentType) ? params.contentType : 'chefinho';
   const config = contentConfig[contentType];
-
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
-  const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const { height, width } = useWindowDimensions();
+  const headerHeight = height * 0.21;
   const topOffset = headerHeight + 8;
-
   const hydrate = useEducationalContentStore((s) => s.hydrate);
   const isHydrated = useEducationalContentStore((s) => s.isHydrated);
   const slides = useEducationalContentStore((s) => s.pages[config.pageName]);
-
   const [activeIndex, setActiveIndex] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
 
   const onPagerScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const w = e.nativeEvent.layoutMeasurement.width;
+    const w = e.nativeEvent.layoutMeasurement.width || 1;
     const idx = Math.round(e.nativeEvent.contentOffset.x / w);
     if (idx !== activeIndex) setActiveIndex(idx);
   };
@@ -133,6 +112,7 @@ export default function EducationalContentScreen() {
         pageTitle: config.title,
         CharacterSvg: config.CharacterSvg,
         showNotificationIcon: true,
+        showBackground: true,
       });
     }, [contentType, config])
   );
@@ -141,16 +121,14 @@ export default function EducationalContentScreen() {
 
   const data = slides || [];
   const empty = data.length === 0;
-
-  const contentWidth = Math.max(0, cardWidth - 32);
+  const fallbackCardWidth = Math.max(0, width - 24);
+  const innerPadding = 32;
+  const contentWidth = Math.max(1, (cardWidth || fallbackCardWidth) - innerPadding);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={[styles.pageBody, styles.pageBodySidePadding, { paddingTop: topOffset }]}>
-        <View
-          style={styles.card}
-          onLayout={(e: LayoutChangeEvent) => setCardWidth(e.nativeEvent.layout.width)}
-        >
+        <View style={styles.card} onLayout={(e: LayoutChangeEvent) => setCardWidth(e.nativeEvent.layout.width)}>
           <ScrollView
             horizontal
             pagingEnabled
@@ -160,15 +138,8 @@ export default function EducationalContentScreen() {
             style={{ flex: 1 }}
           >
             {empty ? (
-              <View style={[styles.slidePage, { width: contentWidth }]}>
-                <View
-                  style={[
-                    styles.slideScroll,
-                    { justifyContent: 'center', alignItems: 'center' },
-                  ]}
-                >
-                  <Text style={styles.emptyText}>Nenhum conteúdo encontrado.</Text>
-                </View>
+              <View style={[styles.slidePage, { width: contentWidth, justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={styles.emptyText}>Nenhum conteúdo encontrado.</Text>
               </View>
             ) : (
               data.map((item) => (
@@ -204,7 +175,12 @@ export default function EducationalContentScreen() {
 
       <ScreenFooter
         buttons={[
-          { title: 'Editar Conteúdo', onPress: () => router.push({ pathname: '/(app)/edit-educacional/[contentType]', params: { contentType } }), variant: 'secondary' },
+          {
+            title: 'Editar Conteúdo',
+            onPress: () =>
+              router.push({ pathname: '/(app)/edit-educacional/[contentType]', params: { contentType } }),
+            variant: 'secondary',
+          },
         ]}
       />
     </SafeAreaView>

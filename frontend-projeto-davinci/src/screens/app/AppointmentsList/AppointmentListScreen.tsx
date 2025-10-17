@@ -36,7 +36,8 @@ export default function AppointmentListScreen() {
 
   const { height } = useWindowDimensions();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-  const headerHeight = height * 0.27;
+  const headerHeight = height * 0.18;
+  const bodyOffset = headerHeight + 8;
 
   const { list: users } = useUsers();
   const { list: appointments, refresh } = useAppointments();
@@ -99,9 +100,7 @@ export default function AppointmentListScreen() {
       const patient = patients.find((p) => p.id === appt.patientId);
       const dentist = dentists.find((d) => d.id === appt.dentistId);
 
-      const patientImage = patient?.photoUri
-        ? { uri: patient.photoUri }
-        : patient?.image || null;
+      const patientImage = patient?.photoUri ? { uri: patient.photoUri } : patient?.image || null;
 
       return {
         ...appt,
@@ -171,7 +170,7 @@ export default function AppointmentListScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={{ flex: 1, paddingTop: headerHeight }}>
+      <View style={{ flex: 1, paddingTop: bodyOffset }}>
         <View style={styles.fixedHeaderContainer}>
           <SearchAndFilterBar
             value={searchQuery}
@@ -184,9 +183,7 @@ export default function AppointmentListScreen() {
         <FlatList
           data={filteredAppointments}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />
-          )}
+          renderItem={({ item }) => <AppointmentListItem item={item} onPress={() => handleItemPress(item)} />}
           style={{ flex: 1 }}
           contentContainerStyle={styles.listContentContainer}
           keyboardShouldPersistTaps="handled"

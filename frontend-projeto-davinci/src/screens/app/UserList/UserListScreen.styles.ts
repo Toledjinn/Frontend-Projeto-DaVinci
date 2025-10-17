@@ -9,14 +9,4 @@ export const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
   },
-  contentWrapper: {
-    flex: 1,
-    paddingHorizontal: 12,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContentContainer: {
-    paddingBottom: 20,
-  },
 });

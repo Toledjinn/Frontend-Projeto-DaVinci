@@ -14,7 +14,7 @@ const userType = 'admin';
 export default function NewsScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.28;
+  const headerHeight = height * 0.20;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const hydrate = useNewsStore((s) => s.hydrate);
@@ -27,6 +27,7 @@ export default function NewsScreen() {
         visible: true,
         layout: 'page',
         showPageHeaderElements: true,
+
         pageTitle: 'Novidades',
         CharacterSvg: Chefinho,
         showNotificationIcon: true,

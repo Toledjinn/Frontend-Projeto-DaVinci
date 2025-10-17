@@ -1,16 +1,16 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions, LayoutChangeEvent, FlatList } from 'react-native';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './UserListScreen.styles';
 import { useUIStore } from '@/state/uiStore';
-import UserList from '@/components/features/UserList';
 import ScreenFooter from '@/components/common/ScreenFooter';
 import SearchAndFilterBar from '@/components/features/SearchAndFilterBar';
 import PatientFilterModal from '@/components/features/PatientFilterModal';
 import DentistFilterModal from '@/components/features/DentistFilterModal';
 import AdminFilterModal from '@/components/features/AdminFilterModal';
+import UserListItem from '@/components/features/UserListItem';
 
 import { useUsers } from '@/hooks/useUsers';
 import type { UserProfile } from '@/data/mockUsers';
@@ -39,19 +39,14 @@ const userTypeConfig = {
       const now = new Date();
       now.setHours(0, 0, 0, 0);
       const appointments = getAppointmentsByPatientId(user.id);
-
       const futureAppointments = appointments
         .filter((appt) => appt.status === 'agendada' && parseDate(appt.date) >= now)
         .sort((a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime());
-
       if (futureAppointments.length > 0) return `Próxima consulta: ${futureAppointments[0].date}`;
-
       const pastAppointments = appointments
         .filter((appt) => appt.status === 'realizada')
         .sort((a, b) => parseDate(b.date).getTime() - parseDate(a.date).getTime());
-
       if (pastAppointments.length > 0) return `Última consulta: ${pastAppointments[0].date}`;
-
       return 'Nenhuma consulta';
     },
   },
@@ -74,11 +69,17 @@ const userTypeConfig = {
 export default function UserListScreen() {
   const router = useRouter();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.28;
+  const headerHeight = height * 0.18;
+  const bodyOffset = headerHeight + 8;
   const { userType } = useLocalSearchParams<{ userType: 'patient' | 'dentist' | 'admin' }>();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
-
   const { list } = useUsers();
+
+  const [footerHeight, setFooterHeight] = useState<number>(88);
+  const onFooterLayout = (e: LayoutChangeEvent) => {
+    const h = e.nativeEvent.layout.height;
+    if (h > 0) setFooterHeight(h);
+  };
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
@@ -218,33 +219,38 @@ export default function UserListScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
-        <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
-          <SearchAndFilterBar
-            value={searchQuery}
-            placeholder={config.searchPlaceholder}
-            onSearchChange={setSearchQuery}
-            onFilterPress={() => setFilterModalVisible(true)}
-          />
-
-          <View style={{ flex: 1 }}>
-           <UserList
-              data={filteredUsers}
-              style={{ flex: 1 }}
-              contentContainerStyle={{ paddingBottom: 120 }}
-              keyboardShouldPersistTaps="handled"
+        <FlatList
+          data={filteredUsers}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => <UserListItem item={item as any} />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingTop: bodyOffset,
+            paddingHorizontal: 16,
+            paddingBottom: footerHeight + 16,
+            gap: 0,
+          }}
+          ListHeaderComponent={
+            <SearchAndFilterBar
+              value={searchQuery}
+              placeholder={config.searchPlaceholder}
+              onSearchChange={setSearchQuery}
+              onFilterPress={() => setFilterModalVisible(true)}
             />
-          </View>
-        </View>
-
-        <ScreenFooter
-          buttons={[
-            {
-              title: config.registerButtonTitle,
-              onPress: handleRegisterPress,
-              variant: 'secondary',
-            },
-          ]}
+          }
         />
+
+        <View onLayout={onFooterLayout}>
+          <ScreenFooter
+            buttons={[
+              {
+                title: config.registerButtonTitle,
+                onPress: handleRegisterPress,
+                variant: 'secondary',
+              },
+            ]}
+          />
+        </View>
       </View>
 
       {renderFilterModal()}

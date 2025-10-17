@@ -42,7 +42,8 @@ export default function EditSocialContentScreen() {
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
 
   const page: PageName = isValidPageName(pageName) ? pageName! : 'oQueE';
   const config = editContentConfig[page];
@@ -60,8 +61,9 @@ export default function EditSocialContentScreen() {
         pageTitle: `Editar "${config.title}"`,
         CharacterSvg: Chefinho,
         showNotificationIcon: false,
+        showBackground: true,
       });
-    }, [page, config, hydrate, setHeaderConfig])
+    }, [page, config.title])
   );
 
   useEffect(() => {
@@ -84,9 +86,7 @@ export default function EditSocialContentScreen() {
             return;
           }
           const result = await ImagePicker.launchCameraAsync({ quality: 0.6 });
-          if (!result.canceled && result.assets?.[0]?.uri) {
-            onPick(result.assets[0].uri);
-          }
+          if (!result.canceled && result.assets?.[0]?.uri) onPick(result.assets[0].uri);
         },
       },
       {
@@ -98,9 +98,7 @@ export default function EditSocialContentScreen() {
             return;
           }
           const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.6 });
-          if (!result.canceled && result.assets?.[0]?.uri) {
-            onPick(result.assets[0].uri);
-          }
+          if (!result.canceled && result.assets?.[0]?.uri) onPick(result.assets[0].uri);
         },
       },
       { text: 'Cancelar', style: 'cancel' },
@@ -109,38 +107,16 @@ export default function EditSocialContentScreen() {
 
   const makeNewBlock = (type: 'text' | 'image' | 'video' | 'depoimento'): SocialContent => {
     const id = `${type}_${Date.now()}`;
-
     if (type === 'depoimento') {
-      return {
-        id,
-        type: 'depoimento',
-        author: '',
-        text: '',
-        videoUrl: '',
-      } as DepoimentoItem;
+      return { id, type: 'depoimento', author: '', text: '', videoUrl: '' } as DepoimentoItem;
     }
-
     if (type === 'text') {
-      return {
-        id,
-        type: 'text',
-        content: '',
-      } as ContentBlock;
+      return { id, type: 'text', content: '' } as ContentBlock;
     }
-
     if (type === 'image') {
-      return {
-        id,
-        type: 'image',
-        image: { uri: '' } as any,
-      } as ContentBlock;
+      return { id, type: 'image', image: { uri: '' } as any } as ContentBlock;
     }
-
-    return {
-      id,
-      type: 'video',
-      videoUrl: '',
-    } as ContentBlock;
+    return { id, type: 'video', videoUrl: '' } as ContentBlock;
   };
 
   const addBlockLocal = (type: 'text' | 'image' | 'video' | 'depoimento') => {
@@ -150,10 +126,7 @@ export default function EditSocialContentScreen() {
   const addImageBlock = () => {
     const id = `image_${Date.now()}`;
     openMediaChooser((uri) => {
-      setEditableContent((prev) => [
-        ...prev,
-        { id, type: 'image', image: { uri } } as unknown as ContentBlock,
-      ]);
+      setEditableContent((prev) => [...prev, { id, type: 'image', image: { uri } } as unknown as ContentBlock]);
     });
   };
 
@@ -162,9 +135,7 @@ export default function EditSocialContentScreen() {
   };
 
   const handleItemChange = (id: string, field: string, value: any) => {
-    setEditableContent((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
-    );
+    setEditableContent((prev) => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
   };
 
   const handlePickImageForBlock = (id: string) => {
@@ -187,31 +158,15 @@ export default function EditSocialContentScreen() {
         <>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Autor</Text>
-            <TextInput
-              value={item.author}
-              onChangeText={(text) => handleItemChange(item.id, 'author', text)}
-              style={styles.textInput}
-            />
+            <TextInput value={item.author} onChangeText={(text) => handleItemChange(item.id, 'author', text)} style={styles.textInput} />
           </View>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Texto do Depoimento</Text>
-            <TextInput
-              value={item.text}
-              onChangeText={(text) => handleItemChange(item.id, 'text', text)}
-              multiline
-              style={[styles.textInput, { height: 120 }]}
-            />
+            <TextInput value={item.text} onChangeText={(text) => handleItemChange(item.id, 'text', text)} multiline style={[styles.textInput, { height: 120 }]} />
           </View>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>URL do Vídeo (Opcional)</Text>
-            <TextInput
-              value={item.videoUrl || ''}
-              onChangeText={(text) => handleItemChange(item.id, 'videoUrl', text)}
-              placeholder="Cole o link do YouTube aqui"
-              style={styles.textInput}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+            <TextInput value={item.videoUrl || ''} onChangeText={(text) => handleItemChange(item.id, 'videoUrl', text)} placeholder="Cole o link do YouTube aqui" style={styles.textInput} autoCapitalize="none" autoCorrect={false} />
           </View>
         </>
       );
@@ -222,20 +177,13 @@ export default function EditSocialContentScreen() {
         return (
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Parágrafo</Text>
-            <TextInput
-              value={item.content || ''}
-              onChangeText={(text) => handleItemChange(item.id, 'content', text)}
-              multiline
-              style={[styles.textInput, { height: 150 }]}
-            />
+            <TextInput value={item.content || ''} onChangeText={(text) => handleItemChange(item.id, 'content', text)} multiline style={[styles.textInput, { height: 150 }]} />
           </View>
         );
-
       case 'image': {
         const imgSrc = (item as ContentBlock).image as any;
         const hasImage = !!imgSrc && (typeof imgSrc === 'number' || !!imgSrc.uri);
         const hasValidUri = !!(imgSrc && imgSrc.uri && imgSrc.uri.length > 0);
-
         return (
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Imagem</Text>
@@ -255,22 +203,13 @@ export default function EditSocialContentScreen() {
           </View>
         );
       }
-
       case 'video':
         return (
           <View style={styles.inputGroup}>
             <Text style={styles.label}>URL do Vídeo</Text>
-            <TextInput
-              value={(item as ContentBlock).videoUrl || ''}
-              onChangeText={(text) => handleItemChange(item.id, 'videoUrl', text)}
-              placeholder="Cole o link do YouTube aqui"
-              style={styles.textInput}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+            <TextInput value={(item as ContentBlock).videoUrl || ''} onChangeText={(text) => handleItemChange(item.id, 'videoUrl', text)} placeholder="Cole o link do YouTube aqui" style={styles.textInput} autoCapitalize="none" autoCorrect={false} />
           </View>
         );
-
       default:
         return null;
     }
@@ -282,7 +221,7 @@ export default function EditSocialContentScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={[styles.pageBody, styles.pageBodySidePadding, { paddingTop: headerHeight }]}>
+      <View style={[styles.pageBody, styles.pageBodySidePadding, { paddingTop: bodyOffset }]}>
         <View style={styles.editorCard}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>{config.title}</Text>
@@ -291,7 +230,7 @@ export default function EditSocialContentScreen() {
           <ScrollView
             style={styles.editorScroll}
             contentContainerStyle={styles.editorScrollContent}
-            showsVerticalScrollIndicator
+            showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
           >
@@ -316,22 +255,17 @@ export default function EditSocialContentScreen() {
                         ? `Vídeo ${index + 1}`
                         : `Item ${index + 1}`}
                     </Text>
-
                     <TouchableOpacity onPress={() => removeBlockLocal(item.id)}>
                       <Feather name="trash-2" size={18} color={COLORS.red} />
                     </TouchableOpacity>
                   </View>
-
                   {renderEditorFor(item)}
                 </View>
               ))}
 
               <View style={styles.addButtonsContainer}>
                 {isDepoimentos ? (
-                  <TouchableOpacity
-                    style={styles.addButton}
-                    onPress={() => addBlockLocal('depoimento')}
-                  >
+                  <TouchableOpacity style={styles.addButton} onPress={() => addBlockLocal('depoimento')}>
                     <Feather name="plus" size={16} color={COLORS.secondary} />
                     <Text style={styles.addButtonText}>Adicionar Depoimento</Text>
                   </TouchableOpacity>
@@ -341,12 +275,10 @@ export default function EditSocialContentScreen() {
                       <Feather name="plus" size={16} color={COLORS.secondary} />
                       <Text style={styles.addButtonText}>Adicionar Texto</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity style={styles.addButton} onPress={addImageBlock}>
                       <Feather name="image" size={16} color={COLORS.secondary} />
                       <Text style={styles.addButtonText}>Adicionar Imagem</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity style={styles.addButton} onPress={() => addBlockLocal('video')}>
                       <Feather name="video" size={16} color={COLORS.secondary} />
                       <Text style={styles.addButtonText}>Adicionar Vídeo</Text>
@@ -361,7 +293,7 @@ export default function EditSocialContentScreen() {
 
       <ScreenFooter
         buttons={[
-          { title: 'Cancelar', onPress: handleCancel, variant: 'secondary' },
+          { title: 'Cancelar', onPress: () => router.back(), variant: 'secondary' },
           { title: 'Salvar', onPress: handleSaveChanges, variant: 'primary' },
         ]}
       />

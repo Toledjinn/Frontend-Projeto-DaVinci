@@ -6,13 +6,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollView: {
+  bodyScroll: {
     flex: 1,
   },
-  contentContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
-    marginTop: 12
+  bodyContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    gap: 12,
   },
 });
-

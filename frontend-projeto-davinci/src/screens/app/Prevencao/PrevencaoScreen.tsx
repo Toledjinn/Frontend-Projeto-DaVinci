@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, useWindowDimensions, Text, View, Alert } from 'react-native';
+import { ScrollView, useWindowDimensions, Text, View, Alert, LayoutChangeEvent } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 
 import { styles } from './PrevencaoScreen.styles';
@@ -24,12 +24,13 @@ const preventionTitles: Record<PreventionType, string> = {
   quaternaria: 'Prevenção Quaternária',
 };
 
-const hasAnyFilled = (items: Item[]) =>
-  (items || []).some((i) => (i.value || '').trim().length > 0);
+const hasAnyFilled = (items: Item[]) => (items || []).some((i) => (i.value || '').trim().length > 0);
 
 export default function PrevencaoScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
+
   const router = useRouter();
   const { patientId, type } = useLocalSearchParams<{ patientId: string; type: PreventionType }>();
   const preventionType = (type || 'primaria') as PreventionType;
@@ -49,17 +50,23 @@ export default function PrevencaoScreen() {
   const [createdAt, setCreatedAt] = useState<string | undefined>(undefined);
   const [isEditing, setIsEditing] = useState(true);
 
+  const [footerHeight, setFooterHeight] = useState<number>(88);
+  const onFooterLayout = (e: LayoutChangeEvent) => {
+    const h = e.nativeEvent.layout.height;
+    if (h > 0) setFooterHeight(h);
+  };
+
   useEffect(() => {
     if (!patient) return;
     const saved = getOrCreatePrevention(String(patient.id), preventionType);
-    const list = saved.items && saved.items.length > 0 ? saved.items : [{ id: Date.now(), value: '' }];
-    setItems(list);
+    const listItems = saved.items && saved.items.length > 0 ? saved.items : [{ id: Date.now(), value: '' }];
+    setItems(listItems);
     setCreatedAt(saved.createdAt);
-    setIsEditing(!hasAnyFilled(list)); 
+    setIsEditing(!hasAnyFilled(listItems));
   }, [patient, preventionType, getOrCreatePrevention]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (!patient) return;
       setHeaderConfig({
         layout: 'profile',
@@ -99,36 +106,36 @@ export default function PrevencaoScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
-        keyboardShouldPersistTaps="handled"
-      >
-        <QuestionCard
-          number={1}
-          title="Diagnóstico"
-          isEditing={isEditing}
-          onEdit={toggleEdit}
+      <View style={styles.outerContainer}>
+        <ScrollView
+          style={[styles.bodyScroll, { marginTop: bodyOffset }]}
+          contentContainerStyle={[styles.bodyContent, { paddingBottom: footerHeight + 16 }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <DynamicInputList
-            disabled={!isEditing}
-            title=""                
-            inputIcon="check-square"
-            placeholder="Diagnóstico"
-            addMoreText="Adicionar Item"
-            initialItems={items}
-            onChangeItems={setItems}
-          />
-        </QuestionCard>
-      </ScrollView>
+          <QuestionCard number={1} title="Diagnóstico" isEditing={isEditing} onEdit={toggleEdit}>
+            <DynamicInputList
+              disabled={!isEditing}
+              title=""
+              inputIcon="check-square"
+              placeholder="Diagnóstico"
+              addMoreText="Adicionar Item"
+              initialItems={items}
+              onChangeItems={setItems}
+            />
+          </QuestionCard>
+        </ScrollView>
 
-      <ScreenFooter
-        buttons={[
-          isEditing
-            ? { title: 'Salvar', onPress: handleSave, variant: 'primary' }
-            : { title: 'Editar', onPress: toggleEdit, variant: 'secondary' },
-        ]}
-      />
+        <View onLayout={onFooterLayout}>
+          <ScreenFooter
+            buttons={[
+              isEditing
+                ? { title: 'Salvar', onPress: handleSave, variant: 'primary' }
+                : { title: 'Editar', onPress: toggleEdit, variant: 'secondary' },
+            ]}
+          />
+        </View>
+      </View>
     </SafeAreaView>
   );
 }

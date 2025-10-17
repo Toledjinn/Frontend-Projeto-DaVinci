@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, ScrollView, Alert, useWindowDimensions } from 'react-native';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { View, Text, ScrollView, Alert, useWindowDimensions, LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
@@ -28,7 +28,8 @@ const disableProps = (isEditing: boolean) => ({
 
 export default function SaudeBucalScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
 
   const { patientId } = useLocalSearchParams<{ patientId: string }>();
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
@@ -43,6 +44,12 @@ export default function SaudeBucalScreen() {
   const [formData, setFormData] = useState<OralHealthForm>(ORAL_HEALTH_INITIAL);
   const [isEditing, setIsEditing] = useState(true);
 
+  const [footerHeight, setFooterHeight] = useState<number>(88);
+  const onFooterLayout = (e: LayoutChangeEvent) => {
+    const h = e.nativeEvent.layout.height;
+    if (h > 0) setFooterHeight(h);
+  };
+
   useEffect(() => {
     if (!patient) return;
     const saved = getOrCreateOralHealth(String(patient.id));
@@ -54,7 +61,6 @@ export default function SaudeBucalScreen() {
   useFocusEffect(
     React.useCallback(() => {
       if (!patient) return;
-
       setHeaderConfig({
         layout: 'profile',
         showBackground: true,
@@ -95,28 +101,29 @@ export default function SaudeBucalScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
-        <View style={[styles.contentWrapper, { paddingTop: headerHeight }]}>
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContentContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <SaudeBucalFormInline
-              formData={formData}
-              setFormData={setFormData}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-            />
-          </ScrollView>
-        </View>
+        <ScrollView
+          style={[styles.bodyScroll, { marginTop: bodyOffset }]}
+          contentContainerStyle={[styles.bodyContent, { paddingBottom: footerHeight + 16 }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <SaudeBucalFormInline
+            formData={formData}
+            setFormData={setFormData}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+          />
+        </ScrollView>
 
-        <ScreenFooter
-          buttons={[
-            isEditing
-              ? { title: 'Salvar Ficha', onPress: handleSave, variant: 'secondary' }
-              : { title: 'Editar', onPress: () => setIsEditing(true), variant: 'secondary' },
-          ]}
-        />
+        <View onLayout={onFooterLayout}>
+          <ScreenFooter
+            buttons={[
+              isEditing
+                ? { title: 'Salvar Ficha', onPress: handleSave, variant: 'secondary' }
+                : { title: 'Editar', onPress: () => setIsEditing(true), variant: 'secondary' },
+            ]}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, ScrollView, useWindowDimensions, TextInput, Text, Alert } from 'react-native';
+import { View, ScrollView, useWindowDimensions, TextInput, Text, Alert, LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -20,7 +20,9 @@ import { markStepScheduled } from '@/data/treatmentPlansStore';
 
 export default function ScheduleAppointmentScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
+
   const router = useRouter();
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
   const { list: users } = useUsers();
@@ -48,16 +50,31 @@ export default function ScheduleAppointmentScreen() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [observations, setObservations] = useState(params.observations || '');
-
   const [editingApptPlanStepId, setEditingApptPlanStepId] = useState<string | undefined>(params.planStepId);
+
+  const [footerHeight, setFooterHeight] = useState<number>(88);
+  const onFooterLayout = (e: LayoutChangeEvent) => {
+    const h = e.nativeEvent.layout.height;
+    if (h > 0) setFooterHeight(h);
+  };
 
   const patients = users
     .filter((u) => u.type === 'patient')
-    .map((u) => ({ id: u.id, name: u.name, image: u.image ?? null }));
+    .map((u) => ({
+      id: u.id,
+      name: u.name,
+      image: u.image ?? null,
+      photoUri: u.photoUri ?? null,
+    }));
 
   const dentists = users
     .filter((u) => u.type === 'dentist')
-    .map((u) => ({ id: u.id, name: u.name, image: u.image ?? null }));
+    .map((u) => ({
+      id: u.id,
+      name: u.name,
+      image: u.image ?? null,
+      photoUri: u.photoUri ?? null,
+    }));
 
   useFocusEffect(
     useCallback(() => {
@@ -66,13 +83,13 @@ export default function ScheduleAppointmentScreen() {
         if (isReproposeMode) return 'Sugerir nova data/horário';
         return isEditing ? 'Editar Consulta' : 'Agendar Consulta';
       };
-
       setHeaderConfig({
         layout: 'page',
         showPageHeaderElements: true,
         pageTitle: getTitle(),
         CharacterSvg: Chefinho,
         showNotificationIcon: false,
+        showBackground: true,
       });
     }, [isRescheduleMode, isReproposeMode, isEditing, setHeaderConfig])
   );
@@ -139,7 +156,6 @@ export default function ScheduleAppointmentScreen() {
       Alert.alert('Sucesso', 'Consulta salva com sucesso!');
       router.back();
     } catch (err) {
-      console.error(err);
       Alert.alert('Erro', 'Não foi possível salvar a consulta.');
     }
   };
@@ -151,9 +167,10 @@ export default function ScheduleAppointmentScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.outerContainer}>
         <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={[styles.scrollContentContainer, { paddingTop: headerHeight }]}
+          style={[styles.bodyScroll, { marginTop: bodyOffset }]}
+          contentContainerStyle={[styles.bodyContent, { paddingBottom: footerHeight + 16 }]}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.inputWrapper}>
             <StyledUserPicker
@@ -212,12 +229,14 @@ export default function ScheduleAppointmentScreen() {
           </View>
         </ScrollView>
 
-        <ScreenFooter
-          buttons={[
-            { title: 'Cancelar', onPress: () => router.back(), variant: 'secondary' },
-            { title: primaryButtonTitle(), onPress: handleSave, variant: 'primary' },
-          ]}
-        />
+        <View onLayout={onFooterLayout}>
+          <ScreenFooter
+            buttons={[
+              { title: 'Cancelar', onPress: () => router.back(), variant: 'secondary' },
+              { title: primaryButtonTitle(), onPress: handleSave, variant: 'primary' },
+            ]}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

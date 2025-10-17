@@ -9,18 +9,13 @@ export const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
   },
-  contentWrapper: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingBottom: 8, 
-  },
-  scrollView: {
+  bodyScroll: {
     flex: 1,
   },
-  scrollContentContainer: {
-    paddingBottom: 24,
+  bodyContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
-
   formContainer: {
     width: '100%',
   },
@@ -35,7 +30,6 @@ export const styles = StyleSheet.create({
     borderBottomColor: COLORS.gray_200,
     paddingBottom: 4,
   },
-
   checkboxContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -50,7 +44,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 8,
   },
-
   removeButton: {
     marginLeft: 10,
     paddingTop: 20,
@@ -73,7 +66,6 @@ export const styles = StyleSheet.create({
     ...FONTS.body7,
     marginLeft: 8,
   },
-
   disabled: {
     opacity: 0.5,
   },
@@ -100,7 +92,6 @@ export const styles = StyleSheet.create({
     color: COLORS.gray_200,
     marginTop: 8,
   },
-
   divider: {
     height: 1,
     backgroundColor: COLORS.gray_100,

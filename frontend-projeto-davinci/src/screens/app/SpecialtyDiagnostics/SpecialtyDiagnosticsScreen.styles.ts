@@ -3,25 +3,20 @@ import { COLORS, FONTS } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: COLORS.background },
-
-  contentContainer: { paddingHorizontal: 12, paddingBottom: 40 },
-
+  contentContainer: { paddingHorizontal: 12, paddingBottom: 16 },
   emptyText: {
     ...FONTS.body10,
     textAlign: 'center',
     marginTop: 40,
     color: COLORS.gray_400,
   },
-
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
-    marginBottom: 12,
     overflow: 'hidden',
   },
-
   cardHeaderTouchable: { paddingHorizontal: 16, paddingVertical: 14 },
   cardHeaderRow: {
     flexDirection: 'row',
@@ -36,17 +31,13 @@ export const styles = StyleSheet.create({
   },
   cardTitle: { ...FONTS.body3, color: COLORS.secondary },
   cardSubtitle: { ...FONTS.body9, color: COLORS.gray_400 },
-
   chevronWrap: { marginLeft: 10, marginTop: 2 },
-
   headerDivider: { height: 1, backgroundColor: COLORS.gray_100, marginTop: 12 },
-
   cardBody: {
     paddingHorizontal: 16,
     paddingBottom: 14,
     paddingTop: 10,
   },
-
   reportTitle: {
     ...FONTS.body1,
     color: COLORS.secondary,
@@ -56,7 +47,6 @@ export const styles = StyleSheet.create({
     borderBottomColor: COLORS.gray_200,
     marginBottom: 8,
   },
-
   metaRowCentered: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -83,7 +73,6 @@ export const styles = StyleSheet.create({
     marginBottom: 6,
   },
   metaValueCentered: { ...FONTS.body7, color: COLORS.secondary, textAlign: 'center' },
-
   sectionHeaderTitle: {
     ...FONTS.body3,
     color: COLORS.secondary,
@@ -97,7 +86,6 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_200,
     marginBottom: 8,
   },
-
   listItemRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -105,7 +93,6 @@ export const styles = StyleSheet.create({
   },
   bullet: { ...FONTS.body7, color: COLORS.secondary, marginRight: 8, lineHeight: 20 },
   listText: { ...FONTS.body7, color: COLORS.secondary, flex: 1 },
-
   mediaRow: { flexDirection: 'row', marginTop: 8 },
   mediaThumb: {
     width: 100,
@@ -114,7 +101,6 @@ export const styles = StyleSheet.create({
     marginRight: 8,
     backgroundColor: COLORS.gray_100,
   },
-
   actionRow: { flexDirection: 'row', gap: 8, paddingTop: 8 },
 });
 

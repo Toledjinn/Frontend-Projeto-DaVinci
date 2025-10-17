@@ -65,7 +65,6 @@ const columns = ['MV', 'V', 'DV', 'MP/ML', 'P/L', 'DP/DL', 'RE-V', 'RE-P/L', 'MO
 function ToothDetailInline({ toothNumber, data }: { toothNumber: number; data: any }) {
   const filledColumns = columns.filter((col) => data?.[col]);
   if (filledColumns.length === 0) return null;
-
   return (
     <View style={{ marginBottom: 16 }}>
       <Text style={periStyles.toothTitle}>Dente {toothNumber}</Text>
@@ -73,12 +72,7 @@ function ToothDetailInline({ toothNumber, data }: { toothNumber: number; data: a
         {filledColumns.map((col) => {
           const value = data[col];
           const numericValue = parseFloat(value);
-          const textStyle = isNaN(numericValue)
-            ? periStyles.textNormal
-            : numericValue > 3
-            ? periStyles.textAlert
-            : periStyles.textNormal;
-
+          const textStyle = isNaN(numericValue) ? periStyles.textNormal : numericValue > 3 ? periStyles.textAlert : periStyles.textNormal;
           return (
             <View key={col} style={periStyles.cellContainer}>
               <View style={periStyles.labelContainer}>
@@ -96,15 +90,9 @@ function ToothDetailInline({ toothNumber, data }: { toothNumber: number; data: a
 }
 
 function PeriogramInline({ periogram }: { periogram: SavedPeriogram }) {
-  const hasUpperData = upperArchTeeth.some(
-    (t) => periogram.data[t] && Object.values(periogram.data[t]).some((v) => String(v).trim() !== '')
-  );
-  const hasLowerData = lowerArchTeeth.some(
-    (t) => periogram.data[t] && Object.values(periogram.data[t]).some((v) => String(v).trim() !== '')
-  );
-
+  const hasUpperData = upperArchTeeth.some((t) => periogram.data[t] && Object.values(periogram.data[t]).some((v) => String(v).trim() !== ''));
+  const hasLowerData = lowerArchTeeth.some((t) => periogram.data[t] && Object.values(periogram.data[t]).some((v) => String(v).trim() !== ''));
   if (!hasUpperData && !hasLowerData) return null;
-
   return (
     <View style={{ marginTop: 8 }}>
       {hasUpperData && (
@@ -129,18 +117,17 @@ function PeriogramInline({ periogram }: { periogram: SavedPeriogram }) {
 
 export default function SpecialtyDiagnosticsScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.30;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
+  const bodyHeight = height - bodyOffset - 16;
 
   const router = useRouter();
-  const { patientId, specialty } =
-    useLocalSearchParams<{ patientId: string; specialty: string }>();
-
+  const { patientId, specialty } = useLocalSearchParams<{ patientId: string; specialty: string }>();
   const setHeaderConfig = useUIStore((s) => s.setHeaderConfig);
 
   const { list: users } = useUsers();
   const { list: allAppointments, refresh } = useAppointments();
   const { getOrCreateAppointmentDiagnostics } = useDiagnostics();
-
   const { list: periograms, fetchForPatient } = usePeriograms();
 
   useEffect(() => {
@@ -156,10 +143,7 @@ export default function SpecialtyDiagnosticsScreen() {
   );
 
   const patient = useMemo<UserWithPhoto | undefined>(
-    () =>
-      users.find(
-        (u) => String(u.id) === String(patientId) && u.type === 'patient'
-      ) as UserWithPhoto | undefined,
+    () => users.find((u) => String(u.id) === String(patientId) && u.type === 'patient') as UserWithPhoto | undefined,
     [users, patientId]
   );
 
@@ -187,17 +171,12 @@ export default function SpecialtyDiagnosticsScreen() {
   const filteredAppointments = useMemo(() => {
     const wanted = slugify(String(specialty));
     return allAppointments
-      .filter(
-        (a) =>
-          String(a.patientId) === String(patientId) &&
-          slugify(a.specialty) === wanted &&
-          a.status === 'realizada'
-      )
+      .filter((a) => String(a.patientId) === String(patientId) && slugify(a.specialty) === wanted && a.status === 'realizada')
       .sort((a, b) => {
         try {
           const [da, ma, ya] = a.date.split('/').map((n) => parseInt(n, 10));
           const [db, mb, yb] = b.date.split('/').map((n) => parseInt(n, 10));
-          return new Date(yb, mb - 1, db).getTime() - new Date(ya, ma - 1, da).getTime();
+        return new Date(yb, mb - 1, db).getTime() - new Date(ya, ma - 1, da).getTime();
         } catch {
           return (b.date || '').localeCompare(a.date || '');
         }
@@ -207,13 +186,10 @@ export default function SpecialtyDiagnosticsScreen() {
   const records: RecordForList[] = useMemo(() => {
     return filteredAppointments.map((appt) => {
       const diag = getOrCreateAppointmentDiagnostics(appt.id, String(appt.patientId)) as any;
-
       const media: MediaItem[] = Array.isArray(diag?.media) ? diag.media : [];
       const images = media.filter((m) => m.type === 'image');
       const xrays = media.filter((m) => m.type === 'xray');
-
       const dentist = users.find((u) => String(u.id) === String(appt.dentistId));
-
       return {
         appointmentId: String(appt.id),
         date: appt.date,
@@ -225,24 +201,26 @@ export default function SpecialtyDiagnosticsScreen() {
         images,
         xrays,
         treatmentPlanId: diag?.treatmentPlanId ?? diag?.treatmentPlan?.id ?? undefined,
-        periogramId:
-          diag?.periogramId ?? diag?.periogramaId ?? diag?.periogram?.id ?? undefined,
+        periogramId: diag?.periogramId ?? diag?.periogramaId ?? diag?.periogram?.id ?? undefined,
         riskAssessment: diag?.riskAssessment ?? diag?.riskLevel ?? null,
       };
     });
   }, [filteredAppointments, getOrCreateAppointmentDiagnostics, users]);
 
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
-  const toggleOpen = useCallback((id: string) => {
-    if (isSingleStatic) return; 
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setOpenIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, [isSingleStatic]);
+  const toggleOpen = useCallback(
+    (id: string) => {
+      if (isSingleStatic) return;
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setOpenIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        return next;
+      });
+    },
+    [isSingleStatic]
+  );
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
@@ -253,7 +231,7 @@ export default function SpecialtyDiagnosticsScreen() {
   if (!patient) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={[styles.contentContainer, { paddingTop: headerHeight }]}>
+        <View style={[styles.contentContainer, { paddingTop: bodyOffset, minHeight: bodyHeight }]}>
           <Text>Carregando...</Text>
         </View>
       </SafeAreaView>
@@ -328,14 +306,12 @@ export default function SpecialtyDiagnosticsScreen() {
           <View style={styles.metaTitleDivider} />
           <Text style={styles.metaValueCentered}>{rec.date || '-'}</Text>
         </View>
-
         <View style={styles.metaColCentered}>
           <Text style={styles.metaTitleCentered}>Horário</Text>
           <View style={styles.metaTitleDivider} />
           <Text style={styles.metaValueCentered}>{rec.time || '-'}</Text>
         </View>
       </View>
-
       <Text style={styles.sectionHeaderTitle}>Dentista</Text>
       <View style={styles.sectionHeaderDivider} />
       <Text style={styles.metaValueCentered}>{rec.dentistName || 'Não informado'}</Text>
@@ -352,19 +328,15 @@ export default function SpecialtyDiagnosticsScreen() {
   const getPeriogramForRecord = useCallback(
     (rec: RecordForList): SavedPeriogram | null => {
       if (!periograms?.length) return null;
-
       if (rec.periogramId) {
         const byId = periograms.find((p) => String(p.id) === String(rec.periogramId));
         if (byId) return byId;
       }
-
       const apptDate = parseDDMMYYYY(rec.date);
-
       if (rec.date) {
         const exact = periograms.find((p) => p.date === rec.date);
         if (exact) return exact;
       }
-
       if (apptDate) {
         const withParsed = periograms
           .map((p) => ({ p, d: parseDDMMYYYY(p.date) }))
@@ -372,13 +344,11 @@ export default function SpecialtyDiagnosticsScreen() {
           .sort((a, b) => (b.d as Date).getTime() - (a.d as Date).getTime());
         if (withParsed.length) return withParsed[0].p;
       }
-
       const fallback = [...periograms].sort((a, b) => {
         const da = parseDDMMYYYY(a.date)?.getTime() ?? 0;
         const db = parseDDMMYYYY(b.date)?.getTime() ?? 0;
         return db - da;
       })[0];
-
       return fallback ?? null;
     },
     [periograms]
@@ -392,48 +362,25 @@ export default function SpecialtyDiagnosticsScreen() {
           <Text style={styles.sectionHeaderTitle}>Fichas Preenchidas</Text>
           <View style={styles.sectionHeaderDivider} />
           <View style={styles.actionRow}>
-            <StyledButton
-              title="Saúde Geral"
-              variant="secondary"
-              onPress={() =>
-                router.push({ pathname: '/(app)/saude-geral', params: { patientId } })
-              }
-              style={{ flex: 1 }}
-            />
-            <StyledButton
-              title="Saúde Bucal"
-              variant="secondary"
-              onPress={() =>
-                router.push({ pathname: '/(app)/saude-bucal', params: { patientId } })
-              }
-              style={{ flex: 1 }}
-            />
+            <StyledButton title="Saúde Geral" variant="secondary" onPress={() => router.push({ pathname: '/(app)/saude-geral', params: { patientId } })} style={{ flex: 1 }} />
+            <StyledButton title="Saúde Bucal" variant="secondary" onPress={() => router.push({ pathname: '/(app)/saude-bucal', params: { patientId } })} style={{ flex: 1 }} />
           </View>
           <Exams items={rec.requestedExams} />
           <MediaBlock imgs={rec.images} rxs={rec.xrays} />
         </>
       );
     }
-
     if (rec.specialty === 'Segunda Consulta') {
       return (
         <>
           {Report(rec)}
           <Text style={styles.sectionHeaderTitle}>Fichas Preenchidas</Text>
           <View style={styles.sectionHeaderDivider} />
-          <StyledButton
-            title="Plano de Tratamento"
-            variant="primary"
-            onPress={() =>
-              router.push({ pathname: '/(app)/plano-de-tratamento', params: { patientId } })
-            }
-            style={{ marginTop: 8 }}
-          />
+          <StyledButton title="Plano de Tratamento" variant="primary" onPress={() => router.push({ pathname: '/(app)/plano-de-tratamento', params: { patientId } })} style={{ marginTop: 8 }} />
           <MediaBlock imgs={rec.images} rxs={rec.xrays} />
         </>
       );
     }
-
     if (rec.specialty === 'Periodontia') {
       const pg = getPeriogramForRecord(rec);
       return (
@@ -441,28 +388,18 @@ export default function SpecialtyDiagnosticsScreen() {
           {Report(rec)}
           <Text style={styles.sectionHeaderTitle}>Fichas Preenchidas</Text>
           <View style={styles.sectionHeaderDivider} />
-
           {pg ? (
             <PeriogramInline periogram={pg} />
           ) : (
-            <Text
-              style={{
-                ...FONTS.body9,
-                color: COLORS.gray_400,
-                textAlign: 'center',
-                marginTop: 12,
-              }}
-            >
+            <Text style={{ ...FONTS.body9, color: COLORS.gray_400, textAlign: 'center', marginTop: 12 }}>
               Nenhum periograma encontrado para este paciente.
             </Text>
           )}
-
           <ProceduresBlock items={rec.procedures} />
           <MediaBlock imgs={rec.images} rxs={rec.xrays} />
         </>
       );
     }
-
     return (
       <>
         {Report(rec)}
@@ -477,14 +414,15 @@ export default function SpecialtyDiagnosticsScreen() {
       <FlatList
         data={records}
         keyExtractor={(item) => item.appointmentId}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: bodyOffset, minHeight: bodyHeight }]}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           const forceOpen = isSingleStatic;
           const isOpen = forceOpen || openIds.has(item.appointmentId);
-
+          const isSingle = records.length === 1;
+          const cardStyle = isSingle ? [styles.card, { minHeight: bodyHeight - 12 }] : styles.card;
           return (
-            <View style={styles.card}>
+            <View style={cardStyle}>
               {isSingleStatic ? (
                 <View style={styles.cardHeaderTouchable}>
                   <View style={styles.cardHeaderRow}>
@@ -496,37 +434,24 @@ export default function SpecialtyDiagnosticsScreen() {
                   <View style={styles.headerDivider} />
                 </View>
               ) : (
-                <Pressable
-                  onPress={() => toggleOpen(item.appointmentId)}
-                  style={styles.cardHeaderTouchable}
-                  android_ripple={{ color: 'rgba(0,0,0,0.06)' }}
-                >
+                <Pressable onPress={() => toggleOpen(item.appointmentId)} style={styles.cardHeaderTouchable} android_ripple={{ color: 'rgba(0,0,0,0.06)' }}>
                   <View style={styles.cardHeaderRow}>
                     <View style={styles.leftRightWrap}>
                       <Text style={styles.cardTitle}>{item.date}</Text>
                       <Text style={styles.cardSubtitle}>{item.specialty}</Text>
                     </View>
                     <View style={styles.chevronWrap}>
-                      <Feather
-                        name={isOpen ? 'chevron-up' : 'chevron-down'}
-                        size={18}
-                        color="#6B7280"
-                      />
+                      <Feather name={isOpen ? 'chevron-up' : 'chevron-down'} size={18} color="#6B7280" />
                     </View>
                   </View>
                   <View style={styles.headerDivider} />
                 </Pressable>
               )}
-
               {isOpen && <View style={styles.cardBody}>{renderReportBySpecialty(item)}</View>}
             </View>
           );
         }}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            Nenhum diagnóstico encontrado para esta especialidade.
-          </Text>
-        }
+        ListEmptyComponent={<Text style={styles.emptyText}>Nenhum diagnóstico encontrado para esta especialidade.</Text>}
       />
     </SafeAreaView>
   );

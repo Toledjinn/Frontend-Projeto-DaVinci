@@ -30,17 +30,18 @@ type MediaItem = {
 };
 
 type Section = {
-  title: string;      
-  subtitle: string;    
-  media: MediaItem[];  
-  data: Array<{ key: string }>; 
+  title: string;
+  subtitle: string;
+  media: MediaItem[];
+  data: Array<{ key: string }>;
 };
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 export default function MediaGalleryScreen() {
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.28;
+  const headerHeight = height * 0.21;
+  const bodyOffset = headerHeight + 8;
 
   const { patientId, kind } =
     useLocalSearchParams<{ patientId: string; kind: 'image' | 'xray' }>();
@@ -106,7 +107,7 @@ export default function MediaGalleryScreen() {
         title: appt.date,
         subtitle: appt.specialty,
         media,
-        data: [{ key: String(appt.id) }], 
+        data: [{ key: String(appt.id) }],
       };
     });
 
@@ -134,7 +135,7 @@ export default function MediaGalleryScreen() {
     if (!viewerVisible || !flatRef.current) return;
     const t = setTimeout(() => {
       flatRef.current?.scrollToIndex({ index: viewerIndex, animated: false });
-    }, 16); 
+    }, 16);
     return () => clearTimeout(t);
   }, [viewerVisible, viewerIndex]);
 
@@ -160,7 +161,8 @@ export default function MediaGalleryScreen() {
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.key}
-        contentContainerStyle={[styles.contentContainer, { paddingTop: headerHeight }]}
+        style={styles.bodyList}
+        contentContainerStyle={[styles.bodyContent, { paddingTop: bodyOffset }]}
         stickySectionHeadersEnabled={false}
         renderItem={({ section }) => (
           <View style={styles.sectionCard}>
@@ -168,7 +170,6 @@ export default function MediaGalleryScreen() {
               <Text style={styles.sectionTitle}>{section.title}</Text>
               <Text style={styles.sectionSubtitle}>{section.subtitle}</Text>
             </View>
-
             <View style={styles.sectionBody}>
               {section.media.map((m, idx) => (
                 <Pressable
@@ -222,18 +223,10 @@ export default function MediaGalleryScreen() {
             getItemLayout={getItemLayout}
             onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={{ itemVisiblePercentThreshold: 80 }}
-            removeClippedSubviews={false} 
+            removeClippedSubviews={false}
             renderItem={({ item }) => (
-              <View
-                style={[
-                  styles.viewerSlideBox,
-                  { width: SCREEN_W, height: SCREEN_H },
-                ]}
-              >
-                <Image
-                  source={{ uri: item.uri }}
-                  style={[styles.viewerImg, { width: SCREEN_W, height: SCREEN_H }]}
-                />
+              <View style={[styles.viewerSlideBox, { width: SCREEN_W, height: SCREEN_H }]}>
+                <Image source={{ uri: item.uri }} style={[styles.viewerImg, { width: SCREEN_W, height: SCREEN_H }]} />
               </View>
             )}
           />

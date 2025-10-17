@@ -1,23 +1,15 @@
+// EditEducationalContentScreen.styles.ts
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS, SIZES } from '@/constants/theme';
 
 export const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
+  safeArea: { flex: 1, backgroundColor: COLORS.background },
 
-  pageBody: {
-    flex: 1,
-    minHeight: 0, 
-  },
-
-  pageBodySidePadding: {
-    paddingHorizontal: 12,
-  },
+  pageBody: { flex: 1, minHeight: 0 },
+  pageBodySidePadding: { paddingHorizontal: 12 },
 
   editorCard: {
-    flex: 1,
+    flex: 1,                 // ocupa todo o body
     minHeight: 0,
     overflow: 'hidden',
     marginBottom: 12,
@@ -36,33 +28,23 @@ export const styles = StyleSheet.create({
 
     alignSelf: 'center',
     width: '100%',
-    maxWidth: 680, 
+    maxWidth: 680,           // centralizado em telas largas
   },
 
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-
     paddingHorizontal: 16,
     paddingVertical: SIZES.padding / 1.5,
-
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray_100,
     backgroundColor: COLORS.white,
   },
-  cardTitle: {
-    ...FONTS.body3,
-    color: COLORS.secondary,
-  },
+  cardTitle: { ...FONTS.body3, color: COLORS.secondary },
 
-  editorScroll: {
-    flex: 1,
-    minHeight: 0,
-  },
-  editorScrollContent: {
-    paddingVertical: 16,
-  },
+  editorScroll: { flex: 1, minHeight: 0 },
+  editorScrollContent: { paddingVertical: 16 },
 
   itemBox: {
     borderWidth: 1,
@@ -78,18 +60,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  removeIconTap: {
-    padding: 6,
-  },
+  removeIconTap: { padding: 6 },
 
-  label: {
-    ...FONTS.body3,
-    color: COLORS.gray_400,
-    marginBottom: SIZES.base,
-  },
-  manualInputContainer: {
-    marginTop: 12,
-  },
+  label: { ...FONTS.body3, color: COLORS.gray_400, marginBottom: SIZES.base },
+
+  manualInputContainer: { marginTop: 12 },
   manualTextInputWrapper: {
     flexDirection: 'row',
     backgroundColor: COLORS.white,
@@ -117,10 +92,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray_200,
   },
-  imagePreview: {
-    width: '100%',
-    height: '100%',
-  },
+  imagePreview: { width: '100%', height: '100%' },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.3)',
@@ -128,11 +100,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  imageRowEditor: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
+  imageRowEditor: { flexDirection: 'row', justifyContent: 'space-between', gap: 10 },
   imageContainerEditor: {
     width: '48%',
     alignItems: 'center',
@@ -141,17 +109,9 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: COLORS.gray_100,
   },
-  imageLabelEditor: {
-    ...FONTS.body11,
-    color: COLORS.gray_400,
-    marginTop: 8,
-  },
-  gridContainerEditor: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
+  imageLabelEditor: { ...FONTS.body11, color: COLORS.gray_400, marginTop: 8 },
+
+  gridContainerEditor: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 },
   gridImageContainerEditor: {
     width: '48%',
     height: 150,
@@ -160,30 +120,18 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_100,
   },
 
-  addButtonsContainer: {
-    marginTop: SIZES.padding,
-  },
-  addRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
+  addButtonsContainer: { marginTop: SIZES.padding },
+  addRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-
     paddingHorizontal: 14,
     paddingVertical: 12,
-
     backgroundColor: COLORS.white,
     borderRadius: SIZES.radius,
     borderWidth: 1,
     borderColor: COLORS.gray_200,
   },
-  addButtonText: {
-    ...FONTS.body7,
-    color: COLORS.secondary,
-    marginLeft: SIZES.base,
-  },
+  addButtonText: { ...FONTS.body7, color: COLORS.secondary, marginLeft: SIZES.base },
 });

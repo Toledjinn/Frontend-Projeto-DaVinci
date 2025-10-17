@@ -39,7 +39,7 @@ export default function DetalhesPedidoScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { height } = useWindowDimensions();
-  const headerHeight = height * 0.29;
+  const headerHeight = height * 0.22;
   const setHeaderConfig = useUIStore((state) => state.setHeaderConfig);
 
   const updateOrderStatus = usePedidosStore((s) => s.updateOrderStatus);
